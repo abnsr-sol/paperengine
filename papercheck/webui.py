@@ -91,7 +91,7 @@ def _page(form_html: str = "", result_html: str = "", error: str = "") -> str:
 </style></head>
 <body>
 <header><h1>PaperEngine</h1>
-<p>65 rejection-risk engines · international + Indian standards · 100% local — your paper never leaves this machine</p></header>
+<p>67 rejection-risk engines · international + Indian standards · 100% local — your paper never leaves this machine</p></header>
 <main>
 {banner}
 {form_html}
@@ -99,7 +99,7 @@ def _page(form_html: str = "", result_html: str = "", error: str = "") -> str:
 <div class="disclaimer"><b>Honest limits:</b> overlap is a signal, not plagiarism. AI-risk is probabilistic, not proof.
 Venue limits are typical values — confirm the venue's current guide. The readiness score is informational, never a verdict.</div>
 </main>
-<footer>PaperEngine v1.1 — runs offline by default · now with before/after revision comparison · <a href="https://github.com/abnsr-sol/paperengine" style="color:inherit">source</a></footer>
+<footer>PaperEngine v1.3 — 67 engines · statcheck p-value verification · UGC statutory similarity · before/after comparison · <a href="https://github.com/abnsr-sol/paperengine" style="color:inherit">source</a></footer>
 </body></html>"""
 
 
@@ -199,7 +199,7 @@ def _upload_form(selected: str = "generic") -> str:
   }}
   document.getElementById('f').addEventListener('submit', () => {{
     document.getElementById('go').disabled = true;
-    document.getElementById('status').textContent = 'Running 65 engines — this takes a few seconds…';
+    document.getElementById('status').textContent = 'Running 67 engines — this takes a few seconds…';
   }});
   syncVenues();
 </script>"""
