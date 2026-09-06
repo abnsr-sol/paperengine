@@ -1,0 +1,289 @@
+"""Local web GUI: drag-and-drop manuscript checking in the browser.
+
+Zero dependencies beyond PaperCheck itself (stdlib http.server). The uploaded
+file never leaves your machine - it is parsed in memory, checked by the same
+65 engines as the CLI, and rendered as the standard HTML report.
+
+    papercheck --gui              # serve on http://localhost:8765
+    papercheck --gui --port 9000  # custom port
+
+Security posture:
+    - binds 127.0.0.1 only (not reachable from the network)
+    - size cap: 25 MB per upload
+    - only .docx/.txt/.md/.markdown/.tex/.pdf accepted
+    - multipart/form-data parsing done manually (no dependencies)
+    - X-Frame-Options: DENY, no caching of report pages
+"""
+from __future__ import annotations
+
+import html as _html
+import io
+import os
+import re
+import tempfile
+import urllib.parse
+import webbrowser
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+from .checks import ALL_ENGINES, CheckContext
+from .ingestion import (PdfExtractionError, UnsupportedFormatError,
+                        load_document)
+from .report import render_html
+from .risk import RiskReport
+from .venues import PRESETS, describe, get_rules, list_venues
+
+_MAX_UPLOAD = 25 * 1024 * 1024  # 25 MB
+_ALLOWED_EXT = (".docx", ".txt", ".md", ".markdown", ".tex", ".pdf")
+_BOUNDARY_RE = re.compile(r'boundary="?([^";]+)"?', re.IGNORECASE)
+
+
+def _venue_options(selected: str = "generic") -> str:
+    groups = list_venues()
+    opts = ['<option value="generic">generic (no venue rules)</option>']
+    for std in ("international", "national"):
+        label = "International" if std == "international" else "National (India)"
+        opts.append(f'<optgroup label="{label}">')
+        for name in groups.get(std, []):
+            sel = " selected" if name == selected else ""
+            opts.append(f'<option value="{name}"{sel}>{name} — {_html.escape(describe(name))}</option>')
+        opts.append("</optgroup>")
+    return "\n".join(opts)
+
+
+def _page(form_html: str = "", result_html: str = "", error: str = "") -> str:
+    banner = ""
+    if error:
+        banner = f'<div class="error">{_html.escape(error)}</div>'
+    return f"""<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PaperEngine — local paper checker</title>
+<style>
+  :root {{ --ink:#1a2233; --accent:#2456d6; --bad:#c62828; --ok:#1b7f4d; }}
+  * {{ box-sizing:border-box; }}
+  body {{ font-family:Georgia,'Times New Roman',serif; margin:0; background:#f4f4ef; color:var(--ink); }}
+  header {{ background:var(--ink); color:#fff; padding:18px 28px; }}
+  header h1 {{ margin:0; font-size:1.35rem; letter-spacing:.5px; }}
+  header p {{ margin:4px 0 0; opacity:.75; font-size:.85rem; }}
+  main {{ max-width:900px; margin:0 auto; padding:24px; }}
+  .drop {{ border:2px dashed #9aa3b5; border-radius:12px; background:#fff; padding:38px 20px; text-align:center; cursor:pointer; transition:.15s; }}
+  .drop.over {{ border-color:var(--accent); background:#eef3ff; }}
+  .drop input {{ display:none; }}
+  .drop .big {{ font-size:1.1rem; margin-bottom:6px; }}
+  .drop .small {{ color:#667; font-size:.85rem; }}
+  .row {{ display:flex; gap:14px; margin:16px 0; flex-wrap:wrap; }}
+  label {{ font-size:.85rem; color:#445; display:block; margin-bottom:4px; }}
+  select {{ padding:8px 10px; border:1px solid #b9c0cf; border-radius:8px; font-size:.95rem; min-width:260px; background:#fff; }}
+  button.go {{ background:var(--accent); color:#fff; border:0; padding:12px 30px; font-size:1rem; border-radius:8px; cursor:pointer; }}
+  button.go:disabled {{ opacity:.5; cursor:wait; }}
+  .error {{ background:#fdecea; color:var(--bad); border:1px solid #f2b8b5; padding:12px 16px; border-radius:8px; margin:14px 0; }}
+  .status {{ color:#667; font-size:.85rem; margin-top:10px; min-height:1.2em; }}
+  footer {{ color:#889; font-size:.78rem; text-align:center; padding:18px; }}
+  .disclaimer {{ background:#fffbe6; border:1px solid #eadfa0; padding:10px 14px; border-radius:8px; font-size:.82rem; color:#665c1e; margin-top:14px; }}
+</style></head>
+<body>
+<header><h1>PaperEngine</h1>
+<p>65 rejection-risk engines · international + Indian standards · 100% local — your paper never leaves this machine</p></header>
+<main>
+{banner}
+{form_html}
+{result_html}
+<div class="disclaimer"><b>Honest limits:</b> overlap is a signal, not plagiarism. AI-risk is probabilistic, not proof.
+Venue limits are typical values — confirm the venue's current guide. The readiness score is informational, never a verdict.</div>
+</main>
+<footer>PaperEngine v1.0 — runs offline by default · <a href="https://github.com/abnsr-sol/paperengine" style="color:inherit">source</a></footer>
+</body></html>"""
+
+
+def _upload_form(selected: str = "generic") -> str:
+    return f"""
+<form id="f" method="post" action="/check" enctype="multipart/form-data">
+  <div class="drop" id="drop">
+    <input type="file" id="file" name="file" accept=".docx,.txt,.md,.markdown,.tex,.pdf">
+    <div class="big">📄 Drag your manuscript here — or click to choose</div>
+    <div class="small">.docx · .txt · .md · .tex · .pdf (max 25 MB)</div>
+  </div>
+  <div class="row">
+    <div>
+      <label for="standard">Standard</label>
+      <select id="standard" name="standard" onchange="syncVenues()">
+        <option value="international" selected>International (IEEE/Elsevier/ACM…)</option>
+        <option value="national">National (India: UGC/AICTE/NAAC)</option>
+      </select>
+    </div>
+    <div>
+      <label for="venue">Venue preset</label>
+      <select id="venue" name="venue">{_venue_options(selected)}</select>
+    </div>
+    <div style="align-self:flex-end">
+      <button class="go" id="go" type="submit">Check my paper</button>
+    </div>
+  </div>
+  <div class="status" id="status"></div>
+</form>
+<script>
+  const drop = document.getElementById('drop'), file = document.getElementById('file');
+  drop.addEventListener('click', () => file.click());
+  ['dragover','dragenter'].forEach(e => drop.addEventListener(e, ev => {{ ev.preventDefault(); drop.classList.add('over'); }}));
+  ['dragleave','drop'].forEach(e => drop.addEventListener(e, ev => {{ ev.preventDefault(); drop.classList.remove('over'); }}));
+  drop.addEventListener('drop', ev => {{ if (ev.dataTransfer.files.length) {{ file.files = ev.dataTransfer.files; showName(); }} }});
+  file.addEventListener('change', showName);
+  function showName() {{
+    const s = document.getElementById('status');
+    s.textContent = file.files.length ? 'Selected: ' + file.files[0].name : '';
+  }}
+  function syncVenues() {{
+    const std = document.getElementById('standard').value;
+    document.querySelectorAll('#venue optgroup').forEach(g => {{
+      g.style.display = (std === 'national') === (g.label.startsWith('National')) ? '' : 'none';
+    }});
+  }}
+  document.getElementById('f').addEventListener('submit', () => {{
+    document.getElementById('go').disabled = true;
+    document.getElementById('status').textContent = 'Running 65 engines — this takes a few seconds…';
+  }});
+  syncVenues();
+</script>"""
+
+
+def _run_check(filename: str, data: bytes, standard: str, venue: str) -> str:
+    """Parse + run all engines + render the HTML report body."""
+    ext = os.path.splitext(filename)[1].lower()
+    suffix = ext if ext in _ALLOWED_EXT else ".txt"
+    tmp = tempfile.NamedTemporaryFile(suffix=suffix, delete=False)
+    try:
+        tmp.write(data)
+        tmp.close()
+        doc = load_document(tmp.name)
+        rules = get_rules(venue)
+        ctx = CheckContext(venue=describe(venue), rules=rules, online=False,
+                           max_online_checks=0)
+        report = RiskReport(document_name=doc.name, venue=describe(venue))
+        report.stats = {"words": f"{doc.word_count:,}",
+                        "standard": "National (Indian)" if standard == "national" else "International"}
+        for engine in ALL_ENGINES:
+            report.extend(engine(doc, ctx))
+        return render_html(report)
+    finally:
+        try:
+            os.unlink(tmp.name)
+        except OSError:
+            pass
+
+
+def _parse_multipart(body: bytes, content_type: str):
+    """Minimal multipart/form-data parser: returns (filename, file_bytes, fields)."""
+    m = _BOUNDARY_RE.search(content_type or "")
+    if not m:
+        return None, None, {}
+    boundary = ("--" + m.group(1)).encode()
+    parts = body.split(boundary)
+    filename, filebytes, fields = None, None, {}
+    for part in parts:
+        part = part.strip(b"\r\n")
+        if not part or part == b"--":
+            continue
+        if b"\r\n\r\n" not in part:
+            continue
+        raw_headers, content = part.split(b"\r\n\r\n", 1)
+        headers = raw_headers.decode("utf-8", "replace").lower()
+        name_m = re.search(r'name="([^"]+)"', headers)
+        if not name_m:
+            continue
+        name = name_m.group(1)
+        if 'filename="' in headers:
+            fn = re.search(r'filename="([^"]*)"', headers)
+            filename = fn.group(1) if fn else "upload"
+            filebytes = content
+        else:
+            fields[name] = content.decode("utf-8", "replace").strip()
+    return filename, filebytes, fields
+
+
+class Handler(BaseHTTPRequestHandler):
+    server_version = "PaperEngine/1.0"
+
+    def log_message(self, fmt, *args):  # quieter logs
+        pass
+
+    def _send_html(self, body: str, code: int = 200):
+        payload = body.encode("utf-8")
+        self.send_response(code)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(payload)))
+        self.send_header("X-Frame-Options", "DENY")
+        self.send_header("Cache-Control", "no-store")
+        self.end_headers()
+        self.wfile.write(payload)
+
+    def do_GET(self):
+        path = urllib.parse.urlparse(self.path).path
+        if path in ("/", "/index.html"):
+            self._send_html(_page(form_html=_upload_form()))
+        else:
+            self._send_html(_page(error="Page not found."), code=404)
+
+    def do_POST(self):
+        path = urllib.parse.urlparse(self.path).path
+        if path != "/check":
+            self._send_html(_page(error="Unknown action."), code=404)
+            return
+        try:
+            length = int(self.headers.get("Content-Length", "0") or 0)
+        except ValueError:
+            length = 0
+        if length <= 0 or length > _MAX_UPLOAD + 65536:
+            self._send_html(_page(form_html=_upload_form(),
+                                  error="Upload missing or too large (25 MB limit)."), code=413)
+            return
+        body = self.rfile.read(length)
+        filename, filebytes, fields = _parse_multipart(body, self.headers.get("Content-Type", ""))
+        if not filename or filebytes is None:
+            self._send_html(_page(form_html=_upload_form(),
+                                  error="No file received — please choose a manuscript."), code=400)
+            return
+        if not filename.lower().endswith(_ALLOWED_EXT):
+            self._send_html(_page(form_html=_upload_form(),
+                                  error="Unsupported file type — use .docx, .txt, .md, .tex or .pdf."), code=415)
+            return
+        standard = fields.get("standard", "international")
+        if standard not in ("international", "national"):
+            standard = "international"
+        venue = fields.get("venue", "generic")
+        if venue != "generic" and venue not in PRESETS:
+            venue = "generic"
+        # honor the national/international choice even when venue says otherwise
+        if standard == "national" and venue == "generic":
+            venue = "ugc_care"
+        elif standard == "international" and venue == "generic":
+            venue = "ieee_conference"
+        try:
+            result = _run_check(filename, filebytes, standard, venue)
+        except (UnsupportedFormatError, PdfExtractionError) as exc:
+            self._send_html(_page(form_html=_upload_form(venue),
+                                  error=f"Could not read the manuscript: {exc}"), code=422)
+            return
+        except Exception as exc:  # noqa: BLE001 — one bad paper must not kill the server
+            self._send_html(_page(form_html=_upload_form(venue),
+                                  error=f"Checking failed: {exc}"), code=500)
+            return
+        self._send_html(result)
+
+
+def serve(port: int = 8765, open_browser: bool = True) -> None:
+    server = ThreadingHTTPServer(("127.0.0.1", port), Handler)
+    url = f"http://localhost:{port}"
+    print(f"PaperEngine GUI running at {url}  (Ctrl+C to stop)")
+    print("Local only — nothing is uploaded to the internet.")
+    if open_browser:
+        webbrowser.open(url)
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print("\nStopped.")
+    finally:
+        server.server_close()
+
+
+if __name__ == "__main__":
+    serve()

@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Local artifacts
+.freebuff/
+
+# Private manuscripts (never publish)
+user_paper.docx
+sample_user_paper.docx
+
+# Generated reports
+user_paper_report.*
+example_report.*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Test/coverage artifacts
+.coverage
+htmlcov/

@@ -1,0 +1,3 @@
+# Optional — only needed for PDF ingestion.
+# The core engine is 100% standard-library Python.
+pypdf>=3.0
