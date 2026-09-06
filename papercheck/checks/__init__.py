@@ -39,6 +39,7 @@ def _import_engines() -> List[CheckFn]:
         grammar_tool, cross_check, statcheck, ugc_14word,
         grim_engine, openalex_verify,
         physical_plausibility, ml_fairness, corrections, proof_gaps,
+        compilation_hygiene,
     )
     return [
         compliance.run, structure.run, language.run, citations.run,
@@ -64,7 +65,7 @@ def _import_engines() -> List[CheckFn]:
         grammar_tool.run, cross_check.run,
         statcheck.run, ugc_14word.run, grim_engine.run, openalex_verify.run,
         physical_plausibility.run, ml_fairness.run, corrections.run,
-        proof_gaps.run,
+        proof_gaps.run, compilation_hygiene.run,
     ]
 
 ALL_ENGINES: List[CheckFn] = _import_engines()

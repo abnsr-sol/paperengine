@@ -4,6 +4,21 @@ All notable changes to PaperEngine are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [SemVer](https://semver.org/).
 
+## [1.6.1] — 2026-09-07
+
+### Added — compilation-hygiene engine (#74)
+- **`compilation_hygiene`** — the "sloppy submission" tells handling editors
+  spot in seconds: broken LaTeX cross-references (`??` / `[?]` from failed
+  `\ref`/`\cite` macros), broken Word fields ("Error! Reference source not
+  found"), repository links not pinned to a commit hash or release tag
+  (branch pointers rot; reviewers know it), and placeholder text (TODO,
+  lorem ipsum, example.com, "your repo here"). All offline, exact-string
+  based. Pinned links earn an INFO trust signal.
+
+### Fixed
+- Constructor arg-order bug in the engine's Finding calls (evidence/action/
+  confidence transposed) caught by the compare test before it could ship.
+
 ## [1.6.0] — 2026-09-07
 
 ### Added — adversarial-review wave (#70–#73)
