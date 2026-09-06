@@ -383,12 +383,25 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def serve(port: int = 8765, open_browser: bool = True) -> None:
-    server = ThreadingHTTPServer(("127.0.0.1", port), Handler)
+    try:
+        server = ThreadingHTTPServer(("127.0.0.1", port), Handler)
+    except OSError as exc:
+        if getattr(exc, "errno", None) in (98, 10048) or "in use" in str(exc).lower():
+            print(f"Port {port} is already in use — try:  papercheck --gui --port {port + 1}")
+            return
+        raise
     url = f"http://localhost:{port}"
-    print(f"PaperEngine GUI running at {url}  (Ctrl+C to stop)")
+    print(f"PaperEngine GUI running at {url}")
+    print("The window stays open until you press Ctrl+C (then it prints 'Stopped.' and exits)")
+    print(f"If your browser did not open by itself, paste this into it:  {url}")
     print("Local only — nothing is uploaded to the internet.")
     if open_browser:
-        webbrowser.open(url)
+        try:
+            opened = webbrowser.open(url)
+        except Exception:
+            opened = False
+        if not opened:
+            print("(Automatic browser open failed — use the URL above.)")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
