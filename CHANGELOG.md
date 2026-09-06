@@ -4,6 +4,35 @@ All notable changes to PaperEngine are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [SemVer](https://semver.org/).
 
+## [1.3.0] — 2026-09-06
+
+### Added — deterministic verification wave
+- **`statcheck` engine (#66)** — pure-Python recomputation of p-values from
+  reported APA-style test statistics (t/F/χ²/r/z with df; stdlib-only special
+  functions, no scipy). Flags: **decision errors** (reported and recomputed p
+  on opposite sides of .05 — CRITICAL, the conclusion itself is wrong), gross
+  mismatches (HIGH), inconsistency clusters (MEDIUM), and confirms
+  fully-consistent result sets (INFO). Arithmetic, not heuristics.
+- **`ugc_14word` engine (#67)** — the UGC 2018 (India) statutory similarity
+  computation as specified in the Gazette regulations: clause-7 exclusions
+  (<14-consecutive-word matches disregarded; references, acknowledgments,
+  quotes excluded), clause-8 Level 0–3 bands with the actual statutory
+  consequences, and the zero-tolerance Hypothesis/Results/Conclusions
+  check. Runs against the author's own corpus (`--corpus`, e.g. thesis or
+  prior papers — the Shodhganga-derived-paper scenario), fully offline.
+- **Benchmark upgrade**: the flawed corpus paper now embeds a decision error
+  (`t(58) = 1.20, p = .04`) that statcheck must catch on every run — the
+  calibration gate now also verifies the deterministic layer.
+- 9 new tests (179 total): distribution reference points, decision-error
+  detection, clause-7 exclusion behavior, tier escalation, core-section
+  zero tolerance.
+
+### Fixed
+- GUI startup messages: Ctrl+C explained, fallback URL printed, port-in-use
+  hint suggests `--port`.
+- `ugc_14word` token-span alignment with the metrics tokenizer and
+  majority-overlap containment for core-section matching.
+
 ## [1.2.0] — 2026-09-06
 
 ### Added — limitation mitigations

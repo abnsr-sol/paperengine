@@ -80,6 +80,10 @@ def main() -> int:
     # AI-signal sensitivity: stylometric engines on the template-heavy flawed paper
     ai_hits = [f for f in flawed.findings
                if f.category in ("AI-risk", "LLM Artifacts")]
+    # Deterministic stat verification: the flawed paper embeds a p-value that
+    # contradicts its own test statistic — statcheck must catch it.
+    stat_hits = [f for f in flawed.findings if f.category == "Statistics"
+                 and "contradicts" in f.title.lower()]
 
     result = {
         "scores": {"clean": clean_score, "flawed": flawed_score,
@@ -92,6 +96,7 @@ def main() -> int:
         "clean_high": [f.title for f in clean_serious
                        if f.severity == Severity.HIGH],
         "ai_risk_hits_on_flawed": len(ai_hits),
+        "statcheck_decision_errors_on_flawed": len(stat_hits),
         "clean_categories": sorted({f.category for f in clean.findings}),
         "flawed_categories": sorted({f.category for f in flawed.findings}),
     }
@@ -116,6 +121,8 @@ def main() -> int:
               f"{len(ai_hits)} finding(s)")
         for f in ai_hits[:3]:
             print(f"    - {f.title}")
+        print(f"  statcheck decision errors caught in flawed paper: "
+              f"{len(stat_hits)}")
         print(f"\n  false-positive audit — serious findings on the CLEAN paper:")
         if not clean_serious:
             print("    none")

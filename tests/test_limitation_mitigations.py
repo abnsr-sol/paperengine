@@ -146,6 +146,7 @@ class TestBenchmarkScript(unittest.TestCase):
         self.assertTrue(data["scores"]["monotonic"])
         self.assertEqual(data["clean_critical"], [])
         self.assertGreater(data["ai_risk_hits_on_flawed"], 0)
+        self.assertGreater(data["statcheck_decision_errors_on_flawed"], 0)
 
 
 if __name__ == "__main__":

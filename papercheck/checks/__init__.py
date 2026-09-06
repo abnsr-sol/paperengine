@@ -36,7 +36,7 @@ def _import_engines() -> List[CheckFn]:
         ai_disclosure_deep, safety_ethics, authorship, repro_env,
         paragraph_structure, transitions, reference_completeness,
         funder_compliance, peer_review, domain_checklists2,
-        grammar_tool, cross_check,
+        grammar_tool, cross_check, statcheck, ugc_14word,
     )
     return [
         compliance.run, structure.run, language.run, citations.run,
@@ -60,6 +60,7 @@ def _import_engines() -> List[CheckFn]:
         paragraph_structure.run, transitions.run, reference_completeness.run,
         funder_compliance.run, peer_review.run, domain_checklists2.run,
         grammar_tool.run, cross_check.run,
+        statcheck.run, ugc_14word.run,
     ]
 
 ALL_ENGINES: List[CheckFn] = _import_engines()

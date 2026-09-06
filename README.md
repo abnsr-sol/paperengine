@@ -3,14 +3,15 @@
 # PaperEngine
 
 **Pre-submission rejection-risk analysis for academic manuscripts —
-65 engines · dual international / Indian standards · 100% local**
+67 engines incl. deterministic p-value verification (statcheck) · dual
+international / Indian standards · 100% local**
 
 [![CI](https://github.com/abnsr-sol/paperengine/actions/workflows/ci.yml/badge.svg)](https://github.com/abnsr-sol/paperengine/actions/workflows/ci.yml)
 [![Weekly maintenance](https://github.com/abnsr-sol/paperengine/actions/workflows/maintenance.yml/badge.svg)](https://github.com/abnsr-sol/paperengine/actions/workflows/maintenance.yml)
 [![PyPI](https://img.shields.io/pypi/v/paperengine?color=8b5cf6&label=PyPI)](https://pypi.org/project/paperengine/)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-170%20passing-brightgreen)](#development)
+[![Tests](https://img.shields.io/badge/tests-179%20passing-brightgreen)](#development)
 
 *What could cause this manuscript to be rejected at this venue, what evidence
 suggests that risk, how serious is it, and what should the researcher fix?*
@@ -157,7 +158,7 @@ papercheck --update-rwdb
 
 | Cluster | Engines | Sample findings |
 |---|---|---|
-| **Statistics & methodology** | `statistics`, `stats_deep`, `stats_plan`, `fabrication` | p>0.05 called significant, missing effect sizes, impossible r/n/%, no power analysis, normality untested, p-hacking clusters, Benford's-law anomalies |
+| **Statistics & methodology** | `statistics`, `stats_deep`, `stats_plan`, `fabrication`, **`statcheck`** | p>0.05 called significant, missing effect sizes, impossible r/n/%, no power analysis, normality untested, p-hacking clusters, Benford's-law anomalies — plus **deterministic p-value recomputation** from reported t/F/χ²/r/z statistics (decision errors flagged, a CRITICAL) |
 | **Research design** | `methodology`, `repro_env`, `reproducibility` | no ethics/IRB approval, unregistered trials, missing benchmarks/ablation, no hyperparameters/seeds, no Docker/conda env |
 | **EQUATOR guidelines (all 15)** | `reporting_guidelines`, `domain_checklists`, `domain_checklists2` | CONSORT, PRISMA, PRISMA-ScR, STROBE, ARRIVE, STARD, SPIRIT, CARE, TRIPOD, SRQR, COREQ, MOOSE, TREND, STREGA, CHEERS essentials |
 | **Writing quality** | `language`, `writing_depth`, `paragraph_structure`, `transitions`, `redundancy` | weasel words, nominalization, >200-word paragraphs, no topic sentences, missing roadmap, abstract/intro/conclusion overlap |
@@ -167,7 +168,7 @@ papercheck --update-rwdb
 | **Integrity & fraud** | `integrity`, `self_plagiarism`, `paper_mill`, `citation_cartel`, `author_network`, `peer_review`, `reviewer_fraud`, `predatory_journal`, `retracted_refs` | self-citation rings, coerced citations, free-mail reviewers, same-domain reviewer conflicts, salami slicing, retracted work (70k-record DB) |
 | **AI-specific** | `ai_risk`, `llm_artifacts`, `ai_disclosure_deep`, `policy` | stylometric signals, template phrasing, tortured phrases, fake-ref signatures, per-tool disclosure gaps, EU AI Act, AI-as-author (critical) |
 | **Submission & editorial** | `submission`, `submission_package`, `editorial_format`, `author_info`, `venue_extras`, `abstract_quality`, `scope_match` | missing statements, no ORCID, keyword count, line numbers, running head, ACM CCS, Elsevier highlights, scope mismatch |
-| **Authorship & ethics** | `authorship`, `legal_ethics`, `safety_ethics` | CRediT roles, ghost/gift authorship signals, patient consent, HIPAA/GDPR, biosafety levels, DSMB, dual-use |
+| **Authorship & ethics** | `authorship`, `legal_ethics`, `safety_ethics`, **`ugc_14word`** | CRediT roles, ghost/gift authorship signals, patient consent, HIPAA/GDPR, biosafety levels, DSMB, dual-use — plus the **UGC 2018 statutory similarity computation**: clause-7 exclusions (14-word window, references/quotes/acknowledgments), Level 0–3 bands with the actual statutory penalties, and the zero-tolerance Hypothesis/Results/Conclusions check |
 | **Data & FAIR** | `data_license`, `funder_compliance` | no dataset DOI, proprietary formats, missing licenses, NIH/Plan S/Horizon obligations |
 | **Venue compliance** | `compliance`, `consistency`, `forensics` | word/page/figure limits, mixed fonts, hidden text, lookalike characters, conflicting numbers, acronym drift |
 | **Post-submission** | `rebuttal`, `cross_check` | response-letter tone/evidence/completeness, inconsistent n across tables, figure/table duplicate data |
@@ -245,7 +246,8 @@ papercheck/
     venue_extras · ai_disclosure_deep · safety_ethics · authorship ·
     repro_env · paragraph_structure · transitions ·
     reference_completeness · funder_compliance · peer_review ·
-    domain_checklists2 · grammar_tool (optional LanguageTool) · cross_check
+    domain_checklists2 · grammar_tool (optional LanguageTool) · cross_check ·
+    statcheck (p-value recomputation) · ugc_14word (UGC 2018 clause-7/8)
 ```
 
 **Extending:** add `checks/my_angle.py` with `run(doc, ctx) -> [Finding]`,

@@ -30,7 +30,8 @@ was improved.
 ## Results and Discussion
 
 Our method achieves 30% improvement which is very significant (p = 0.000).
-The improvement was 30% better than the baseline method. As shown in Figure
+The improvement was 30% better than the baseline method (t(58) = 1.20,
+p = .04). As shown in Figure
 1, the results are clearly better. It can be seen that performance was
 significantly improved in all the test cases. The accuracy was 95.7% which
 is better than previous work. Our accuracy of 95.7% demonstrates that the
