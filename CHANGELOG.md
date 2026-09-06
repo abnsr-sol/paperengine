@@ -4,6 +4,15 @@ All notable changes to PaperEngine are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [SemVer](https://semver.org/).
 
+## [1.1.1] — 2026-09-06
+
+### Changed
+- **PyPI distribution renamed `papercheck` → `paperengine`** — the name
+  `papercheck` is already taken on PyPI by an unrelated project. The GitHub
+  repo, the `papercheck` CLI command, and the Python import name are all
+  unchanged; only the pip-installable distribution name now matches the repo.
+  Install remains `pip install -e .` from a clone until the first PyPI upload.
+
 ## [1.1.0] — 2026-09-06
 
 ### Added
