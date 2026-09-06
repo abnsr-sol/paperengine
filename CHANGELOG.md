@@ -4,6 +4,28 @@ All notable changes to PaperEngine are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [SemVer](https://semver.org/).
 
+## [1.4.0] — 2026-09-07
+
+### Added — GRIM/GRIMMER wave (#68)
+- **`grim_engine` (#68)** — deterministic arithmetic verification of every
+  reported `(M, SD, N)` triple, implementing the **GRIM test** (Brown &
+  Heathers 2016): a mean of N integer values must equal `k/N` for some
+  integer k — impossible values (e.g. M = 3.48 with N = 20, where k/20 can
+  only end in .X0 or .X5) are flagged HIGH as arithmetic facts, not
+  heuristics. **GRIMMER** extends the check to standard deviations via the
+  integer sum-of-squares constraint, flagged MEDIUM with the integer-scale
+  caveat stated in the finding text. Fully possible means earn an INFO
+  "machine-verified" trust signal. The engine deliberately skips documents
+  under 200 words and label-free scales are covered by the caveat language.
+- Competitive-landscape research (Penelope.ai, Paperpal, Ripeta, Statcheck,
+  GRIM implementations, ImageTwin, Proofig) translated into shipped engines;
+  GRIM was the last deterministic stat check from that survey missing here.
+
+### Fixed
+- Float-equality bug in the GRIM core (`round(k/n) == round(mean)` on raw
+  floats) — replaced with exact decimal-string comparison and candidate sums
+  centred on `mean*N` instead of scanning `0..N`.
+
 ## [1.3.0] — 2026-09-06
 
 ### Added — deterministic verification wave

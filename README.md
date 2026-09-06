@@ -3,7 +3,7 @@
 # PaperEngine
 
 **Pre-submission rejection-risk analysis for academic manuscripts —
-67 engines incl. deterministic p-value verification (statcheck) · dual
+68 engines incl. deterministic p-value verification (statcheck) · dual
 international / Indian standards · 100% local**
 
 [![CI](https://github.com/abnsr-sol/paperengine/actions/workflows/ci.yml/badge.svg)](https://github.com/abnsr-sol/paperengine/actions/workflows/ci.yml)
@@ -26,7 +26,7 @@ Most tools answer one narrow question: *"Is this text copied?"* or *"Does this
 look AI-written?"*. Rejection happens for **dozens of other reasons** — missing
 ethics statements, impossible statistics, unreferenced figures, template
 violations, predatory venue traps, retracted citations. PaperEngine runs
-**65 specialized engines** against your manuscript and returns every finding as:
+**68 specialized engines** against your manuscript and returns every finding as:
 
 ```
 Severity | Finding | Evidence (quoted from your paper) | Confidence | How to fix it
@@ -91,7 +91,7 @@ readiness score:  42 → 57  (+15)
 ```
 
 **Privacy:** the GUI runs on your machine only (localhost). The file is parsed
-in memory, checked by the same 65 engines as the CLI, and never uploaded to
+in memory, checked by the same 68 engines as the CLI, and never uploaded to
 the internet.
 
 ### Step 3 — Use the CLI version
@@ -158,7 +158,7 @@ papercheck --update-rwdb
 
 | Cluster | Engines | Sample findings |
 |---|---|---|
-| **Statistics & methodology** | `statistics`, `stats_deep`, `stats_plan`, `fabrication`, **`statcheck`** | p>0.05 called significant, missing effect sizes, impossible r/n/%, no power analysis, normality untested, p-hacking clusters, Benford's-law anomalies — plus **deterministic p-value recomputation** from reported t/F/χ²/r/z statistics (decision errors flagged, a CRITICAL) |
+| **Statistics & methodology** | `statistics`, `stats_deep`, `stats_plan`, `fabrication`, **`statcheck`**, **`grim_engine`** | p>0.05 called significant, missing effect sizes, impossible r/n/%, no power analysis, normality untested, p-hacking clusters, Benford's-law anomalies — plus **deterministic p-value recomputation** (decision errors flagged, a CRITICAL) and **GRIM/GRIMMER mean/SD impossibility checks** (M = 3.48 with N = 20 is arithmetic that cannot exist) |
 | **Research design** | `methodology`, `repro_env`, `reproducibility` | no ethics/IRB approval, unregistered trials, missing benchmarks/ablation, no hyperparameters/seeds, no Docker/conda env |
 | **EQUATOR guidelines (all 15)** | `reporting_guidelines`, `domain_checklists`, `domain_checklists2` | CONSORT, PRISMA, PRISMA-ScR, STROBE, ARRIVE, STARD, SPIRIT, CARE, TRIPOD, SRQR, COREQ, MOOSE, TREND, STREGA, CHEERS essentials |
 | **Writing quality** | `language`, `writing_depth`, `paragraph_structure`, `transitions`, `redundancy` | weasel words, nominalization, >200-word paragraphs, no topic sentences, missing roadmap, abstract/intro/conclusion overlap |
@@ -230,7 +230,7 @@ papercheck/
 ├── batch.py           folder scanning, worst-first ranking, CSV writer
 ├── rwdb.py            Retraction Watch DB download/cache/screening
 ├── webui.py           local drag-and-drop GUI (stdlib http.server)
-└── checks/            65 engines — one per rejection angle
+└── checks/            68 engines — one per rejection angle
     compliance · structure · language · citations · claims · ai_risk ·
     integrity · novelty · consistency · figures · forensics · policy ·
     statistics · overclaiming · self_plagiarism · citation_integrity ·
@@ -247,7 +247,7 @@ papercheck/
     repro_env · paragraph_structure · transitions ·
     reference_completeness · funder_compliance · peer_review ·
     domain_checklists2 · grammar_tool (optional LanguageTool) · cross_check ·
-    statcheck (p-value recomputation) · ugc_14word (UGC 2018 clause-7/8)
+    statcheck (p-value recomputation) · grim_engine (GRIM/GRIMMER) · ugc_14word (UGC 2018 clause-7/8)
 ```
 
 **Extending:** add `checks/my_angle.py` with `run(doc, ctx) -> [Finding]`,
