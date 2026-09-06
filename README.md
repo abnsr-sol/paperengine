@@ -81,18 +81,15 @@ Then, in the browser:
 3. **Pick the venue preset** — e.g. `ieee_conference`, `ugc_care`, `mdpi` (the list filters by standard)
 4. Click **Check my paper** → the full report renders in the browser:
    readiness score + findings table (severity · finding · evidence · confidence · how to fix)
-5. *(Optional)* **Drop the revised version** into the second upload zone before
-   checking → before/after comparison: **fixed / still-open / new** findings
-   plus the score delta:
 
-```
-readiness score:  42 → 57  (+15)
-  fixed: 12   still open: 41   new: 3
-```
+**Privacy / no retention:** the GUI runs on your machine only (localhost).
+The file is parsed in memory, checked by the same 68 engines as the CLI, and
+the temporary copy is **deleted the moment your report is rendered — every
+time, no exceptions**. Nothing is stored, nothing leaves the machine.
 
-**Privacy:** the GUI runs on your machine only (localhost). The file is parsed
-in memory, checked by the same 68 engines as the CLI, and never uploaded to
-the internet.
+> 💡 Before/after comparison is a **CLI feature**: `papercheck v1.docx
+> --compare v2.docx` gives you fixed / still-open / new findings plus the
+> score delta.
 
 ### Step 3 — Use the CLI version
 

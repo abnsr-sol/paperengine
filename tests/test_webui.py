@@ -99,20 +99,22 @@ class TestServerEndToEnd(unittest.TestCase):
         present, 'selected' state starts hidden and is toggled by JS."""
         r = urllib.request.urlopen(self._url('/'), timeout=15)
         html = r.read().decode('utf-8')
-        # both states exist for each zone
+        # both states exist for the single zone
         self.assertIn('drop-empty', html)
         self.assertIn('drop-filled', html)
-        self.assertIn('drop2-empty', html)
-        self.assertIn('drop2-filled', html)
-        # the selected-state blocks start hidden (JS shows them on file pick)
+        # the selected-state block starts hidden (JS shows it on file pick)
         self.assertIn('<div id="drop-filled" style="display:none">', html)
-        self.assertIn('<div id="drop2-filled" style="display:none">', html)
         # in-zone selected feedback: name + change button + green state class
         self.assertIn('Manuscript selected', html)
-        self.assertIn('Revised version selected', html)
         self.assertIn('picked-name', html)
         self.assertIn('clear-file', html)
         self.assertIn("classList.add('selected')", html)
+        # comparison zone removed from the GUI (CLI-only feature now)
+        self.assertNotIn('drop2', html)
+        self.assertNotIn('revised', html)
+        # no-retention promise shown, engine count rendered dynamically
+        self.assertIn('Nothing is stored', html)
+        self.assertIn('68 check engines', html)
 
     def test_check_flow_national(self):
         body, ctype = _multipart({'standard': 'national', 'venue': 'ugc_care'},

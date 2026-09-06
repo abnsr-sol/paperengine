@@ -1,8 +1,9 @@
 """Local web GUI: drag-and-drop manuscript checking in the browser.
 
-Zero dependencies beyond PaperCheck itself (stdlib http.server). The uploaded
-file never leaves your machine - it is parsed in memory, checked by the same
-65 engines as the CLI, and rendered as the standard HTML report.
+Zero dependencies beyond PaperEngine itself (stdlib http.server). The uploaded
+file never leaves your machine - it is parsed in memory, checked by all
+engines, and the temporary copy is deleted as soon as the report is rendered
+(no retention, every request).
 
     papercheck --gui              # serve on http://localhost:8765
     papercheck --gui --port 9000  # custom port
@@ -12,7 +13,8 @@ Security posture:
     - size cap: 25 MB per upload
     - only .docx/.txt/.md/.markdown/.tex/.pdf accepted
     - multipart/form-data parsing done manually (no dependencies)
-    - X-Frame-Options: DENY, no caching of report pages
+    - X-Frame-Options: DENY, Cache-Control: no-store, no persistence
+    - before/after comparison lives in the CLI (`--compare`), not the GUI
 """
 from __future__ import annotations
 
@@ -26,8 +28,6 @@ import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 from .checks import ALL_ENGINES, CheckContext
-from .compare import compare as compare_reports
-from .compare import render_html as render_compare_html
 from .ingestion import (PdfExtractionError, UnsupportedFormatError,
                         load_document)
 from .report import render_html
@@ -56,42 +56,102 @@ def _page(form_html: str = "", result_html: str = "", error: str = "") -> str:
     banner = ""
     if error:
         banner = f'<div class="error">{_html.escape(error)}</div>'
+    n_engines = len(ALL_ENGINES)
     return f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PaperEngine — local paper checker</title>
 <style>
-  :root {{ --ink:#1a2233; --accent:#2456d6; --bad:#c62828; --ok:#1b7f4d; }}
+  :root {{
+    --bg:#f6f7fb; --card:#ffffff; --ink:#151a28; --muted:#5d6478;
+    --accent:#3b5bdb; --accent-2:#7048e8; --ok:#0b7a45; --ok-bg:#e6f6ee;
+    --bad:#c92a2a; --bad-bg:#fdecec; --line:#e3e6ef; --warn-bg:#fff9e6;
+    --radius:14px; --shadow:0 1px 3px rgba(21,26,40,.07),0 8px 24px rgba(21,26,40,.06);
+  }}
   * {{ box-sizing:border-box; }}
-  body {{ font-family:Georgia,'Times New Roman',serif; margin:0; background:#f4f4ef; color:var(--ink); }}
-  header {{ background:var(--ink); color:#fff; padding:18px 28px; }}
-  header h1 {{ margin:0; font-size:1.35rem; letter-spacing:.5px; }}
-  header p {{ margin:4px 0 0; opacity:.75; font-size:.85rem; }}
-  main {{ max-width:900px; margin:0 auto; padding:24px; }}
-  .drop {{ border:2px dashed #9aa3b5; border-radius:12px; background:#fff; padding:38px 20px; text-align:center; cursor:pointer; transition:.15s; }}
-  .drop.over {{ border-color:var(--accent); background:#eef3ff; }}
+  html {{ font-size:clamp(15px, 0.55vw + 12.6px, 19px); }}  /* em-scale: whole UI grows with viewport */
+  body {{ font-family:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif;
+         margin:0; background:var(--bg); color:var(--ink);
+         line-height:1.55; -webkit-font-smoothing:antialiased; }}
+
+  /* ---------- header ---------- */
+  header {{ background:linear-gradient(120deg,#1a2140 0%,#232b54 55%,#3b2f77 100%);
+            color:#fff; padding:2.2rem 1.5rem 2.4rem; text-align:center; }}
+  header .inner {{ max-width:62rem; margin:0 auto; }}
+  header .logo {{ display:inline-flex; align-items:center; gap:.6rem; font-size:1.9rem;
+                  font-weight:700; letter-spacing:.3px; }}
+  header .logo .mark {{ width:2.1rem; height:2.1rem; border-radius:.55rem;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      display:inline-flex; align-items:center; justify-content:center; font-size:1.15rem; }}
+  header .tag {{ margin:.45rem auto 0; opacity:.78; font-size:.92rem; max-width:44rem; }}
+  header .chips {{ margin-top:1rem; display:flex; gap:.5rem; justify-content:center; flex-wrap:wrap; }}
+  .chip {{ background:rgba(255,255,255,.13); border:1px solid rgba(255,255,255,.22);
+           border-radius:999px; padding:.28rem .85rem; font-size:.78rem; }}
+
+  main {{ max-width:62rem; margin:0 auto; padding:1.8rem 1.25rem 2.5rem; }}
+  .card {{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+           box-shadow:var(--shadow); padding:1.6rem; }}
+
+  /* ---------- drop zone ---------- */
+  .drop {{ border:2px dashed #b9c1d4; border-radius:var(--radius); background:#fafbfe;
+           padding:2.6rem 1.4rem; text-align:center; cursor:pointer; transition:all .18s ease; }}
+  .drop:hover {{ border-color:var(--accent); background:#f4f6ff; }}
+  .drop.over {{ border-color:var(--accent); background:#edf1ff; transform:scale(1.005); }}
   .drop input {{ display:none; }}
-  .drop .big {{ font-size:1.1rem; margin-bottom:6px; }}
-  .drop .small {{ color:#667; font-size:.85rem; }}
-  .drop.selected {{ border-color:var(--ok); border-style:solid; background:#e9f7ee; }}
-  .drop.selected .big {{ color:var(--ok); font-size:1.3rem; }}
-  .drop .fileline {{ display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; }}
-  .drop .fname {{ font-family:Consolas,monospace; font-size:1.05rem; color:var(--ink); background:#fff; border:1px solid #cfe3d6; border-radius:8px; padding:6px 14px; max-width:100%; overflow-wrap:anywhere; }}
-  button.clear {{ background:#fff; border:1px solid #d66; color:#c62828; border-radius:6px; padding:4px 12px; font-size:.8rem; cursor:pointer; }}
-  button.clear:hover {{ background:#fdecea; }}
-  .row {{ display:flex; gap:14px; margin:16px 0; flex-wrap:wrap; }}
-  label {{ font-size:.85rem; color:#445; display:block; margin-bottom:4px; }}
-  select {{ padding:8px 10px; border:1px solid #b9c0cf; border-radius:8px; font-size:.95rem; min-width:260px; background:#fff; }}
-  button.go {{ background:var(--accent); color:#fff; border:0; padding:12px 30px; font-size:1rem; border-radius:8px; cursor:pointer; }}
-  button.go:disabled {{ opacity:.5; cursor:wait; }}
-  .error {{ background:#fdecea; color:var(--bad); border:1px solid #f2b8b5; padding:12px 16px; border-radius:8px; margin:14px 0; }}
-  .status {{ color:#667; font-size:.85rem; margin-top:10px; min-height:1.2em; }}
-  footer {{ color:#889; font-size:.78rem; text-align:center; padding:18px; }}
-  .disclaimer {{ background:#fffbe6; border:1px solid #eadfa0; padding:10px 14px; border-radius:8px; font-size:.82rem; color:#665c1e; margin-top:14px; }}
+  .drop .icon {{ font-size:2rem; display:block; margin-bottom:.5rem; }}
+  .drop .big {{ font-size:1.08rem; font-weight:600; margin-bottom:.3rem; }}
+  .drop .small {{ color:var(--muted); font-size:.83rem; }}
+  .drop.selected {{ border:2px solid var(--ok); background:var(--ok-bg); }}
+  .drop.selected .big {{ color:var(--ok); font-size:1.15rem; }}
+  .drop .fileline {{ display:flex; align-items:center; justify-content:center; gap:.7rem;
+                     flex-wrap:wrap; margin-top:.2rem; }}
+  .drop .fname {{ font-family:Consolas,'Cascadia Mono',monospace; font-size:1rem;
+                  background:#fff; border:1px solid #bfe3cd; border-radius:.6rem;
+                  padding:.4rem 1rem; max-width:100%; overflow-wrap:anywhere;
+                  box-shadow:0 1px 2px rgba(11,122,69,.12); }}
+  button.clear {{ background:#fff; border:1px solid #e3b4b4; color:var(--bad);
+                  border-radius:.55rem; padding:.3rem .8rem; font-size:.8rem; cursor:pointer;
+                  transition:background .12s; }}
+  button.clear:hover {{ background:var(--bad-bg); }}
+
+  /* ---------- controls ---------- */
+  .row {{ display:flex; gap:1rem; margin:1.2rem 0 .6rem; flex-wrap:wrap; }}
+  .row > div {{ flex:1 1 14rem; }}
+  label {{ font-size:.8rem; font-weight:600; text-transform:uppercase; letter-spacing:.06em;
+           color:var(--muted); display:block; margin-bottom:.35rem; }}
+  select {{ width:100%; padding:.65rem .8rem; border:1px solid #c3c9d9; border-radius:.6rem;
+            font-size:.95rem; background:#fff; color:var(--ink); }}
+  select:focus {{ outline:2px solid var(--accent); outline-offset:1px; }}
+  button.go {{ width:100%; background:linear-gradient(135deg,var(--accent),var(--accent-2));
+               color:#fff; border:0; padding:.85rem 2rem; font-size:1.02rem; font-weight:600;
+               border-radius:.7rem; cursor:pointer; box-shadow:0 4px 14px rgba(59,91,219,.35);
+               transition:transform .12s, box-shadow .12s; margin-top:1.35rem; }}
+  button.go:hover {{ transform:translateY(-1px); box-shadow:0 6px 18px rgba(59,91,219,.45); }}
+  button.go:disabled {{ opacity:.55; cursor:wait; transform:none; }}
+  .status {{ color:var(--muted); font-size:.87rem; margin-top:.7rem; min-height:1.3em; }}
+  .privacy {{ display:flex; gap:.55rem; align-items:flex-start; background:var(--ok-bg);
+              border:1px solid #bfe3cd; color:#0a5c36; border-radius:.7rem;
+              padding:.7rem .95rem; font-size:.84rem; margin-top:1.2rem; }}
+  .error {{ background:var(--bad-bg); color:var(--bad); border:1px solid #f2b8b5;
+            padding:.8rem 1.1rem; border-radius:.7rem; margin:0 0 1.1rem; }}
+  .disclaimer {{ background:var(--warn-bg); border:1px solid #eadfa0; padding:.75rem 1rem;
+                 border-radius:.7rem; font-size:.8rem; color:#665c1e; margin-top:1.4rem; }}
+  footer {{ color:#8891a5; font-size:.78rem; text-align:center; padding:1.4rem; }}
+  footer a {{ color:inherit; }}
+  @media (max-width:640px) {{ header .logo {{ font-size:1.5rem; }} .card {{ padding:1.1rem; }} }}
 </style></head>
 <body>
-<header><h1>PaperEngine</h1>
-<p>67 rejection-risk engines · international + Indian standards · 100% local — your paper never leaves this machine</p></header>
+<header><div class="inner">
+  <span class="logo"><span class="mark">📄</span>PaperEngine</span>
+  <p class="tag">Pre-submission rejection-risk screening for research papers —
+     the checks editors, reviewers and integrity desks actually run.</p>
+  <div class="chips">
+    <span class="chip">{n_engines} check engines</span>
+    <span class="chip">International + Indian statutory standards</span>
+    <span class="chip">Statcheck · GRIM · UGC 2018</span>
+    <span class="chip">100% local — zero telemetry</span>
+  </div>
+</div></header>
 <main>
 {banner}
 {form_html}
@@ -99,34 +159,28 @@ def _page(form_html: str = "", result_html: str = "", error: str = "") -> str:
 <div class="disclaimer"><b>Honest limits:</b> overlap is a signal, not plagiarism. AI-risk is probabilistic, not proof.
 Venue limits are typical values — confirm the venue's current guide. The readiness score is informational, never a verdict.</div>
 </main>
-<footer>PaperEngine v1.3 — 67 engines · statcheck p-value verification · UGC statutory similarity · before/after comparison · <a href="https://github.com/abnsr-sol/paperengine" style="color:inherit">source</a></footer>
+<footer>PaperEngine · {n_engines} engines · statcheck p-value verification · GRIM consistency ·
+UGC statutory similarity · <a href="https://github.com/abnsr-sol/paperengine">source</a></footer>
 </body></html>"""
 
 
 def _upload_form(selected: str = "generic") -> str:
+    n = len(ALL_ENGINES)
     return f"""
+<div class="card">
 <form id="f" method="post" action="/check" enctype="multipart/form-data">
   <div class="drop" id="drop">
     <input type="file" id="file" name="file" accept=".docx,.txt,.md,.markdown,.tex,.pdf">
     <div id="drop-empty">
-      <div class="big">📄 Drag your manuscript here — or click to choose</div>
+      <span class="icon">📄</span>
+      <div class="big">Drag your manuscript here — or click to choose</div>
       <div class="small">.docx · .txt · .md · .tex · .pdf (max 25 MB)</div>
     </div>
     <div id="drop-filled" style="display:none">
-      <div class="big">✅ Manuscript selected</div>
+      <span class="icon">✅</span>
+      <div class="big">Manuscript selected</div>
       <div class="fileline"><span class="fname" id="picked-name"></span><button type="button" class="clear" id="clear-file">✕ change</button></div>
-      <div class="small" style="margin-top:6px">Click anywhere in this box to pick a different file</div>
-    </div>
-  </div>
-  <div class="drop" id="drop2" style="padding:16px 20px;background:#fbfbf7">
-    <input type="file" id="revised" name="revised" accept=".docx,.txt,.md,.markdown,.tex,.pdf">
-    <div id="drop2-empty">
-      <div class="big" style="font-size:.95rem">🔁 Optional: drop the <b>revised</b> version too → before/after comparison</div>
-      <div class="small">Shows what you fixed, what is still open, and what is new</div>
-    </div>
-    <div id="drop2-filled" style="display:none">
-      <div class="big" style="font-size:.95rem">✅ Revised version selected</div>
-      <div class="fileline"><span class="fname" id="picked-name2"></span><button type="button" class="clear" id="clear-file2">✕ change</button></div>
+      <div class="small" style="margin-top:.5rem">Click anywhere in this box to pick a different file</div>
     </div>
   </div>
   <div class="row">
@@ -141,12 +195,15 @@ def _upload_form(selected: str = "generic") -> str:
       <label for="venue">Venue preset</label>
       <select id="venue" name="venue">{_venue_options(selected)}</select>
     </div>
-    <div style="align-self:flex-end">
-      <button class="go" id="go" type="submit">Check my paper</button>
-    </div>
   </div>
+  <button class="go" id="go" type="submit">Check my paper →</button>
   <div class="status" id="status"></div>
+  <div class="privacy">🔒&nbsp;<span><b>Nothing is stored.</b> Your file is parsed in memory,
+  checked by all {n} engines, and the temporary copy is deleted the moment your report is
+  rendered — every time, no exceptions. The server is localhost-only and no data ever
+  leaves this machine.</span></div>
 </form>
+</div>
 <script>
   const drop = document.getElementById('drop'), file = document.getElementById('file');
   drop.addEventListener('click', () => file.click());
@@ -177,20 +234,6 @@ def _upload_form(selected: str = "generic") -> str:
     file.value = '';
     showName();
   }});
-  const drop2 = document.getElementById('drop2'), rev = document.getElementById('revised');
-  drop2.addEventListener('click', () => rev.click());
-  ['dragover','dragenter'].forEach(e => drop2.addEventListener(e, ev => {{ ev.preventDefault(); drop2.classList.add('over'); }}));
-  ['dragleave','drop'].forEach(e => drop2.addEventListener(e, ev => {{ ev.preventDefault(); drop2.classList.remove('over'); }}));
-  drop2.addEventListener('drop', ev => {{ if (ev.dataTransfer.files.length) {{ rev.files = ev.dataTransfer.files; showName2(); }} }});
-  rev.addEventListener('change', showName2);
-  function showName2() {{
-    setPicked('drop2', 'drop2-empty', 'drop2-filled', 'picked-name2', rev.files[0] || null);
-  }}
-  document.getElementById('clear-file2').addEventListener('click', ev => {{
-    ev.stopPropagation();
-    rev.value = '';
-    showName2();
-  }});
   function syncVenues() {{
     const std = document.getElementById('standard').value;
     document.querySelectorAll('#venue optgroup').forEach(g => {{
@@ -199,7 +242,8 @@ def _upload_form(selected: str = "generic") -> str:
   }}
   document.getElementById('f').addEventListener('submit', () => {{
     document.getElementById('go').disabled = true;
-    document.getElementById('status').textContent = 'Running 67 engines — this takes a few seconds…';
+    document.getElementById('go').textContent = 'Running {n} engines…';
+    document.getElementById('status').textContent = 'Parsing, checking, scoring — this takes a few seconds…';
   }});
   syncVenues();
 </script>"""
@@ -228,40 +272,6 @@ def _run_check(filename: str, data: bytes, standard: str, venue: str) -> str:
             os.unlink(tmp.name)
         except OSError:
             pass
-
-
-def _save_temp(filename: str, data: bytes) -> str:
-    ext = os.path.splitext(filename)[1].lower()
-    suffix = ext if ext in _ALLOWED_EXT else ".txt"
-    tmp = tempfile.NamedTemporaryFile(suffix=suffix, delete=False)
-    try:
-        tmp.write(data)
-        tmp.close()
-        return tmp.name
-    except Exception:
-        try:
-            os.unlink(tmp.name)
-        except OSError:
-            pass
-        raise
-
-
-def _run_compare(orig_name: str, orig_bytes: bytes, rev_name: str, rev_bytes: bytes,
-                 standard: str, venue: str) -> str:
-    """Before/after flow: run all engines on both versions and diff findings."""
-    p1 = p2 = None
-    try:
-        p1 = _save_temp(orig_name, orig_bytes)
-        p2 = _save_temp(rev_name, rev_bytes)
-        cmp = compare_reports(p1, p2, venue=venue, standard=standard)
-        return render_compare_html(cmp)
-    finally:
-        for p in (p1, p2):
-            if p:
-                try:
-                    os.unlink(p)
-                except OSError:
-                    pass
 
 
 def _parse_multipart(body: bytes, content_type: str):
@@ -295,7 +305,7 @@ def _parse_multipart(body: bytes, content_type: str):
 
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = "PaperEngine/1.1"
+    server_version = "PaperEngine/1.4"
 
     def log_message(self, fmt, *args):  # quieter logs
         pass
@@ -338,7 +348,6 @@ class Handler(BaseHTTPRequestHandler):
                                   error="No file received — please choose a manuscript."), code=400)
             return
         filename, filebytes = main_file
-        revised = files.get("revised")
         if not filename.lower().endswith(_ALLOWED_EXT):
             self._send_html(_page(form_html=_upload_form(),
                                   error="Unsupported file type — use .docx, .txt, .md, .tex or .pdf."), code=415)
@@ -354,21 +363,7 @@ class Handler(BaseHTTPRequestHandler):
             venue = "ugc_care"
         elif standard == "international" and venue == "generic":
             venue = "ieee_conference"
-        # Comparison flow: a revised version was also uploaded.
-        if revised:
-            try:
-                result = _run_compare(filename, filebytes, revised[0], revised[1],
-                                      standard, venue)
-            except (UnsupportedFormatError, PdfExtractionError) as exc:
-                self._send_html(_page(form_html=_upload_form(venue),
-                                      error=f"Could not read a manuscript: {exc}"), code=422)
-                return
-            except Exception as exc:  # noqa: BLE001 — one bad pair must not kill the server
-                self._send_html(_page(form_html=_upload_form(venue),
-                                      error=f"Comparison failed: {exc}"), code=500)
-                return
-            self._send_html(result)
-            return
+        # (before/after comparison is CLI-only: `papercheck --compare`)
         try:
             result = _run_check(filename, filebytes, standard, venue)
         except (UnsupportedFormatError, PdfExtractionError) as exc:

@@ -4,6 +4,24 @@ All notable changes to PaperEngine are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [SemVer](https://semver.org/).
 
+## [1.4.1] — 2026-09-07
+
+### Changed — web GUI redesign
+- **Full visual overhaul of the local web GUI**: gradient header with feature
+  chips, card-based layout, modern system font stack, em-scale responsive
+  typography (`html { font-size: clamp(...) }` — the entire UI scales smoothly
+  from phone to 4K), hover/active states, full-width gradient action button.
+- **Before/after comparison removed from the GUI** (per user request) — it
+  remains fully available in the CLI: `papercheck --compare REVISED`.
+- **Engine count now rendered dynamically** from the registry (`len(ALL_ENGINES)`)
+  everywhere in the page — stale "67 engines" strings can never appear again.
+- **Explicit no-retention notice** in the UI: "Nothing is stored — the temporary
+  copy is deleted the moment your report is rendered, every time."
+
+### Removed
+- `revised` upload field, second drop zone, and the GUI comparison code path
+  (`_run_compare`/`_save_temp`) — comparison is CLI-only now.
+
 ## [1.4.0] — 2026-09-07
 
 ### Added — GRIM/GRIMMER wave (#68)
