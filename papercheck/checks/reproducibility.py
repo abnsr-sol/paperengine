@@ -20,8 +20,11 @@ def run(doc: Document, ctx: object) -> List[Finding]:
         findings.append(Finding(category="Reproducibility", severity=Severity.HIGH, title='No data/code availability statement', detail='No mention of datasets, code repositories, or data availability. Most major publishers require this.', evidence='No data/code/repo keywords found', confidence=0.90, action='Add a Data Availability Statement with links to datasets and code'))
     elif not has_repo_link:
         findings.append(Finding(category="Reproducibility", severity=Severity.MEDIUM, title='Data mentioned but no repository link', detail='Data/code mentioned but no link to a repository (GitHub, Zenodo, Figshare, etc.).', evidence='Data keywords present, no repo URLs', confidence=0.80, action='Add a URL to your data/code repository'))
-    # Hyperparameters / training details (CS/ML papers)
-    if re.search(r'(?:neural\s+network|deep\s+learn|train|epoch|batch|optimiz|model|architecture|layer)', body, re.IGNORECASE):
+    # Hyperparameters / training details (CS/ML papers). The trigger is
+    # deliberately strict — a stray 'model' in a reference title (e.g.
+    # 'Queueing models for load balancing') must not demand training details.
+    ml_trigger = bool(re.search(r'(?:neural\s+network|deep\s+learning|machine\s+learning|convolutional|transformer|fine-?tun(?:e|ing)|training\s+(?:data|set)|training\s+and\s+test|epoch|batch\s+size|learning\s+rate|back-?propagat)', body, re.IGNORECASE))
+    if ml_trigger:
         has_hyper = bool(re.search(r'(?:hyperparameter|learning\s+rate|batch\s+size|epoch|optimizer|weight\s+decay|dropout|Adam|SGD)', body, re.IGNORECASE))
         if not has_hyper:
             findings.append(Finding(category="Reproducibility", severity=Severity.HIGH, title='No hyperparameters or training details', detail='ML/AI paper detected but no hyperparameters (learning rate, batch size, epochs, optimizer). Reviewers expect reproducibility details.', evidence='ML keywords found, no hyperparameter terms', confidence=0.85, action='Report all hyperparameters, optimizer settings, and training details'))

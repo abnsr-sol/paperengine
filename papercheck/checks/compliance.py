@@ -185,6 +185,25 @@ def run(doc: Document, ctx: CheckContext) -> List[Finding]:
             location="References",
         ))
 
+    # --- Venue-rules freshness (limitation fix) --------------------------------
+    # Published limits drift; surface the verification date so users know
+    # exactly what to re-check against the venue's current author guidelines.
+    verified = rules.get("rules_last_verified")
+    if verified:
+        findings.append(Finding(
+            category=cat,
+            severity=Severity.INFO,
+            title="Venue rules last verified " + verified,
+            detail="These limits (words/pages/abstract/figures/refs) were checked against "
+                   "the publisher's author guidelines in " + verified + ". Publishers "
+                   "change limits without notice.",
+            evidence="venue preset " + str(rules.get("_name", "?")) + ", rules_last_verified = " + verified,
+            action="Before submitting, spot-check the venue's current author guidelines — "
+                   "especially page/word limits and required statements. Use --venue-json "
+                   "to override any number with the venue's exact values.",
+            confidence=1.0,
+        ))
+
     # --- Font compliance (DOCX only) ----------------------------------------------
     font_required = rules.get("font_required")
     size_required = rules.get("font_size_required")

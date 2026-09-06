@@ -21,12 +21,13 @@ W_NS = {
 }
 
 _HEADING_RE = re.compile(
-    r"^(?:(?:\d+(?:\.\d+){0,3})\s*[.)]?\s+|"
+    r"^(?:#{1,6}\s+)?"                       # markdown ATX headings (## Abstract)
+    r"(?:(?:\d+(?:\.\d+){0,3})\s*[.)]?\s+|"
     r"(abstract|introduction|background|related work|methodology?|methods?|"
     r"experiments?|evaluation|results?|discussion|conclusion|conclusions|"
     r"references|acknowledg?ments?|appendix|limitations|future work|"
     r"threats? to validity|data availability|availability of data|"
-    r"author contributions|conflict of interest|funding)\b[\s:]*$)",
+    r"author contributions|conflict of interest|conflicts of interest|funding)\b[\s:]*$)",
     re.IGNORECASE,
 )
 
@@ -320,7 +321,8 @@ def _annotate_structure(doc: Document) -> None:
         inline_body = ""
         m = _HEADING_RE.match(first)
         if m is not None and len(first) < 120:
-            heading_text = first
+            # strip markdown ATX hashes so sections match as 'Abstract', not '## Abstract'
+            heading_text = re.sub(r"^#{1,6}\s+", "", first)
         else:
             im = _INLINE_HEADING_RE.match(first)
             if im is not None:

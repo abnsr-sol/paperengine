@@ -77,7 +77,20 @@ def run(doc: Document, ctx: object) -> List[Finding]:
         if cache is not None:
             cache[cache_key] = ok
     if not ok:
-        return []  # silent: no server, no findings, no noise
+        # Discoverability (limitation fix): the heuristic language engine runs
+        # regardless, but real grammar checking is strictly better. Surface a
+        # one-line INFO with the fastest setup path instead of staying silent.
+        return [Finding(
+            "Grammar", Severity.INFO,
+            "Deeper grammar check available (LanguageTool not detected)",
+            "The built-in grammar heuristics ran, but a local LanguageTool server "
+            "would add full grammar-rule checking (agreements, style, punctuation "
+            "rules). One command, still 100% local:",
+            "probe: " + _server_url() + " did not respond within " + str(_TIMEOUT) + "s",
+            "docker run -d -p 8081:8010 ErikWegner/languagetool-http  "
+            "then re-run papercheck — it is picked up automatically",
+            0.95,
+        )]
 
     out: List[Finding] = []
     counts: dict = {}

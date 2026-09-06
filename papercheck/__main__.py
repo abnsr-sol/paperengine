@@ -130,7 +130,7 @@ def main(argv: Optional[List[str]] = None) -> int:
                         help="scan every supported manuscript in this folder and exit (use with --format csv)")
     parser.add_argument("--compare", default=None, metavar="REVISED",
                         help="compare this ORIGINAL against REVISED: shows fixed / still-open / new findings (use --format html for a rich report)")
-    parser.add_argument("--format", choices=["console", "markdown", "html", "fixplan", "csv"], default="console")
+    parser.add_argument("--format", choices=["console", "markdown", "html", "fixplan", "csv", "similarity", "similarity-html"], default="console")
     parser.add_argument("--out", default=None, help="write report to this file (default: print to stdout)")
     args = parser.parse_args(argv)
 
@@ -190,6 +190,33 @@ def main(argv: Optional[List[str]] = None) -> int:
             with open(args.out, "w", encoding="utf-8") as fh:
                 print(output, file=fh)
             print(f"Comparison written to {args.out}")
+        else:
+            print(output)
+        return 0
+
+    # Similarity detail report: WHAT matched, side by side (needs --corpus).
+    if args.format in ("similarity", "similarity-html"):
+        if not args.file:
+            parser.error("the following arguments are required: file")
+        if not args.corpus:
+            parser.error("--format similarity requires --corpus DIRECTORY (prior documents to compare against)")
+        from .similarity_detail import analyze
+        from .similarity_detail import render_html as _sim_html
+        from .similarity_detail import render_markdown as _sim_md
+        try:
+            doc = load_document(args.file)
+            rep = analyze(doc, _load_corpus(args.corpus))
+        except (UnsupportedFormatError, PdfExtractionError) as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 2
+        except FileNotFoundError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 2
+        output = _sim_html(rep) if args.format == "similarity-html" else _sim_md(rep)
+        if args.out:
+            with open(args.out, "w", encoding="utf-8") as fh:
+                print(output, file=fh)
+            print(f"Similarity detail written to {args.out}")
         else:
             print(output)
         return 0

@@ -56,7 +56,9 @@ def _signal_contributions(doc: Document) -> Dict[str, float]:
 
     templ = count_terms(text, AI_TEMPLATES)
     nt = sum(templ.values())
-    contrib["dense template transitions"] = clamp01((nt - 3) / 25)
+    # Calibration: a realistic templated intro carries ~4-8 assistant-style
+    # transitions; the old /25 scale required ~12 before the signal moved.
+    contrib["dense template transitions"] = clamp01((nt - 2) / 8)
 
     rep = repeated_phrase_density(text)
     contrib["high phrase repetition"] = clamp01((rep - 0.04) / 0.10)

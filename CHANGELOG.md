@@ -4,6 +4,46 @@ All notable changes to PaperEngine are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [SemVer](https://semver.org/).
 
+## [1.2.0] — 2026-09-06
+
+### Added — limitation mitigations
+- **Passage-level similarity detail** (`--format similarity|similarity-html`,
+  requires `--corpus`): every matched passage quoted side-by-side with the
+  source, passage-similarity percentage, and editor-style interpretation
+  guidance — addressing "similarity ≠ plagiarism" with evidence instead of
+  bare scores.
+- **Benchmark harness** (`scripts/benchmark.py`) + shipped clean/flawed
+  corpus (`papercheck/data/benchmark/`): measures stylometric-engine
+  sensitivity, enforces score monotonicity (flawed must score strictly worse
+  than clean), and audits false positives on the clean control. Exits
+  non-zero on calibration regressions.
+- **Venue-rules freshness**: presets carry a `rules_last_verified` date and
+  every report surfaces it so users know what to re-check; `--venue-json`
+  remains the override for exact current values.
+- **Grammar discoverability**: without a LanguageTool server the report now
+  includes an INFO finding with the one-line docker setup command (previously
+  fully silent).
+
+### Fixed — real engine bugs the benchmark exposed
+- `conflicting_numbers`: distributor/hedge phrases no longer create false
+  conflicts ("34 nodes *per group*" vs "120 nodes", "approximately 30");
+  kept values carry quoted context evidence.
+- Reproducibility ML trigger: a stray "models" in a reference title no
+  longer demands hyperparameters (trigger requires explicit ML terms).
+- Fake-reference signature: real DOIs (e.g. Zenodo `10.5281/...`) are no
+  longer flagged as hallucination patterns; only placeholders (`doi: N/A`),
+  `n.d.` citations, and page-numbered no-date entries match.
+- Markdown ATX headings (`## Abstract`) are now parsed as sections and the
+  `#` prefix is stripped from section names.
+- AI-signal calibration: "dense template transitions" now responds to a
+  realistic templated intro (~4-8 phrases) instead of requiring ~12; added
+  "it was observed that"-family templates.
+
+### Tests
+- 14 new tests (170 total): similarity detail, conflicting-numbers logic,
+  ML-trigger precision, fake-ref signature, markdown headings, freshness,
+  grammar discoverability, and the benchmark gate.
+
 ## [1.1.2] — 2026-09-06
 
 ### Changed

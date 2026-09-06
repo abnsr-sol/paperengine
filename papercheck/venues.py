@@ -6,6 +6,12 @@ from __future__ import annotations
 import json
 from typing import Dict, List, Optional
 
+# Freshness tracking (limitation fix): published limits change without notice,
+# so every preset carries the date its numbers were last verified against the
+# publisher's author guidelines. Reports surface this so users know what to
+# re-check. Update this constant (and any preset that changed) after review.
+RULES_LAST_VERIFIED = "2026-09"
+
 INTERNATIONAL_PRESETS: Dict[str, Dict] = {
     "ieee_conference": {
         "standard": "international", "page_limit": 8, "word_limit": None,
@@ -207,6 +213,8 @@ NATIONAL_PRESETS: Dict[str, Dict] = {
 ALL_PRESETS = {}
 ALL_PRESETS.update(INTERNATIONAL_PRESETS)
 ALL_PRESETS.update(NATIONAL_PRESETS)
+for _p in ALL_PRESETS.values():
+    _p["rules_last_verified"] = RULES_LAST_VERIFIED
 ALL_PRESETS["generic"] = {
     "standard": "international", "word_limit": None, "page_limit": None,
     "abstract_word_limit": 250, "required_sections": ["Abstract", "Introduction", "Conclusion", "References"],

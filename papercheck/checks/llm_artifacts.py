@@ -9,6 +9,11 @@ _TEMPLATES = [
     (r"as an AI (?:language model|assistant)", "Assistant-style leftover"),
     (r"in conclusion, it is (?:important|worth noting|essential) to note", "Template closer"),
     (r"it is (?:important|crucial|essential) to (?:note|remember|emphasize) that", "Template filler"),
+    (r"it is worth noting that", "Template filler"),
+    (r"it (?:can|should) be (?:noted|observed|seen) that", "Template filler"),
+    (r"it may be (?:suggested|observed|noted) that", "Template filler"),
+    (r"it (?:was|is) (?:observed|found|shown|concluded) that", "Template filler"),
+    (r"it can be concluded that", "Template closer"),
     (r"delve(?:ing)? into", "GPT-ism ('delve')"),
     (r"in the realm of", "GPT-ism ('realm of')"),
     (r"a tapestry of", "GPT-ism ('tapestry')"),
@@ -20,7 +25,11 @@ _TEMPLATES = [
     (r"in today's (?:fast-?paced|digital|modern) world", "Clickbait opener"),
 ]
 
-_FAKE_REF = r"doi\s*[:\s]*\s*(?:10\.[0-9]{4,}|[0-9]+\.[0-9]+|N/?A|none)|et al\.?\s*\(\s*n\.?d\.?\)|n\.?d\.?\s*,?\s*(?:p\.?|pp\.?)\s*[0-9]+"
+# Hallucination signatures. NOTE: a bare real DOI (10.xxxx/yyyy) is NOT a
+# fake-ref signal — legitimate entries look exactly like that (e.g. Zenodo
+# 10.5281/...). What IS suspicious: explicit placeholders (doi: N/A, doi: none,
+# doi: TBD), 'n.d.' (no date) citations, and page-numbered n.d. entries.
+_FAKE_REF = r"doi\s*[:\s]*\s*(?:N/?A|none|TBD|xxx|\?)\b|et al\.?\s*\(\s*n\.?d\.?\)|n\.?d\.?\s*,?\s*(?:p\.?|pp\.?)\s*[0-9]+"
 _TORTURED = r"profound (?:learning|networks)|unseen (?:data|learning)|neural (?:organisation|networks)\b|deep (?:acquiring|mastery)|(?:computer|machine) (?:intelligence|vision) (?:methods|approaches)\b"
 
 

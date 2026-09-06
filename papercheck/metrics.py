@@ -238,8 +238,26 @@ def number_mentions(text: str) -> List[Tuple[str, str]]:
     return out
 
 
+_QUALIFIED_BEFORE = re.compile(
+    r"(?:per|each|every|approximately|about|around|at\s+least|up\s+to|"
+    r"over|nearly|roughly|\bno\b)\s*$", re.IGNORECASE)
+_QUALIFIED_AFTER = re.compile(r"^\s*(?:per|each|every|of\s+(?:the\s+)?|or\s+more)\b", re.IGNORECASE)
+
+
+def _mention_spans(text: str, value: str, unit: str) -> List[Tuple[int, int]]:
+    """Character spans of every '<value> <unit>' occurrence."""
+    pat = re.compile(r"\b" + re.escape(value) + r"\s*" + re.escape(unit) + r"\b", re.IGNORECASE)
+    return [(m.start(), m.end()) for m in pat.finditer(text)]
+
+
 def conflicting_numbers(text: str) -> List[Dict[str, str]]:
-    """Same unit mentioned with different values anywhere in the text."""
+    """Same unit mentioned with different bare values anywhere in the text.
+
+    A mention is skipped as a *qualified* quantity when it is preceded by a
+    hedge ('approximately', 'at least', 'no') or followed by a distributor
+    ('per group', 'each cluster') — '34 nodes per group' vs '120 nodes' is a
+    different quantity, not a conflict. Only unqualified bare values count,
+    and each kept value carries a quoted context for evidence."""
     mentions = number_mentions(text)
     by_unit: Dict[str, set] = {}
     for value, unit in mentions:
@@ -247,6 +265,26 @@ def conflicting_numbers(text: str) -> List[Dict[str, str]]:
             by_unit.setdefault(unit, set()).add(value)
     conflicts = []
     for unit, values in sorted(by_unit.items()):
-        if len(values) > 1 and len(unit) > 2:
-            conflicts.append({"unit": unit, "values": sorted(values, key=float)})
+        if len(values) < 2 or len(unit) <= 2:
+            continue
+        kept_values = []
+        kept_contexts = []
+        for value in values:
+            qualified = False
+            first_ctx = ""
+            for (s, e) in _mention_spans(text, value, unit):
+                ctx = text[max(0, s - 48): min(len(text), e + 48)].replace("\n", " ")
+                if not first_ctx:
+                    first_ctx = ctx.strip()
+                if _QUALIFIED_BEFORE.search(text[max(0, s - 24):s]) or \
+                        _QUALIFIED_AFTER.match(text[e:e + 16]):
+                    qualified = True
+                    break
+            if not qualified:
+                kept_values.append(value)
+                kept_contexts.append(first_ctx)
+        if len(kept_values) > 1:
+            conflicts.append({"unit": unit,
+                              "values": sorted(kept_values, key=float),
+                              "contexts": kept_contexts[:4]})
     return conflicts

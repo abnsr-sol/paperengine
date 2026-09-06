@@ -10,7 +10,7 @@
 [![PyPI](https://img.shields.io/pypi/v/paperengine?color=8b5cf6&label=PyPI)](https://pypi.org/project/paperengine/)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-150%2B%20passing-brightgreen)](#development)
+[![Tests](https://img.shields.io/badge/tests-170%20passing-brightgreen)](#development)
 
 *What could cause this manuscript to be rejected at this venue, what evidence
 suggests that risk, how serious is it, and what should the researcher fix?*
@@ -206,6 +206,7 @@ accepts exact limits for any venue not yet preset.
 | Markdown | `--format markdown` | for repos, PRs, and lab notebooks |
 | HTML | `--format html` | standalone styled report, shareable file |
 | **Fix plan** | `--format fixplan` | prioritized to-do list, criticals first, effort estimates ("~30 min", "~2 h"), near-duplicates deduplicated |
+| **Similarity detail** | `--format similarity` (+`-html`) | with `--corpus`: every matched passage quoted **side-by-side** with the source and editor-style reading guidance — what matched, not just how much |
 | CSV | `--format csv` | batch summaries for spreadsheets |
 
 Every finding, in every format, carries: **severity · finding · evidence ·
@@ -290,25 +291,22 @@ triggers the PyPI publish workflow (tag/version match is verified first).
 
 ---
 
-## Honest limitations (baked into the design)
+## Honest limitations — and what we built to overcome them
 
-1. **Similarity ≠ plagiarism.** Overlap requires human interpretation (Crossref
-   itself warns against automatic rejection thresholds). The engine shows *what*
-   matched as evidence, never a verdict.
-2. **AI detection is probabilistic.** "Low burstiness" and "template
-   transitions" occur naturally in non-native and highly technical writing.
-   The AI-risk engine reports an uncertainty band — and deliberately refuses
-   typography myths ("em dash = AI") that have no scientific support.
-3. **Grammar checks are heuristics**, not a full grammar engine. Run
-   LanguageTool/Grammarly/Paperpal for the final pass (or point
-   `grammar_tool` at a local LanguageTool server).
-4. **Venue rules are typical published limits** and change — confirm against
-   the venue's current author guidelines.
-5. **Readiness score is informational.** It aggregates weighted,
-   confidence-scaled findings; it is not a prediction of acceptance.
-6. **What no software can check:** whether the science is *true*, whether
-   ideas match paywalled prior work, and the reviewer's subjective "so what?".
-   Tools that pretend otherwise are selling overconfidence.
+Every tool has limits. Most hide them; we ship **mitigations and measurement**
+for ours:
+
+| # | Limitation | Mitigation shipped in the tool |
+|---|---|---|
+| 1 | **Similarity ≠ plagiarism.** Overlap requires human interpretation (Crossref itself warns against automatic rejection thresholds). | **Passage-level similarity detail** (`--format similarity`): every matched passage quoted side-by-side with the source document and classified (own prior work / quotable / boilerplate) — the same three questions editors are trained to ask. Never a verdict, always evidence. |
+| 2 | **AI detection is probabilistic.** Low burstiness and template transitions occur naturally in non-native and technical writing. | **Calibrated in the open** (`scripts/benchmark.py`): a shipped clean-vs-flawed corpus measures what the stylometric engines actually fire on; the AI-risk engine reports an uncertainty band, never a single verdict, and deliberately refuses typography myths ("em dash = AI") that have no scientific support. |
+| 3 | **Grammar heuristics ≠ a real grammar engine.** | **Discoverable upgrade path**: when no LanguageTool server is found, the report says so (INFO) with the exact one-line docker command; start one and full grammar checking is picked up automatically next run. |
+| 4 | **Venue rules change** without notice. | **Freshness surfaced in every report**: each run states when the preset's numbers were last verified against the publisher's guidelines, and `--venue-json` overrides any limit with exact current values. |
+| 5 | **The readiness score is informational** — it is not a prediction of acceptance. | **Monotonicity is enforced**: the benchmark harness fails CI if the flawed corpus paper ever outscores the clean one — the score must discriminate, or the release doesn't ship. |
+| 6 | **What no software can check:** whether the science is *true*, whether ideas match paywalled prior work, and the reviewer's subjective "so what?". | Nothing — and we won't pretend otherwise. Tools that claim to check these are selling overconfidence. |
+
+Run the benchmark yourself: `python scripts/benchmark.py` (or `--json` for
+machine-readable output). It exits non-zero if calibration regresses.
 
 ---
 
