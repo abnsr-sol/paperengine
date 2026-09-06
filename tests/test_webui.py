@@ -25,16 +25,17 @@ class TestMultipartParser(unittest.TestCase):
     def test_parses_fields_and_file(self):
         body, ctype = _multipart({'standard': 'national', 'venue': 'ugc_care'},
                                  'paper.docx', b'PK fake docx')
-        fn, data, fields = _parse_multipart(body, ctype)
-        self.assertEqual(fn, 'paper.docx')
-        self.assertEqual(data, b'PK fake docx')
+        files, fields = _parse_multipart(body, ctype)
+        self.assertIn('file', files)
+        self.assertEqual(files['file'][0], 'paper.docx')
+        self.assertEqual(files['file'][1], b'PK fake docx')
         self.assertEqual(fields['standard'], 'national')
         self.assertEqual(fields['venue'], 'ugc_care')
 
     def test_no_boundary_returns_none(self):
-        fn, data, fields = _parse_multipart(b'junk', 'text/plain')
-        self.assertIsNone(fn)
-        self.assertIsNone(data)
+        files, fields = _parse_multipart(b'junk', 'text/plain')
+        self.assertEqual(files, {})
+        self.assertEqual(fields, {})
 
 
 class TestRunCheck(unittest.TestCase):

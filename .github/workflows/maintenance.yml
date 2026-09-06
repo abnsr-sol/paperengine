@@ -1,0 +1,36 @@
+name: Weekly maintenance
+
+on:
+  schedule:
+    - cron: "0 4 * * 1"   # Mondays 04:00 UTC
+  workflow_dispatch: {}    # manual trigger button
+
+permissions:
+  contents: read
+
+jobs:
+  maintenance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install extras (PDF + images)
+        run: python -m pip install -e .[all]
+
+      - name: Run maintenance (tests + RWDB refresh)
+        run: python scripts/maintenance.py
+        env:
+          MAILTO: "actions@github.invalid"
+
+      - name: Upload retraction cache artifact (on failure or always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: retraction-watch-cache
+          path: /tmp/papercheck_rwdb.json
+          if-no-files-found: ignore
+          retention-days: 14

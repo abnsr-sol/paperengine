@@ -1,23 +1,44 @@
-# PaperCheck — Manuscript Rejection-Risk Engine
+<div align="center">
 
-A pre-submission intelligence engine for academic papers. It ingests a manuscript
-(DOCX / TXT / Markdown / LaTeX / PDF), checks **every angle that can get a paper
-rejected**, and produces a `Risk | Finding | Evidence | Confidence | Action` report
-plus a readiness score.
+# PaperEngine
 
-> **The core idea (from the research):** do not build "an AI detector + a plagiarism
-> checker + a grammar checker". Build an engine that answers: *"What could cause this
-> manuscript to be rejected at this venue, what evidence suggests that risk, how
-> serious is it, and what should the researcher fix?"*
->
-> Similarity is **not** plagiarism. An AI-risk score is **not** proof of AI
-> authorship. This engine reports risk signals with confidence and evidence, and
-> leaves final judgment to humans — exactly how editors are trained to use
-> iThenticate/Similarity Check and Turnitin's AI writing assessment.
+**Pre-submission rejection-risk analysis for academic manuscripts —
+65 engines · dual international / Indian standards · 100% local**
+
+[![CI](https://github.com/abnsr-sol/paperengine/actions/workflows/ci.yml/badge.svg)](https://github.com/abnsr-sol/paperengine/actions/workflows/ci.yml)
+[![Weekly maintenance](https://github.com/abnsr-sol/paperengine/actions/workflows/maintenance.yml/badge.svg)](https://github.com/abnsr-sol/paperengine/actions/workflows/maintenance.yml)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Tests](https://img.shields.io/badge/tests-150%2B%20passing-brightgreen)](#development)
+
+*What could cause this manuscript to be rejected at this venue, what evidence
+suggests that risk, how serious is it, and what should the researcher fix?*
+
+</div>
 
 ---
 
-## Quickstart
+## Why PaperEngine exists
+
+Most tools answer one narrow question: *"Is this text copied?"* or *"Does this
+look AI-written?"*. Rejection happens for **dozens of other reasons** — missing
+ethics statements, impossible statistics, unreferenced figures, template
+violations, predatory venue traps, retracted citations. PaperEngine runs
+**65 specialized engines** against your manuscript and returns every finding as:
+
+```
+Severity | Finding | Evidence (quoted from your paper) | Confidence | How to fix it
+```
+
+> **The honesty principle (by design, not marketing):**
+> Similarity is **not** plagiarism. An AI-risk score is **not** proof of AI
+> authorship. Every finding carries evidence + confidence, and the readiness
+> score is informational — final judgment stays with humans, exactly how
+> editors are trained to use iThenticate/Similarity Check.
+
+---
+
+## Quick start
 
 ### Option A — Web GUI (no terminal skills needed)
 
@@ -26,9 +47,17 @@ papercheck --gui
 # → opens http://localhost:8765 in your browser
 ```
 
-Drag-and-drop your manuscript (.docx/.txt/.md/.tex/.pdf), pick
+Drag-and-drop your manuscript (.docx / .txt / .md / .tex / .pdf), pick
 **International** or **National (India)** plus the venue preset, and get the
-full report in the browser. 100% local — the file never leaves your machine.
+full report in the browser. **100% local** — the file never leaves your machine.
+
+🔁 **Revision comparison:** drop the *revised* version into the second zone and
+PaperEngine shows **fixed / still-open / new** findings plus the score delta:
+
+```
+readiness score:  42 → 57  (+15)
+  fixed: 12   still open: 41   new: 3
+```
 
 ### Option B — CLI
 
@@ -36,80 +65,104 @@ full report in the browser. 100% local — the file never leaves your machine.
 # No install needed (pure Python stdlib; pypdf only for PDFs)
 python -m papercheck sample_paper.txt --venue elsevier
 
-# Full report to a file
-python -m papercheck sample_paper.txt --venue ieee_conference --format markdown --out report.md
-python -m papercheck sample_paper.docx --venue mdpi --format html --out report.html
+# Full report to a file (console | markdown | html | fixplan | csv)
+python -m papercheck paper.docx --venue mdpi --format html --out report.html
+
+# Indian national standards (UGC/AICTE/NAAC)
+python -m papercheck thesis.docx --standard national --venue ugc_care
+
+# Prioritized fix plan (criticals first, effort-estimated)
+python -m papercheck paper.docx --venue ieee_conference --format fixplan
+
+# Batch-scan a folder, worst-first summary table or CSV
+python -m papercheck --batch papers/ --venue ugc_care --format csv --out summary.csv
+
+# Before/after revision comparison
+python -m papercheck v1.docx --compare v2.docx --venue elsevier --format html --out diff.html
 
 # With online lookups (Crossref): duplicate-publication + DOI validation
 python -m papercheck paper.docx --venue springer --online --mailto you@university.edu
 
-# Compare against your already-published papers (duplicate / "no new content" check)
+# Compare against your already-published papers (duplicate / "no new content")
 python -m papercheck paper.docx --corpus ./my_prior_papers/
 ```
 
-Run the tests:
+### Install (as a package)
 
 ```bash
-python -m unittest discover -s tests -v
+pip install -e .            # core — zero required dependencies
+pip install -e .[all]       # + PDF ingestion and image forensics extras
+papercheck paper.docx --standard national --venue ugc_care
+```
+
+### One-time retraction database (optional, recommended)
+
+```bash
+papercheck --update-rwdb
+# caches 70k+ retraction records (CC-BY 4.0, Crossref) at
+# %TEMP%/papercheck_rwdb.json (Linux/macOS: /tmp/papercheck_rwdb.json).
+# From then on, retracted-reference screening runs against the full DB offline.
 ```
 
 ---
 
-## What the engine checks (the full angle map)
+## What the engines check
 
-Every rejection angle from the research maps to a check engine. "Auto" means the
-engine checks it now; "Manual" means the engine flags it for human review.
+| Cluster | Engines | Sample findings |
+|---|---|---|
+| **Statistics & methodology** | `statistics`, `stats_deep`, `stats_plan`, `fabrication` | p>0.05 called significant, missing effect sizes, impossible r/n/%, no power analysis, normality untested, p-hacking clusters, Benford's-law anomalies |
+| **Research design** | `methodology`, `repro_env`, `reproducibility` | no ethics/IRB approval, unregistered trials, missing benchmarks/ablation, no hyperparameters/seeds, no Docker/conda env |
+| **EQUATOR guidelines (all 15)** | `reporting_guidelines`, `domain_checklists`, `domain_checklists2` | CONSORT, PRISMA, PRISMA-ScR, STROBE, ARRIVE, STARD, SPIRIT, CARE, TRIPOD, SRQR, COREQ, MOOSE, TREND, STREGA, CHEERS essentials |
+| **Writing quality** | `language`, `writing_depth`, `paragraph_structure`, `transitions`, `redundancy` | weasel words, nominalization, >200-word paragraphs, no topic sentences, missing roadmap, abstract/intro/conclusion overlap |
+| **Claims & novelty** | `claims`, `overclaiming`, `design_claims`, `novelty` | "novel/first" without justification, causal claims from observational data, abstract ≈ conclusion |
+| **Figures & tables** | `figures`, `figure_quality`, `image_forensics`, `image_manipulation` | uncited figures, low DPI, blots without markers, microscopy without scale bars, duplicated panels (perceptual hash), ELA splicing |
+| **Citations** | `citations`, `citation_integrity`, `reference_verify`, `reference_completeness`, `citation_age` | never-cited refs, numbering gaps, mixed styles, broken DOIs, missing volume/pages, "as cited in" secondary cites, stale lists |
+| **Integrity & fraud** | `integrity`, `self_plagiarism`, `paper_mill`, `citation_cartel`, `author_network`, `peer_review`, `reviewer_fraud`, `predatory_journal`, `retracted_refs` | self-citation rings, coerced citations, free-mail reviewers, same-domain reviewer conflicts, salami slicing, retracted work (70k-record DB) |
+| **AI-specific** | `ai_risk`, `llm_artifacts`, `ai_disclosure_deep`, `policy` | stylometric signals, template phrasing, tortured phrases, fake-ref signatures, per-tool disclosure gaps, EU AI Act, AI-as-author (critical) |
+| **Submission & editorial** | `submission`, `submission_package`, `editorial_format`, `author_info`, `venue_extras`, `abstract_quality`, `scope_match` | missing statements, no ORCID, keyword count, line numbers, running head, ACM CCS, Elsevier highlights, scope mismatch |
+| **Authorship & ethics** | `authorship`, `legal_ethics`, `safety_ethics` | CRediT roles, ghost/gift authorship signals, patient consent, HIPAA/GDPR, biosafety levels, DSMB, dual-use |
+| **Data & FAIR** | `data_license`, `funder_compliance` | no dataset DOI, proprietary formats, missing licenses, NIH/Plan S/Horizon obligations |
+| **Venue compliance** | `compliance`, `consistency`, `forensics` | word/page/figure limits, mixed fonts, hidden text, lookalike characters, conflicting numbers, acronym drift |
+| **Post-submission** | `rebuttal`, `cross_check` | response-letter tone/evidence/completeness, inconsistent n across tables, figure/table duplicate data |
 
-| # | Rejection angle (from research) | Engine | Status |
-|---|--------------------------------|--------|--------|
-| 1 | Word / page / abstract limits | `compliance` | Auto (hard counts, 100% confidence; page count is an estimate) |
-| 2 | Missing / wrong sections, heading numbering | `compliance` + `consistency` | Auto |
-| 3 | Figure / table counts, captions, in-text refs, numbering, image DPI | `compliance` + `figures` | Auto (counts + DOCX image analysis) |
-| 4 | Reference count, DOI presence, resolvable DOIs | `compliance` + `integrity` | Auto (+ online Crossref) |
-| 5 | Font / mixed-font / template compliance (DOCX) | `compliance` | Auto (run-level) |
-| 6 | Readability, grade level, run-ons, fragments | `language` | Auto (heuristic) |
-| 7 | Grammar: double spaces, missing spaces, repeated words, typos | `language` | Auto (heuristic — see Limitations) |
-| 8 | Punctuation hygiene (exclamation, spacing) | `language` | Auto |
-| 9 | Passive voice, informal tone, hedging | `language` | Auto (heuristic) |
-| 10 | Repetition / redundant prose (self) | `language` + `integrity` | Auto |
-| 11 | Identical / near-identical paragraphs (copy-paste, spacing tricks) | `integrity` + `forensics` | Auto (verbatim + whitespace-normalized) |
-| 12 | Overlap vs already-published papers ("no new content") | `integrity` + `novelty` | Auto with `--corpus` |
-| 13 | Duplicate publication / close prior work (online) | `integrity` | Auto with `--online` (Crossref) |
-| 14 | Reference sanity: DOIs, identifiers, hallucination red flags | `integrity` | Auto + online DOI resolution |
-| 15 | Citation mechanics: never-cited refs, broken [n], density, style mixing, outdated refs | `citations` | Auto |
-| 16 | Title quality, author block, email, keywords, abstract content | `structure` | Auto |
-| 17 | Required statements (data availability, funding, COI, contributions, ethics) | `structure` | Auto (presence/absence) |
-| 18 | AI-style writing signals (burstiness, lexical diversity, templates) | `ai_risk` | Auto (probabilistic — see Limitations) |
-| 19 | AI-detection via real detectors (Turnitin/GPTZero/…) | `ai_risk` | Manual — plug-in point (API) |
-| 20 | AI-policy compliance per publisher (disclosure requirements) | `policy` | Auto checklist per publisher matrix |
-| 21 | Novelty: explicit contribution statement | `novelty` | Auto (presence/absence) |
-| 22 | Novelty: abstract ≈ conclusion (nothing new in body) | `novelty` | Auto |
-| 23 | Novelty: similarity to prior work / prior art search | `novelty` + `integrity` | Auto (`--corpus` / `--online`) |
-| 24 | Internal consistency: conflicting numbers (n=, %, epochs…) | `consistency` | Auto (high confidence) |
-| 25 | Internal consistency: undefined / inconsistent acronyms | `consistency` | Auto |
-| 26 | Internal consistency: terminology drift | `consistency` | Auto |
-| 27 | Overstated conclusions, significance without stats, missing effect sizes | `claims` | Auto (heuristic) |
-| 28 | Document forensics: hidden text, lookalike chars, zero-width chars, tracked changes | `forensics` | Auto (DOCX XML + character scan) |
-| 29 | Claim–evidence consistency (abstract vs results) | `consistency` + Manual | Partial — flagged, human verifies |
-| 30 | Deep statistics: survival (censoring/KM/log-rank/Cox), Bayesian (priors/CrI), p-hacking clusters, normality, error bars, software | `statistics` + `stats_deep` | Auto (heuristic) |
-| 31 | Methodology: ethics approval, consent, trial registration, randomization, blinding, animal IACUC/ARRIVE, datasets, benchmarks, ablation, compute | `methodology` | Auto (presence/absence, design-aware) |
-| 32 | Reporting guidelines: CONSORT / PRISMA 2020 / STROBE / ARRIVE + STARD / TRIPOD / CARE / SRQR / COREQ / SPIRIT essentials | `reporting_guidelines` + `domain_checklists` | Auto (checklist essentials) |
-| 33 | Writing depth: weasel words, filler phrases, nominalization, tense mixing, sentence/paragraph length, transitions | `writing_depth` | Auto (heuristic) |
-| 34 | Legal & ethics: patient consent, de-identification, copyright permission, dual-use, prior-conference note, CC licenses | `legal_ethics` | Auto |
-| 35 | Citation fraud: self-citation ratio, reciprocal rings, single-source stacking | `citation_cartel` | Auto (heuristic) |
-| 36 | Paper-mill tells: email-hospital rule, glued email/name, free-mail density, author/email mismatch | `paper_mill` | Auto (heuristic) |
-| 37 | Predatory / hijacked venue vetting (Think.Check.Submit, fast-track red flags) | `predatory_journal` | Auto checklist |
-| 38 | Retracted references (curated seed list; full Retraction Watch with `--online`) | `retracted_refs` | Auto + online |
-| 39 | Submission package: cover-letter leaks, reviewer blocks, highlights, package checklist | `submission_package` | Auto |
-| 40 | Image forensics: duplicated / near-duplicate figure panels via perceptual hashing (DOCX) | `image_forensics` | Auto (Pillow) |
-| 41 | Design-aware claims: causal overclaim from observational data, abstract front-loading, conclusion quality | `design_claims` | Auto (heuristic) |
-| 42 | Cross-section redundancy (abstract/intro/conclusion/results overlap) | `redundancy` | Auto (Jaccard) |
-| 43 | Venue fit / scope mismatch + dual standard (international vs Indian national) | `venues` | Auto rulesets + manual venue pick |
-| 44 | UGC/AICTE/NAAC Indian compliance: plagiarism thresholds, ORCID, Shodhganga, 20% novelty | `ugc_plagiarism` | Auto (national standard) |
-| 45 | Reviewer psychology (presentation → perceived quality) | README | Design principle — polished, readable papers score better |
-| 46 | Similar published work / duplicate title (OpenAlex) | `literature_search` | Auto with `--online` |
-| 47 | Venue scope fit (aims-and-scope keywords) | `scope_match` | Auto (heuristic) |
-| 48 | Revision: response-to-reviewers letter quality (tone, evidence, completeness) | `rebuttal` | Auto when a response letter is detected |
+**The full 48-angle rejection map** (with engine-by-engine status) is in
+[`COVERAGE_MATRIX.md`](COVERAGE_MATRIX.md); every engine is listed with its
+exact checks in the architecture section below.
+
+---
+
+## Venue presets (dual standard)
+
+```bash
+papercheck --list-venues
+```
+
+| International | National (India) |
+|---|---|
+| `ieee_conference`, `ieee_journal`, `ieee_letters` | `ugc_care` (UGC-CARE / plagiarism levels) |
+| `acm` (CCS concepts required) | `aicte` (AICTE norms) |
+| `elsevier` (highlights, CRediT, data availability) | `naac` (NAAC research criteria) |
+| `springer`, `nature`, `science`, `mdpi` | `scopus_indian` (Scopus-indexed Indian journals) |
+| `wiley`, `tandf`, `plos`, `frontiers` | `indian_1col` (single-column university format) |
+| `generic` (no venue rules) | `ugc_thesis` (Shodhganga, thesis rules) |
+
+Every preset works in both the CLI and the web GUI; `--venue-json rules.json`
+accepts exact limits for any venue not yet preset.
+
+---
+
+## Output formats
+
+| Format | Flag | What you get |
+|---|---|---|
+| Console | `--format console` | color-graded terminal table (default) |
+| Markdown | `--format markdown` | for repos, PRs, and lab notebooks |
+| HTML | `--format html` | standalone styled report, shareable file |
+| **Fix plan** | `--format fixplan` | prioritized to-do list, criticals first, effort estimates ("~30 min", "~2 h"), near-duplicates deduplicated |
+| CSV | `--format csv` | batch summaries for spreadsheets |
+
+Every finding, in every format, carries: **severity · finding · evidence ·
+confidence · concrete action**.
 
 ---
 
@@ -117,154 +170,101 @@ engine checks it now; "Manual" means the engine flags it for human review.
 
 ```
 papercheck/
-├── __main__.py        CLI entry point
+├── __main__.py        CLI entry point (single file, batch, compare, gui modes)
 ├── ingestion.py       DOCX (stdlib zip+XML), TXT/MD/TeX, PDF (optional pypdf)
 ├── metrics.py         text statistics (readability, burstiness, n-grams, …)
-├── venues.py          venue rule presets (IEEE/ACM/Elsevier/Springer/MDPI/…) + publisher
+├── venues.py          19 venue rule presets + --venue-json override
 ├── risk.py            Finding / Severity / RiskReport / readiness score
 ├── report.py          console, Markdown, and HTML renderers
-└── checks/            one engine per rejection angle
-    65 check engines, one per rejection angle:
-    compliance        limits, sections, figures, refs, fonts
-    structure         title, authors, email, keywords, required statements
-    language          readability, grammar heuristics, punctuation, tone
-    citations         in-text vs list matching, density, style, outdated refs
-    claims            overstated conclusions, significance without stats
-    ai_risk           stylometric AI-risk signals (probabilistic)
-    integrity         self/corpus overlap, duplicate publication, DOI checks
-    novelty           contribution statement, abstract=conclusion, prior work
-    consistency       numbers, acronyms, terminology, heading numbering
-    figures           captions, in-text refs, numbering gaps, image DPI
-    forensics         hidden text, lookalike chars, tracked changes, metadata
-    policy            publisher AI-disclosure checklist
-    statistics        p-values, effect sizes, impossible stats, multiple comparisons
-    overclaiming      superlatives, hedging density, 'novel' in abstract
-    self_plagiarism   duplicated sentences, repeated phrases
-    citation_integrity  numbering gaps, mixed formats, DOIs, intro density
-    reproducibility   data/code statements, hyperparameters, random seeds
-    submission        limitations, ORCID, keywords, acknowledgment, trial reg
-    ugc_plagiarism    UGC thresholds, AI disclosure (2026), ORCID, Shodhganga
-    reference_verify  gaps, mixed styles, DOIs, non-peer-reviewed, dupes
-    fabrication       Benford's law, impossible %, r, n, p=0.000
-    methodology       ethics, consent, trials, datasets, benchmarks, ablation
-    reporting_guidelines  CONSORT/PRISMA/STROBE/ARRIVE essentials
-    writing_depth     weasel words, filler, nominalization, tense, length
-    legal_ethics      consent, privacy, copyright, dual-use, prior publication
-    citation_cartel   self-citation ratio, rings, source stacking
-    paper_mill        email-hospital rule, glued emails, free-mail density
-    predatory_journal Think.Check.Submit vetting, fast-track red flags
-    retracted_refs    known retractions (seed list) + online Retraction Watch
-    submission_package  cover-letter leaks, reviewer blocks, package checklist
-    image_forensics   duplicated figure panels via perceptual hashing (Pillow)
-    stats_deep        survival, Bayesian, p-hacking clusters, normality
-    design_claims     causal overclaim vs design, abstract front-loading
-    redundancy        abstract/intro/conclusion/results overlap (Jaccard)
-    domain_checklists STARD, TRIPOD, CARE, SRQR/COREQ, SPIRIT
-    literature_search OpenAlex similar-work / duplicate-title scan (--online)
-    scope_match       venue aims-and-scope keyword fit (scope mismatch flag)
-    rebuttal          response-letter analyzer (tone, evidence, completeness)
-    crossref_verify   online Crossref metadata check (volume/issue/pages/year)
-    author_network    recurring author teams, duplicate identities, salami overlap
-    reviewer_fraud    self-review hints, same-institution reviewer clusters
-    image_manipulation  copy-move quadrant hashing + ELA splicing heuristics
-    llm_artifacts     ChatGPT-style template phrasing, tortured phrases, fake-ref signatures
-    supplementary     missing supp section, unnumbered supp items, 'not shown' data
-    data_license      FAIR: license, versioning, raw data, formats, data citation
-    abstract_quality  structured abstract labels, abstract word limits, keyword quality
-    citation_age      reference recency, stale lists, citation age span
-    sex_gender        SAGER sex/gender reporting in clinical/animal studies
-    stats_plan        missing-data handling, outlier rules, pre-specified analysis
-    editorial_format  line numbers, running head, page numbers, LaTeX template checks
-    author_info       affiliations, corresponding author, equal contribution, initials
-    figure_quality    western blots, microscopy scale bars, box plots, colorblind, error bars
-    venue_extras      ACM CCS, Elsevier highlights, graphical abstract, lay summary, reviewers
-    ai_disclosure_deep  per-tool AI disclosure, AI figures, human verification, EU AI Act
-    safety_ethics     biosafety levels, DSMB, adverse events, HIPAA/GDPR safeguards
-    authorship        CRediT roles, role-of-funders, COI completeness
-    repro_env         code availability, Docker/conda env, protocol registration, splits
-    paragraph_structure  topic sentences, 200-word paragraphs, fragment paragraphs
-    transitions       section-to-section flow, roadmap paragraph, connectives
-    reference_completeness  missing years/volumes/pages, 'as cited in' secondary cites
-    funder_compliance NIH/NSF/Horizon/Wellcome/Plan S/DMP obligations
-    peer_review       coerced citations, free-mail/same-domain reviewer conflicts
-    domain_checklists2  MOOSE, TREND, STREGA, CHEERS, PRISMA-ScR essentials
-    grammar_tool      optional LanguageTool server integration (silent if absent)
-    cross_check       inconsistent n, figure/table duplicate data, numeric contradictions
+├── fixplan.py         prioritized, effort-estimated fix-plan renderer
+├── compare.py         before/after revision diff (fixed / still open / new)
+├── batch.py           folder scanning, worst-first ranking, CSV writer
+├── rwdb.py            Retraction Watch DB download/cache/screening
+├── webui.py           local drag-and-drop GUI (stdlib http.server)
+└── checks/            65 engines — one per rejection angle
+    compliance · structure · language · citations · claims · ai_risk ·
+    integrity · novelty · consistency · figures · forensics · policy ·
+    statistics · overclaiming · self_plagiarism · citation_integrity ·
+    reproducibility · submission · ugc_plagiarism · reference_verify ·
+    fabrication · methodology · reporting_guidelines · writing_depth ·
+    legal_ethics · citation_cartel · paper_mill · predatory_journal ·
+    retracted_refs · submission_package · image_forensics · stats_deep ·
+    design_claims · redundancy · domain_checklists · literature_search ·
+    scope_match · rebuttal · crossref_verify · author_network ·
+    reviewer_fraud · image_manipulation · llm_artifacts · supplementary ·
+    data_license · abstract_quality · citation_age · sex_gender ·
+    stats_plan · editorial_format · author_info · figure_quality ·
+    venue_extras · ai_disclosure_deep · safety_ethics · authorship ·
+    repro_env · paragraph_structure · transitions ·
+    reference_completeness · funder_compliance · peer_review ·
+    domain_checklists2 · grammar_tool (optional LanguageTool) · cross_check
 ```
 
-Report formats: `--format console|markdown|html|fixplan|csv`. The **fixplan**
-format converts findings into a prioritized, effort-estimated pre-submission
-checklist (criticals first, near-duplicate findings deduplicated, ~total
-effort estimated).
+**Extending:** add `checks/my_angle.py` with `run(doc, ctx) -> [Finding]`,
+register it in `checks/__init__.py`, add tests. New venue: one dict in
+`venues.PRESETS`. See [CONTRIBUTING.md](CONTRIBUTING.md) for the ground rules
+(evidence + confidence + action on every finding, offline-first, dual standard).
 
-**Batch mode:** `python -m papercheck --batch papers/ --venue ugc_care
-[--format csv --out summary.csv]` scans a whole folder and produces a
-worst-first comparison table (or CSV) with per-severity counts and top
-findings per paper.
+Plug-in points already in the code: LanguageTool server (`grammar_tool`),
+Crossref/OpenAlex (`--online`), Retraction Watch DB (`rwdb.py`), AI-detector
+APIs (`checks/ai_risk.py` — documented hook, no verdicts).
 
-**Retraction screening:** `python -m papercheck --update-rwdb` caches the
-full Retraction Watch database (CC-BY 4.0, Crossref); retracted-reference
-screening then runs against 70k+ records offline. Without the cache, a
-built-in seed list of historically notable retractions is active. See
-USER_GUIDE.md for the 5-minute walkthrough.
+---
 
-Every engine returns `Finding(category, severity, title, detail, evidence,
-confidence, action, location)`. The risk engine aggregates into a readiness
-score (informational) and the report renders the evidence-linked table.
+## Project layout
 
-## Install
+| File | Purpose |
+|---|---|
+| [`README.md`](README.md) | this overview |
+| [`USER_GUIDE.md`](USER_GUIDE.md) | 5-minute researcher walkthrough (every flag explained) |
+| [`COVERAGE_MATRIX.md`](COVERAGE_MATRIX.md) | the full standards-coverage audit, angle by angle |
+| [`CHANGELOG.md`](CHANGELOG.md) | release history (Keep a Changelog format) |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md) | engineering ground rules + PR checklist |
+| [`LICENSE`](LICENSE) | MIT |
+| `scripts/` | sample-document generator, weekly maintenance script |
+
+---
+
+## Development
 
 ```bash
-pip install -e .            # core (zero required dependencies)
-pip install -e .[all]       # + PDF ingestion and image forensics extras
-papercheck paper.docx --standard national --venue ugc_care
+python -m unittest discover -s tests        # 150+ tests, offline, no services needed
+python scripts/maintenance.py               # tests + retraction-cache refresh
 ```
 
-CI runs the full test suite on Python 3.10–3.13 on every push/PR.
+CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs the full
+suite on **Python 3.10 – 3.13** on every push and PR. A weekly scheduled job
+refreshes the retraction database and re-runs the suite. Tagging `vX.Y.Z`
+triggers the PyPI publish workflow (tag/version match is verified first).
 
-## Extending the engine
+> **To enable PyPI uploads:** create a *pending publisher* on pypi.org for
+> `abnsr-sol/paperengine` (workflow `publish.yml`, environment `pypi`) —
+> after that one-time setup, every `v*` tag publishes automatically.
 
-- **New rejection angle:** add `checks/my_angle.py` with `run(doc, ctx) -> [Finding]`
-  and register it in `checks/__init__.py`. Nothing else changes.
-- **New venue:** add a one-line dict to `venues.PRESETS`, or pass
-  `--venue-json rules.json` with the venue's exact limits.
-- **Plug in a real AI detector:** call the GPTZero / Originality.ai / Copyleaks
-  APIs from `checks/ai_risk.py` and merge scores into the same `Finding` model —
-  keep the uncertainty band and never return a single "AI%" verdict.
-- **Plug in a real grammar engine:** LanguageTool (local HTTP or Python binding)
-  replaces the heuristics in `checks/language.py` with true grammar rules.
-- **Prior-art / literature coverage:** swap the `--online` Crossref call for
-  OpenAlex or Semantic Scholar queries (both free, no key).
+---
 
 ## Honest limitations (baked into the design)
 
 1. **Similarity ≠ plagiarism.** Overlap requires human interpretation (Crossref
    itself warns against automatic rejection thresholds). The engine shows *what*
-   matched as evidence.
-2. **AI detection is probabilistic.** Turnitin warns its AI assessment can
-   misidentify human and AI text. "Low burstiness", "low lexical diversity",
-   "template transitions" occur naturally in non-native and highly technical
-   writing. The AI-risk engine reports an uncertainty band, not a verdict, and
-   deliberately refuses typography myths ("em dash = AI", "underscore = AI" —
-   no scientific support).
+   matched as evidence, never a verdict.
+2. **AI detection is probabilistic.** "Low burstiness" and "template
+   transitions" occur naturally in non-native and highly technical writing.
+   The AI-risk engine reports an uncertainty band — and deliberately refuses
+   typography myths ("em dash = AI") that have no scientific support.
 3. **Grammar checks are heuristics**, not a full grammar engine. Run
-   LanguageTool/Grammarly/Paperpal for the final pass.
-4. **Venue rules are typical published limits** and change — confirm against the
-   venue's author guidelines.
-5. **Readiness score is informational.** It aggregates weighted, confidence-scaled
-   findings; it is not a prediction of acceptance.
+   LanguageTool/Grammarly/Paperpal for the final pass (or point
+   `grammar_tool` at a local LanguageTool server).
+4. **Venue rules are typical published limits** and change — confirm against
+   the venue's current author guidelines.
+5. **Readiness score is informational.** It aggregates weighted,
+   confidence-scaled findings; it is not a prediction of acceptance.
+6. **What no software can check:** whether the science is *true*, whether
+   ideas match paywalled prior work, and the reviewer's subjective "so what?".
+   Tools that pretend otherwise are selling overconfidence.
 
-## Roadmap (from the 50-point research plan)
+---
 
-1. **Literature engine:** OpenAlex/Semantic Scholar lookup of the manuscript's
-   topic + missing-seminal-work detection (angle 28).
-2. **Claim–evidence checks:** LLM-assisted verification that abstract/conclusion
-   claims are supported by the results section (angles 29–30).
-3. **Statistical sanity:** automated checks for p-value misuse, impossible
-   values, and table-text mismatches (angle 18).
-4. **Detector ensemble:** GPTZero + Originality.ai + Copyleaks API integration
-   with score reconciliation (angles 34, 44).
-5. **Scope matching:** venue topic keywords in rules + topic classifier for
-   out-of-scope desk-rejection risk (angle 48).
-6. **Benchmark harness:** a controlled human/AI/edited corpus to measure
-   precision/recall and publish honest accuracy numbers (angle 34).
+## License
+
+[MIT](LICENSE) — free for research, commercial products, and institutions.

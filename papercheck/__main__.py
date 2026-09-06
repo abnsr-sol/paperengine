@@ -12,6 +12,9 @@ from typing import List, Optional
 
 from .batch import render_console_table, scan_folder, write_csv
 from .checks import ALL_ENGINES, CheckContext
+from .compare import compare as compare_reports
+from .compare import render_console as render_compare_console
+from .compare import render_html as render_compare_html
 from .fixplan import render_fix_plan
 from . import rwdb
 from .ingestion import Document, PdfExtractionError, UnsupportedFormatError, load_document
@@ -125,6 +128,8 @@ def main(argv: Optional[List[str]] = None) -> int:
                         help="list available venue presets by standard and exit")
     parser.add_argument("--batch", default=None,
                         help="scan every supported manuscript in this folder and exit (use with --format csv)")
+    parser.add_argument("--compare", default=None, metavar="REVISED",
+                        help="compare this ORIGINAL against REVISED: shows fixed / still-open / new findings (use --format html for a rich report)")
     parser.add_argument("--format", choices=["console", "markdown", "html", "fixplan", "csv"], default="console")
     parser.add_argument("--out", default=None, help="write report to this file (default: print to stdout)")
     args = parser.parse_args(argv)
@@ -162,6 +167,31 @@ def main(argv: Optional[List[str]] = None) -> int:
             print(f"Batch CSV written to {out_path} ({len(rows)} papers)")
         else:
             print(render_console_table(rows))
+        return 0
+
+    # Before/after comparison mode.
+    if args.compare:
+        if not args.file:
+            parser.error("--compare also needs the ORIGINAL manuscript as the main file argument")
+        if not os.path.exists(args.compare):
+            print(f"Error: revised file not found: {args.compare}", file=sys.stderr)
+            return 2
+        try:
+            cmp = compare_reports(args.file, args.compare, venue=args.venue,
+                                  standard=args.standard or "international")
+        except (UnsupportedFormatError, PdfExtractionError) as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 2
+        except FileNotFoundError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 2
+        output = render_compare_html(cmp) if args.format == "html" else render_compare_console(cmp)
+        if args.out:
+            with open(args.out, "w", encoding="utf-8") as fh:
+                print(output, file=fh)
+            print(f"Comparison written to {args.out}")
+        else:
+            print(output)
         return 0
 
     if not args.file:

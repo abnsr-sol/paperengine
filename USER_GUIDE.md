@@ -67,6 +67,7 @@ top-down; re-run after each fix round.
 | `--venue-json my.json` | your venue's exact limits override presets |
 | `--gui` | browser drag-and-drop mode (no terminal skills needed) | 
 | `--format fixplan` | prioritized to-do list (start here!) |
+| `--compare revised.docx` | before/after diff: fixed / still-open / new findings + score delta (add `--format html --out diff.html` for a shareable report) |
 | `--format markdown --out r.md` | file reports for co-authors |
 | `--format html --out r.html` | shareable web report |
 | `--batch papers/ --format csv` | scan a whole folder → comparison CSV |

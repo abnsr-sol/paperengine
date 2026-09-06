@@ -26,6 +26,8 @@ import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 from .checks import ALL_ENGINES, CheckContext
+from .compare import compare as compare_reports
+from .compare import render_html as render_compare_html
 from .ingestion import (PdfExtractionError, UnsupportedFormatError,
                         load_document)
 from .report import render_html
@@ -91,7 +93,7 @@ def _page(form_html: str = "", result_html: str = "", error: str = "") -> str:
 <div class="disclaimer"><b>Honest limits:</b> overlap is a signal, not plagiarism. AI-risk is probabilistic, not proof.
 Venue limits are typical values — confirm the venue's current guide. The readiness score is informational, never a verdict.</div>
 </main>
-<footer>PaperEngine v1.0 — runs offline by default · <a href="https://github.com/abnsr-sol/paperengine" style="color:inherit">source</a></footer>
+<footer>PaperEngine v1.1 — runs offline by default · now with before/after revision comparison · <a href="https://github.com/abnsr-sol/paperengine" style="color:inherit">source</a></footer>
 </body></html>"""
 
 
@@ -102,6 +104,11 @@ def _upload_form(selected: str = "generic") -> str:
     <input type="file" id="file" name="file" accept=".docx,.txt,.md,.markdown,.tex,.pdf">
     <div class="big">📄 Drag your manuscript here — or click to choose</div>
     <div class="small">.docx · .txt · .md · .tex · .pdf (max 25 MB)</div>
+  </div>
+  <div class="drop" id="drop2" style="padding:16px 20px;background:#fbfbf7">
+    <input type="file" id="revised" name="revised" accept=".docx,.txt,.md,.markdown,.tex,.pdf">
+    <div class="big" style="font-size:.95rem">🔁 Optional: drop the <b>revised</b> version too → before/after comparison</div>
+    <div class="small" id="status2">Shows what you fixed, what is still open, and what is new</div>
   </div>
   <div class="row">
     <div>
@@ -131,6 +138,16 @@ def _upload_form(selected: str = "generic") -> str:
   function showName() {{
     const s = document.getElementById('status');
     s.textContent = file.files.length ? 'Selected: ' + file.files[0].name : '';
+  }}
+  const drop2 = document.getElementById('drop2'), rev = document.getElementById('revised');
+  drop2.addEventListener('click', () => rev.click());
+  ['dragover','dragenter'].forEach(e => drop2.addEventListener(e, ev => {{ ev.preventDefault(); drop2.classList.add('over'); }}));
+  ['dragleave','drop'].forEach(e => drop2.addEventListener(e, ev => {{ ev.preventDefault(); drop2.classList.remove('over'); }}));
+  drop2.addEventListener('drop', ev => {{ if (ev.dataTransfer.files.length) {{ rev.files = ev.dataTransfer.files; showName2(); }} }});
+  rev.addEventListener('change', showName2);
+  function showName2() {{
+    const s2 = document.getElementById('status2');
+    s2.textContent = rev.files.length ? 'Revised version: ' + rev.files[0].name : 'Shows what you fixed, what is still open, and what is new';
   }}
   function syncVenues() {{
     const std = document.getElementById('standard').value;
@@ -171,14 +188,49 @@ def _run_check(filename: str, data: bytes, standard: str, venue: str) -> str:
             pass
 
 
+def _save_temp(filename: str, data: bytes) -> str:
+    ext = os.path.splitext(filename)[1].lower()
+    suffix = ext if ext in _ALLOWED_EXT else ".txt"
+    tmp = tempfile.NamedTemporaryFile(suffix=suffix, delete=False)
+    try:
+        tmp.write(data)
+        tmp.close()
+        return tmp.name
+    except Exception:
+        try:
+            os.unlink(tmp.name)
+        except OSError:
+            pass
+        raise
+
+
+def _run_compare(orig_name: str, orig_bytes: bytes, rev_name: str, rev_bytes: bytes,
+                 standard: str, venue: str) -> str:
+    """Before/after flow: run all engines on both versions and diff findings."""
+    p1 = p2 = None
+    try:
+        p1 = _save_temp(orig_name, orig_bytes)
+        p2 = _save_temp(rev_name, rev_bytes)
+        cmp = compare_reports(p1, p2, venue=venue, standard=standard)
+        return render_compare_html(cmp)
+    finally:
+        for p in (p1, p2):
+            if p:
+                try:
+                    os.unlink(p)
+                except OSError:
+                    pass
+
+
 def _parse_multipart(body: bytes, content_type: str):
-    """Minimal multipart/form-data parser: returns (filename, file_bytes, fields)."""
+    """Minimal multipart/form-data parser: returns (files, fields) where files
+    maps form field name -> (filename, bytes) for every uploaded file."""
     m = _BOUNDARY_RE.search(content_type or "")
     if not m:
-        return None, None, {}
+        return {}, {}
     boundary = ("--" + m.group(1)).encode()
     parts = body.split(boundary)
-    filename, filebytes, fields = None, None, {}
+    files, fields = {}, {}
     for part in parts:
         part = part.strip(b"\r\n")
         if not part or part == b"--":
@@ -194,14 +246,14 @@ def _parse_multipart(body: bytes, content_type: str):
         if 'filename="' in headers:
             fn = re.search(r'filename="([^"]*)"', headers)
             filename = fn.group(1) if fn else "upload"
-            filebytes = content
+            files[name] = (filename, content)
         else:
             fields[name] = content.decode("utf-8", "replace").strip()
-    return filename, filebytes, fields
+    return files, fields
 
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = "PaperEngine/1.0"
+    server_version = "PaperEngine/1.1"
 
     def log_message(self, fmt, *args):  # quieter logs
         pass
@@ -237,11 +289,14 @@ class Handler(BaseHTTPRequestHandler):
                                   error="Upload missing or too large (25 MB limit)."), code=413)
             return
         body = self.rfile.read(length)
-        filename, filebytes, fields = _parse_multipart(body, self.headers.get("Content-Type", ""))
-        if not filename or filebytes is None:
+        files, fields = _parse_multipart(body, self.headers.get("Content-Type", ""))
+        main_file = files.get("file")
+        if not main_file:
             self._send_html(_page(form_html=_upload_form(),
                                   error="No file received — please choose a manuscript."), code=400)
             return
+        filename, filebytes = main_file
+        revised = files.get("revised")
         if not filename.lower().endswith(_ALLOWED_EXT):
             self._send_html(_page(form_html=_upload_form(),
                                   error="Unsupported file type — use .docx, .txt, .md, .tex or .pdf."), code=415)
@@ -257,6 +312,21 @@ class Handler(BaseHTTPRequestHandler):
             venue = "ugc_care"
         elif standard == "international" and venue == "generic":
             venue = "ieee_conference"
+        # Comparison flow: a revised version was also uploaded.
+        if revised:
+            try:
+                result = _run_compare(filename, filebytes, revised[0], revised[1],
+                                      standard, venue)
+            except (UnsupportedFormatError, PdfExtractionError) as exc:
+                self._send_html(_page(form_html=_upload_form(venue),
+                                      error=f"Could not read a manuscript: {exc}"), code=422)
+                return
+            except Exception as exc:  # noqa: BLE001 — one bad pair must not kill the server
+                self._send_html(_page(form_html=_upload_form(venue),
+                                      error=f"Comparison failed: {exc}"), code=500)
+                return
+            self._send_html(result)
+            return
         try:
             result = _run_check(filename, filebytes, standard, venue)
         except (UnsupportedFormatError, PdfExtractionError) as exc:
