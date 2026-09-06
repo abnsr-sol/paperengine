@@ -3,7 +3,7 @@
 # PaperEngine
 
 **Pre-submission rejection-risk analysis for academic manuscripts —
-68 engines incl. deterministic p-value verification (statcheck) · dual
+69 engines incl. deterministic p-value verification (statcheck) · dual
 international / Indian standards · 100% local**
 
 [![CI](https://github.com/abnsr-sol/paperengine/actions/workflows/ci.yml/badge.svg)](https://github.com/abnsr-sol/paperengine/actions/workflows/ci.yml)
@@ -26,7 +26,7 @@ Most tools answer one narrow question: *"Is this text copied?"* or *"Does this
 look AI-written?"*. Rejection happens for **dozens of other reasons** — missing
 ethics statements, impossible statistics, unreferenced figures, template
 violations, predatory venue traps, retracted citations. PaperEngine runs
-**68 specialized engines** against your manuscript and returns every finding as:
+**69 specialized engines** against your manuscript and returns every finding as:
 
 ```
 Severity | Finding | Evidence (quoted from your paper) | Confidence | How to fix it
@@ -83,7 +83,7 @@ Then, in the browser:
    readiness score + findings table (severity · finding · evidence · confidence · how to fix)
 
 **Privacy / no retention:** the GUI runs on your machine only (localhost).
-The file is parsed in memory, checked by the same 68 engines as the CLI, and
+The file is parsed in memory, checked by the same 69 engines as the CLI, and
 the temporary copy is **deleted the moment your report is rendered — every
 time, no exceptions**. Nothing is stored, nothing leaves the machine.
 
@@ -109,7 +109,7 @@ Common tasks:
 | Get the prioritized fix plan | `papercheck paper.docx --venue ieee_conference --format fixplan` |
 | Compare two revisions | `papercheck v1.docx --compare v2.docx --venue elsevier --format html --out diff.html` |
 | Batch-scan a whole folder | `papercheck --batch papers/ --venue ugc_care --format csv --out summary.csv` |
-| Crossref online lookups | `papercheck paper.docx --venue springer --online --mailto you@university.edu` |
+| Crossref + OpenAlex online lookups | `papercheck paper.docx --venue springer --online --mailto you@university.edu --openalex-key YOUR_KEY` |
 | Compare vs your prior papers | `papercheck paper.docx --corpus ./my_prior_papers/` |
 | List all venue presets | `papercheck --list-venues` |
 
@@ -134,7 +134,7 @@ python -m papercheck --batch papers/ --venue ugc_care --format csv --out summary
 python -m papercheck v1.docx --compare v2.docx --venue elsevier --format html --out diff.html
 
 # With online lookups (Crossref): duplicate-publication + DOI validation
-python -m papercheck paper.docx --venue springer --online --mailto you@university.edu
+python -m papercheck paper.docx --venue springer --online --mailto you@university.edu --openalex-key YOUR_KEY
 
 # Compare against your already-published papers (duplicate / "no new content")
 python -m papercheck paper.docx --corpus ./my_prior_papers/
@@ -227,7 +227,7 @@ papercheck/
 ├── batch.py           folder scanning, worst-first ranking, CSV writer
 ├── rwdb.py            Retraction Watch DB download/cache/screening
 ├── webui.py           local drag-and-drop GUI (stdlib http.server)
-└── checks/            68 engines — one per rejection angle
+└── checks/            69 engines — one per rejection angle
     compliance · structure · language · citations · claims · ai_risk ·
     integrity · novelty · consistency · figures · forensics · policy ·
     statistics · overclaiming · self_plagiarism · citation_integrity ·

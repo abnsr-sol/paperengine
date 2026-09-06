@@ -114,7 +114,8 @@ class TestServerEndToEnd(unittest.TestCase):
         self.assertNotIn('revised', html)
         # no-retention promise shown, engine count rendered dynamically
         self.assertIn('Nothing is stored', html)
-        self.assertIn('68 check engines', html)
+        from papercheck.checks import ALL_ENGINES as _E
+        self.assertIn(f'{len(_E)} check engines', html)
 
     def test_check_flow_national(self):
         body, ctype = _multipart({'standard': 'national', 'venue': 'ugc_care'},

@@ -113,7 +113,9 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser.add_argument("--corpus", default=None,
                         help="directory of known/already-published papers for overlap checks")
     parser.add_argument("--online", action="store_true",
-                        help="enable Crossref lookups (duplicate-publication, DOI validation) — requires network")
+                        help="enable online lookups (Crossref + OpenAlex: reference resolution, retraction flags, venue scope) — requires network")
+    parser.add_argument("--openalex-key", default=None,
+                        help="OpenAlex API key (or set OPENALEX_API_KEY env var) — raises rate limits; free at openalex.org")
     parser.add_argument("--update-rwdb", action="store_true",
                         help="download/refresh the Retraction Watch database cache and exit")
     parser.add_argument("--gui", action="store_true",
@@ -133,6 +135,9 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser.add_argument("--format", choices=["console", "markdown", "html", "fixplan", "csv", "similarity", "similarity-html"], default="console")
     parser.add_argument("--out", default=None, help="write report to this file (default: print to stdout)")
     args = parser.parse_args(argv)
+
+    if args.openalex_key:
+        os.environ["OPENALEX_API_KEY"] = args.openalex_key
 
     if args.gui:
         from .webui import serve

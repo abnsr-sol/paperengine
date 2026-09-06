@@ -4,6 +4,27 @@ All notable changes to PaperEngine are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [SemVer](https://semver.org/).
 
+## [1.5.0] — 2026-09-07
+
+### Added — OpenAlex research-graph engine (#69)
+- **`openalex_verify`** — online reference-health verification against the
+  OpenAlex open scholarly graph (250M+ works), enabled with `--online`:
+  - **Reference resolution**: cited works unresolvable by DOI or title are
+    flagged as hallucination candidates (HIGH when >25% unresolved).
+  - **Retraction flags**: cited works carrying OpenAlex's `is_retracted`
+    flag → **CRITICAL**.
+  - **Venue scope mismatch**: the manuscript's keyword profile vs the
+    venue's historical top concepts — disjoint profiles flagged MEDIUM
+    (the classic desk-reject signal).
+  - **Seminal-work gap**: no overlap with the venue's most-cited recent
+    works → LOW informational nudge.
+- **API key support**: `--openalex-key` CLI flag or `OPENALEX_API_KEY`
+  environment variable; the key is sent per OpenAlex's `api_key` parameter
+  spec. Works without a key too (polite-pool rate limits).
+- Privacy note: only reference DOIs/titles and the venue name are sent as
+  query parameters — never manuscript text.
+- 6 new tests (mocked HTTP; offline stays a strict no-op). 197 total.
+
 ## [1.4.1] — 2026-09-07
 
 ### Changed — web GUI redesign
