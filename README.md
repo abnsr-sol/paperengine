@@ -7,6 +7,7 @@
 
 [![CI](https://github.com/abnsr-sol/paperengine/actions/workflows/ci.yml/badge.svg)](https://github.com/abnsr-sol/paperengine/actions/workflows/ci.yml)
 [![Weekly maintenance](https://github.com/abnsr-sol/paperengine/actions/workflows/maintenance.yml/badge.svg)](https://github.com/abnsr-sol/paperengine/actions/workflows/maintenance.yml)
+[![PyPI](https://img.shields.io/pypi/v/paperengine?color=8b5cf6&label=PyPI)](https://pypi.org/project/paperengine/)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-150%2B%20passing-brightgreen)](#development)
@@ -40,28 +41,30 @@ Severity | Finding | Evidence (quoted from your paper) | Confidence | How to fix
 
 ## How to use
 
-### Step 1 — Clone & install (one time, ~1 minute)
+### Step 1 — Install (one time, under a minute)
 
-Requirements: [Python 3.10+](https://www.python.org/downloads/) — nothing else
-(PDF support needs `pypdf`, image forensics needs `Pillow`; both come with `.[all]`).
+Requirements: [Python 3.10+](https://www.python.org/downloads/). PDF support
+needs `pypdf`, image forensics needs `Pillow` — both come with the `[all]` extra.
+
+**Option A — straight from PyPI (simplest):**
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/abnsr-sol/paperengine.git
-cd paperengine
-
-# 2. Install (pick one)
-pip install -e .            # core — zero required dependencies
-pip install -e .[all]       # recommended: + PDF ingestion & image forensics
-
-# 3. Verify the install
-papercheck --list-venues    # should print all 19 venue presets
+pip install paperengine[all]
+papercheck --list-venues    # verify: prints all 19 venue presets
 ```
 
-> **Windows tip:** if `pip` isn't on PATH, use `py -m pip install -e .[all]`.
+**Option B — clone the source repo (development / latest changes):**
+
+```bash
+git clone https://github.com/abnsr-sol/paperengine.git
+cd paperengine
+pip install -e .[all]       # editable install — every git pull is picked up automatically
+```
+
+> **Windows tip:** if `pip` isn't on PATH, use `py -m pip install paperengine[all]`.
 >
-> **No-install option:** everything also runs straight from the cloned folder —
-> just replace `papercheck` with `python -m papercheck` in any command below.
+> **No-install option:** from the cloned folder, replace `papercheck` with
+> `python -m papercheck` in any command below.
 
 ### Step 2 — Use the Desktop version (web GUI)
 
@@ -281,9 +284,9 @@ suite on **Python 3.10 – 3.13** on every push and PR. A weekly scheduled job
 refreshes the retraction database and re-runs the suite. Tagging `vX.Y.Z`
 triggers the PyPI publish workflow (tag/version match is verified first).
 
-> **To enable PyPI uploads:** create a *pending publisher* on pypi.org for
-> `abnsr-sol/paperengine` (workflow `publish.yml`, environment `pypi`) —
-> after that one-time setup, every `v*` tag publishes automatically.
+> **To enable PyPI uploads:** already done — the package lives at
+> [pypi.org/project/paperengine](https://pypi.org/project/paperengine).
+> Every future `v*` tag publishes automatically via the trusted publisher.
 
 ---
 

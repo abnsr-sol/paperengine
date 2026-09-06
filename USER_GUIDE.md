@@ -17,8 +17,16 @@ at your own LanguageTool server.
 
 ## 2. Install (one time)
 
+**From PyPI (simplest):**
+
 ```bash
-cd <your papercheck checkout>
+pip install paperengine[all]
+```
+
+**From a cloned checkout (development):**
+
+```bash
+cd paperengine
 pip install -e .[all]
 ```
 
@@ -104,7 +112,7 @@ No server → no grammar findings, zero noise. It's fully optional.
 
 | Problem | Fix |
 |---|---|
-| `papercheck` command not found | `pip install -e .` in the project folder |
+| `papercheck` command not found | `pip install paperengine[all]` (or `pip install -e .` in the project folder) |
 | Score looks too harsh | It's informational; sort by severity, not score |
 | Weird findings on LaTeX | Use `--file-type tex` (auto-detected usually) |
 | Online checks slow | Lower `--max-online-checks` (default 10) |
