@@ -38,31 +38,83 @@ Severity | Finding | Evidence (quoted from your paper) | Confidence | How to fix
 
 ---
 
-## Quick start
+## How to use
 
-### Option A — Web GUI (no terminal skills needed)
+### Step 1 — Clone & install (one time, ~1 minute)
+
+Requirements: [Python 3.10+](https://www.python.org/downloads/) — nothing else
+(PDF support needs `pypdf`, image forensics needs `Pillow`; both come with `.[all]`).
 
 ```bash
-papercheck --gui
-# → opens http://localhost:8765 in your browser
+# 1. Clone the repository
+git clone https://github.com/abnsr-sol/paperengine.git
+cd paperengine
+
+# 2. Install (pick one)
+pip install -e .            # core — zero required dependencies
+pip install -e .[all]       # recommended: + PDF ingestion & image forensics
+
+# 3. Verify the install
+papercheck --list-venues    # should print all 19 venue presets
 ```
 
-Drag-and-drop your manuscript (.docx / .txt / .md / .tex / .pdf), pick
-**International** or **National (India)** plus the venue preset, and get the
-full report in the browser. **100% local** — the file never leaves your machine.
+> **Windows tip:** if `pip` isn't on PATH, use `py -m pip install -e .[all]`.
+>
+> **No-install option:** everything also runs straight from the cloned folder —
+> just replace `papercheck` with `python -m papercheck` in any command below.
 
-🔁 **Revision comparison:** drop the *revised* version into the second zone and
-PaperEngine shows **fixed / still-open / new** findings plus the score delta:
+### Step 2 — Use the Desktop version (web GUI)
+
+```bash
+papercheck --gui                 # launches the server and opens your browser
+papercheck --gui --port 9000     # custom port if 8765 is already taken
+```
+
+Then, in the browser:
+
+1. **Drag your manuscript** (.docx / .txt / .md / .tex / .pdf) onto the upload zone — or click to browse
+2. **Choose the standard** — International (IEEE/Elsevier/ACM…) or National (India: UGC/AICTE/NAAC)
+3. **Pick the venue preset** — e.g. `ieee_conference`, `ugc_care`, `mdpi` (the list filters by standard)
+4. Click **Check my paper** → the full report renders in the browser:
+   readiness score + findings table (severity · finding · evidence · confidence · how to fix)
+5. *(Optional)* **Drop the revised version** into the second upload zone before
+   checking → before/after comparison: **fixed / still-open / new** findings
+   plus the score delta:
 
 ```
 readiness score:  42 → 57  (+15)
   fixed: 12   still open: 41   new: 3
 ```
 
-### Option B — CLI
+**Privacy:** the GUI runs on your machine only (localhost). The file is parsed
+in memory, checked by the same 65 engines as the CLI, and never uploaded to
+the internet.
+
+### Step 3 — Use the CLI version
+
+Basic pattern:
 
 ```bash
-# No install needed (pure Python stdlib; pypdf only for PDFs)
+papercheck <file> [--standard international|national] [--venue <preset>] [--format <format>] [--out <file>]
+```
+
+Common tasks:
+
+| You want to… | Command |
+|---|---|
+| Check a paper (international) | `papercheck paper.docx --venue ieee_conference` |
+| Check a thesis (Indian national) | `papercheck thesis.docx --standard national --venue ugc_care` |
+| Save a styled HTML report | `papercheck paper.docx --venue mdpi --format html --out report.html` |
+| Get the prioritized fix plan | `papercheck paper.docx --venue ieee_conference --format fixplan` |
+| Compare two revisions | `papercheck v1.docx --compare v2.docx --venue elsevier --format html --out diff.html` |
+| Batch-scan a whole folder | `papercheck --batch papers/ --venue ugc_care --format csv --out summary.csv` |
+| Crossref online lookups | `papercheck paper.docx --venue springer --online --mailto you@university.edu` |
+| Compare vs your prior papers | `papercheck paper.docx --corpus ./my_prior_papers/` |
+| List all venue presets | `papercheck --list-venues` |
+
+Without installing, run from the cloned folder with `python -m papercheck …` instead:
+
+```bash
 python -m papercheck sample_paper.txt --venue elsevier
 
 # Full report to a file (console | markdown | html | fixplan | csv)
@@ -85,14 +137,6 @@ python -m papercheck paper.docx --venue springer --online --mailto you@universit
 
 # Compare against your already-published papers (duplicate / "no new content")
 python -m papercheck paper.docx --corpus ./my_prior_papers/
-```
-
-### Install (as a package)
-
-```bash
-pip install -e .            # core — zero required dependencies
-pip install -e .[all]       # + PDF ingestion and image forensics extras
-papercheck paper.docx --standard national --venue ugc_care
 ```
 
 ### One-time retraction database (optional, recommended)
