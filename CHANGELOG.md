@@ -4,6 +4,32 @@ All notable changes to PaperEngine are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [SemVer](https://semver.org/).
 
+## [1.6.0] — 2026-09-07
+
+### Added — adversarial-review wave (#70–#73)
+Four engines targeting the failure modes in the deep-dive research:
+- **`physical_plausibility` (#70)** — deterministic physics/hardware math:
+  claimed latencies below the speed-of-light RTT floor for the stated
+  distance (US-EU ≈ 60 ms minimum), and training claims whose VRAM needs
+  (12 bytes/param for AdamW fp16) exceed the declared GPU fleet without any
+  offloading/quantization/parallelism escape hatch.
+- **`ml_fairness` (#71)** — the two most common ML-reviewer objections:
+  strawman-baseline detection (self-tuning vocabulary with no fair-comparison
+  statement) and metric masking (high accuracy on explicitly imbalanced data
+  with no balanced-accuracy/macro-F1/MCC/PR-AUC anywhere).
+- **`corrections` (#72)** — statcheck false-positive prevention: papers using
+  Greenhouse-Geisser / Bonferroni / Holm / BH-FDR corrections legitimately
+  report corrected p-values that differ from raw recomputation; when
+  correction vocabulary is present, discrepancies downgrade to INFO with an
+  audit-trail note instead of an error. Also nudges about multiple-comparison
+  corrections when ≥3 marginal (p=.03–.05) stats appear with no correction
+  mentioned.
+- **`proof_gaps` (#73)** — proof-dismissal phrase detection in formal
+  sections ("trivially", "details omitted", "by simple algebra") that invites
+  the Nitpicker reviewer attack; density-scored, math-context gated.
+- 12 new tests. 209 total. Benchmark gate green (clean 80 / flawed 15,
+  zero clean-paper false positives).
+
 ## [1.5.0] — 2026-09-07
 
 ### Added — OpenAlex research-graph engine (#69)

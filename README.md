@@ -3,7 +3,7 @@
 # PaperEngine
 
 **Pre-submission rejection-risk analysis for academic manuscripts —
-69 engines incl. deterministic p-value verification (statcheck) · dual
+73 engines incl. deterministic p-value verification (statcheck) · dual
 international / Indian standards · 100% local**
 
 [![CI](https://github.com/abnsr-sol/paperengine/actions/workflows/ci.yml/badge.svg)](https://github.com/abnsr-sol/paperengine/actions/workflows/ci.yml)
@@ -26,7 +26,7 @@ Most tools answer one narrow question: *"Is this text copied?"* or *"Does this
 look AI-written?"*. Rejection happens for **dozens of other reasons** — missing
 ethics statements, impossible statistics, unreferenced figures, template
 violations, predatory venue traps, retracted citations. PaperEngine runs
-**69 specialized engines** against your manuscript and returns every finding as:
+**73 specialized engines** against your manuscript and returns every finding as:
 
 ```
 Severity | Finding | Evidence (quoted from your paper) | Confidence | How to fix it
@@ -83,7 +83,7 @@ Then, in the browser:
    readiness score + findings table (severity · finding · evidence · confidence · how to fix)
 
 **Privacy / no retention:** the GUI runs on your machine only (localhost).
-The file is parsed in memory, checked by the same 69 engines as the CLI, and
+The file is parsed in memory, checked by the same 73 engines as the CLI, and
 the temporary copy is **deleted the moment your report is rendered — every
 time, no exceptions**. Nothing is stored, nothing leaves the machine.
 
@@ -227,7 +227,7 @@ papercheck/
 ├── batch.py           folder scanning, worst-first ranking, CSV writer
 ├── rwdb.py            Retraction Watch DB download/cache/screening
 ├── webui.py           local drag-and-drop GUI (stdlib http.server)
-└── checks/            69 engines — one per rejection angle
+└── checks/            73 engines — one per rejection angle
     compliance · structure · language · citations · claims · ai_risk ·
     integrity · novelty · consistency · figures · forensics · policy ·
     statistics · overclaiming · self_plagiarism · citation_integrity ·
@@ -245,6 +245,8 @@ papercheck/
     reference_completeness · funder_compliance · peer_review ·
     domain_checklists2 · grammar_tool (optional LanguageTool) · cross_check ·
     statcheck (p-value recomputation) · grim_engine (GRIM/GRIMMER) · ugc_14word (UGC 2018 clause-7/8)
+    physical_plausibility (speed-of-light & VRAM math) · ml_fairness (strawman baselines,
+    metric masking) · corrections (GG/Bonferroni/FDR awareness) · proof_gaps (dismissal phrases)
 ```
 
 **Extending:** add `checks/my_angle.py` with `run(doc, ctx) -> [Finding]`,
