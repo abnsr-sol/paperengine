@@ -73,6 +73,12 @@ def _page(form_html: str = "", result_html: str = "", error: str = "") -> str:
   .drop input {{ display:none; }}
   .drop .big {{ font-size:1.1rem; margin-bottom:6px; }}
   .drop .small {{ color:#667; font-size:.85rem; }}
+  .drop.selected {{ border-color:var(--ok); border-style:solid; background:#e9f7ee; }}
+  .drop.selected .big {{ color:var(--ok); font-size:1.3rem; }}
+  .drop .fileline {{ display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; }}
+  .drop .fname {{ font-family:Consolas,monospace; font-size:1.05rem; color:var(--ink); background:#fff; border:1px solid #cfe3d6; border-radius:8px; padding:6px 14px; max-width:100%; overflow-wrap:anywhere; }}
+  button.clear {{ background:#fff; border:1px solid #d66; color:#c62828; border-radius:6px; padding:4px 12px; font-size:.8rem; cursor:pointer; }}
+  button.clear:hover {{ background:#fdecea; }}
   .row {{ display:flex; gap:14px; margin:16px 0; flex-wrap:wrap; }}
   label {{ font-size:.85rem; color:#445; display:block; margin-bottom:4px; }}
   select {{ padding:8px 10px; border:1px solid #b9c0cf; border-radius:8px; font-size:.95rem; min-width:260px; background:#fff; }}
@@ -102,13 +108,26 @@ def _upload_form(selected: str = "generic") -> str:
 <form id="f" method="post" action="/check" enctype="multipart/form-data">
   <div class="drop" id="drop">
     <input type="file" id="file" name="file" accept=".docx,.txt,.md,.markdown,.tex,.pdf">
-    <div class="big">📄 Drag your manuscript here — or click to choose</div>
-    <div class="small">.docx · .txt · .md · .tex · .pdf (max 25 MB)</div>
+    <div id="drop-empty">
+      <div class="big">📄 Drag your manuscript here — or click to choose</div>
+      <div class="small">.docx · .txt · .md · .tex · .pdf (max 25 MB)</div>
+    </div>
+    <div id="drop-filled" style="display:none">
+      <div class="big">✅ Manuscript selected</div>
+      <div class="fileline"><span class="fname" id="picked-name"></span><button type="button" class="clear" id="clear-file">✕ change</button></div>
+      <div class="small" style="margin-top:6px">Click anywhere in this box to pick a different file</div>
+    </div>
   </div>
   <div class="drop" id="drop2" style="padding:16px 20px;background:#fbfbf7">
     <input type="file" id="revised" name="revised" accept=".docx,.txt,.md,.markdown,.tex,.pdf">
-    <div class="big" style="font-size:.95rem">🔁 Optional: drop the <b>revised</b> version too → before/after comparison</div>
-    <div class="small" id="status2">Shows what you fixed, what is still open, and what is new</div>
+    <div id="drop2-empty">
+      <div class="big" style="font-size:.95rem">🔁 Optional: drop the <b>revised</b> version too → before/after comparison</div>
+      <div class="small">Shows what you fixed, what is still open, and what is new</div>
+    </div>
+    <div id="drop2-filled" style="display:none">
+      <div class="big" style="font-size:.95rem">✅ Revised version selected</div>
+      <div class="fileline"><span class="fname" id="picked-name2"></span><button type="button" class="clear" id="clear-file2">✕ change</button></div>
+    </div>
   </div>
   <div class="row">
     <div>
@@ -135,10 +154,29 @@ def _upload_form(selected: str = "generic") -> str:
   ['dragleave','drop'].forEach(e => drop.addEventListener(e, ev => {{ ev.preventDefault(); drop.classList.remove('over'); }}));
   drop.addEventListener('drop', ev => {{ if (ev.dataTransfer.files.length) {{ file.files = ev.dataTransfer.files; showName(); }} }});
   file.addEventListener('change', showName);
-  function showName() {{
-    const s = document.getElementById('status');
-    s.textContent = file.files.length ? 'Selected: ' + file.files[0].name : '';
+  function setPicked(zoneId, emptyId, filledId, nameId, f) {{
+    const zone = document.getElementById(zoneId);
+    const empty = document.getElementById(emptyId), filled = document.getElementById(filledId);
+    if (f) {{
+      zone.classList.add('selected');
+      empty.style.display = 'none';
+      filled.style.display = '';
+      document.getElementById(nameId).textContent = f.name;
+    }} else {{
+      zone.classList.remove('selected');
+      filled.style.display = 'none';
+      empty.style.display = '';
+    }}
   }}
+  function showName() {{
+    setPicked('drop', 'drop-empty', 'drop-filled', 'picked-name', file.files[0] || null);
+    document.getElementById('status').textContent = '';
+  }}
+  document.getElementById('clear-file').addEventListener('click', ev => {{
+    ev.stopPropagation();   // don't re-open the picker when clearing
+    file.value = '';
+    showName();
+  }});
   const drop2 = document.getElementById('drop2'), rev = document.getElementById('revised');
   drop2.addEventListener('click', () => rev.click());
   ['dragover','dragenter'].forEach(e => drop2.addEventListener(e, ev => {{ ev.preventDefault(); drop2.classList.add('over'); }}));
@@ -146,9 +184,13 @@ def _upload_form(selected: str = "generic") -> str:
   drop2.addEventListener('drop', ev => {{ if (ev.dataTransfer.files.length) {{ rev.files = ev.dataTransfer.files; showName2(); }} }});
   rev.addEventListener('change', showName2);
   function showName2() {{
-    const s2 = document.getElementById('status2');
-    s2.textContent = rev.files.length ? 'Revised version: ' + rev.files[0].name : 'Shows what you fixed, what is still open, and what is new';
+    setPicked('drop2', 'drop2-empty', 'drop2-filled', 'picked-name2', rev.files[0] || null);
   }}
+  document.getElementById('clear-file2').addEventListener('click', ev => {{
+    ev.stopPropagation();
+    rev.value = '';
+    showName2();
+  }});
   function syncVenues() {{
     const std = document.getElementById('standard').value;
     document.querySelectorAll('#venue optgroup').forEach(g => {{

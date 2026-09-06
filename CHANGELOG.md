@@ -4,6 +4,17 @@ All notable changes to PaperEngine are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [SemVer](https://semver.org/).
 
+## [1.1.2] — 2026-09-06
+
+### Changed
+- **Web GUI file-selection UX:** after picking a file, the drop zone itself
+  turns green and shows the filename prominently (with a ✕ change button) —
+  the selected file is no longer displayed as small text below the button.
+  Both zones (manuscript + optional revised version) get the same treatment.
+
+### Fixed
+- Removed a duplicated drag-and-drop event listener from the GUI script.
+
 ## [1.1.1] — 2026-09-06
 
 ### Changed

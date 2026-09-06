@@ -94,6 +94,26 @@ class TestServerEndToEnd(unittest.TestCase):
         self.assertIn('Drag your manuscript', html)
         self.assertIn('ugc_care', html)
 
+    def test_file_selection_states(self):
+        """Selected-file feedback renders INSIDE the drop zone: both states
+        present, 'selected' state starts hidden and is toggled by JS."""
+        r = urllib.request.urlopen(self._url('/'), timeout=15)
+        html = r.read().decode('utf-8')
+        # both states exist for each zone
+        self.assertIn('drop-empty', html)
+        self.assertIn('drop-filled', html)
+        self.assertIn('drop2-empty', html)
+        self.assertIn('drop2-filled', html)
+        # the selected-state blocks start hidden (JS shows them on file pick)
+        self.assertIn('<div id="drop-filled" style="display:none">', html)
+        self.assertIn('<div id="drop2-filled" style="display:none">', html)
+        # in-zone selected feedback: name + change button + green state class
+        self.assertIn('Manuscript selected', html)
+        self.assertIn('Revised version selected', html)
+        self.assertIn('picked-name', html)
+        self.assertIn('clear-file', html)
+        self.assertIn("classList.add('selected')", html)
+
     def test_check_flow_national(self):
         body, ctype = _multipart({'standard': 'national', 'venue': 'ugc_care'},
                                  'paper.docx', b'PK fake')
