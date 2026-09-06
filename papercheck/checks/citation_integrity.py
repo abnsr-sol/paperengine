@@ -17,7 +17,7 @@ def run(doc: Document, ctx: object) -> List[Finding]:
         expected = set(range(1, max(nums)+1))
         missing = sorted(expected - set(nums))
         if missing:
-            findings.append(Finding(category="Citations", severity=Severity.HIGH, title=f'Reference numbering gaps: [{', '.join(str(x) for x in missing)}]', detail='References [1]..[N] should be consecutive. Missing numbers look sloppy.', evidence=f'Found: {nums[:10]}... Missing: {missing}', confidence=0.95, action='Renumber references consecutively or verify missing citations'))
+            findings.append(Finding(category="Citations", severity=Severity.HIGH, title="Reference numbering gaps: [" + ", ".join(str(x) for x in missing) + "]", detail="References [1]..[N] should be consecutive. Missing numbers look sloppy.", evidence=f"Found: {nums[:10]}... Missing: {missing}", confidence=0.95, action="Renumber references consecutively or verify missing citations"))
     # Citation format mixing ([1] vs (Author, Year))
     has_numeric = bool(re.search(r'\[\d+\]', body))
     has_author = bool(re.search(r'\([A-Z][a-z]+(?:\s+(?:et\s+al|and|&))?\s*,?\s*\d{4}\)', body))
