@@ -13,7 +13,7 @@ import csv
 import os
 from typing import List, Optional
 
-from .checks import ALL_ENGINES, CheckContext
+from .checks import ALL_ENGINES, CheckContext, run_all_engines
 from .ingestion import (Document, PdfExtractionError, UnsupportedFormatError,
                         load_document)
 from .risk import RiskReport
@@ -59,8 +59,8 @@ def scan_folder(folder: str, venue: str, online: bool = False,
             doc = load_document(full)
             report = RiskReport(document_name=doc.name, venue=describe(venue))
             report.stats = {"words": doc.word_count}
-            for engine in ALL_ENGINES:
-                report.extend(engine(doc, ctx))
+            findings, _errs = run_all_engines(doc, ctx)
+            report.extend(findings)
             counts = report.counts()
             row["readiness"] = report.readiness_score
             row["critical"] = counts.get("Critical", 0)

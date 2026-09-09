@@ -11,7 +11,7 @@ import sys
 from typing import List, Optional
 
 from .batch import render_console_table, scan_folder, write_csv
-from .checks import ALL_ENGINES, CheckContext
+from .checks import CheckContext, run_all_engines
 from .compare import compare as compare_reports
 from .compare import render_console as render_compare_console
 from .compare import render_html as render_compare_html
@@ -76,8 +76,10 @@ def build_report(path: str, venue: str, venue_json: Optional[str], corpus: Optio
     }
     if doc.metadata:
         report.stats["doc metadata"] = ", ".join(f"{k}={v}" for k, v in doc.metadata.items())
-    for engine in ALL_ENGINES:
-        report.extend(engine(doc, ctx))
+    findings, engine_errors = run_all_engines(doc, ctx)
+    if engine_errors:
+        report.stats["engine warnings"] = ", ".join(e.split(":")[0] for e in engine_errors)
+    report.extend(findings)
     return report
 
 

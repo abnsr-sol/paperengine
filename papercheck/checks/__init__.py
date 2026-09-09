@@ -3,7 +3,7 @@ To add a rejection angle: create a module with run(), register in ALL_ENGINES.
 """
 from __future__ import annotations
 from dataclasses import dataclass, field
-from typing import Callable, Dict, List, Optional
+from typing import Callable, Dict, List, Optional, Tuple
 from ..ingestion import Document
 
 CheckFn = Callable[[Document, "CheckContext"], List["Finding"]]
@@ -17,6 +17,34 @@ class CheckContext:
     mailto: str = ""
     max_online_checks: int = 10
     online_cache: Dict[str, object] = field(default_factory=dict)
+
+
+def run_all_engines(doc: Document, ctx: CheckContext) -> Tuple[List["Finding"], List[str]]:
+    """Run every registered engine with fault isolation.
+
+    Returns (findings, engine_errors): an engine that raises is skipped and
+    its name + error appended to engine_errors instead of aborting the whole
+    check — one bad engine must never blank a report (the GUI crash of
+    v1.8.0 was exactly this failure class).
+    """
+    from ..risk import Finding, Severity
+
+    findings: List[Finding] = []
+    errors: List[str] = []
+    for engine in ALL_ENGINES:
+        name = getattr(engine, "__module__", "engine").rsplit(".", 1)[-1]
+        try:
+            findings.extend(engine(doc, ctx) or [])
+        except Exception as exc:  # noqa: BLE001
+            errors.append(f"{name}: {type(exc).__name__}: {exc}")
+    for err in errors:
+        findings.append(Finding(
+            "Engine", Severity.LOW,
+            f"Engine '{err.split(':')[0]}' could not run on this document",
+            "The engine was skipped so the rest of the report stays valid.",
+            err, "Report this at github.com/abnsr-sol/paperengine/issues",
+            1.0, source="pipeline"))
+    return findings, errors
 
 def _import_engines() -> List[CheckFn]:
     from . import (
@@ -69,4 +97,4 @@ def _import_engines() -> List[CheckFn]:
     ]
 
 ALL_ENGINES: List[CheckFn] = _import_engines()
-__all__ = ["CheckContext", "ALL_ENGINES", "Document"]
+__all__ = ["CheckContext", "ALL_ENGINES", "Document", "run_all_engines"]

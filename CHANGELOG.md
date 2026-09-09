@@ -4,6 +4,31 @@ All notable changes to PaperEngine are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [SemVer](https://semver.org/).
 
+## [1.8.1] — 2026-09-09
+
+### Fixed — the GUI 'bad operand type for unary -: str' crash class
+- **Finding type coercion at construction**: any engine argument
+  transposition (a string landing in the confidence slot, a raw string
+  severity, `None` fields) is now repaired inside `Finding.__post_init__`
+  instead of crashing the whole report during severity sorting.
+- **Per-engine fault isolation** (`run_all_engines`): an engine that raises
+  is skipped and logged as a LOW-severity note ("Engine X could not run")
+  instead of aborting the entire check — shared by the CLI, GUI, and batch
+  modes. One bad engine can no longer blank a report.
+- **Venue/standard coherence**: the server now follows the venue's own
+  standard when the form's standard select disagrees (stale UI state), and
+  the GUI resets a stale venue selection on standard switch, so the applied
+  ruleset and the displayed standard can never diverge.
+
+### Added
+- **Live rule hints in the venue dropdown**: selecting any venue shows its
+  page/word/abstract limits, reference floor, blinding policy, UGC similarity
+  band, required statements, and the date its limits were last verified —
+  before you upload.
+- **Preset-matrix regression suite**: every venue preset renders a valid
+  report (international matrix + national coherence + DOCX spot-check),
+  locking the v1.8.0 crash class out of future releases.
+
 ## [1.8.0] — 2026-09-09
 
 ### Fixed — correctness and trust hardening (external audit adopted)

@@ -55,14 +55,42 @@ class Finding:
     location: str = ""     # section / paragraph hint
     source: str = ""       # which engine produced it
 
+    def __post_init__(self) -> None:
+        """Defensive coercion: a transposed positional argument in any of the
+        74 engines can produce a string confidence or a string severity.
+        Repair it at construction so sorting/scoring can never crash on bad
+        types (e.g. 'bad operand type for unary -: str' in by_severity)."""
+        self.severity = severity_from_string(self.severity)
+        self.confidence = _as_confidence(self.confidence)
+        for name in ("category", "title", "detail", "evidence", "action",
+                     "location", "source"):
+            val = getattr(self, name)
+            if val is None:
+                setattr(self, name, "")
+            elif not isinstance(val, str):
+                setattr(self, name, str(val))
 
-def severity_from_string(value: str) -> Severity:
-    norm = value.strip().lower()
+
+def severity_from_string(value: object) -> Severity:
+    """Coerce anything (Severity, str, None) into a Severity — never raises."""
+    if isinstance(value, Severity):
+        return value
+    norm = str(value).strip().lower() if value is not None else ""
     for sev in Severity:
-        if sev.value.lower() == norm or norm in ("critical", "high", "medium", "low", "info"):
-            if sev.value.lower() == norm:
-                return sev
+        if sev.value.lower() == norm or sev.name.lower() == norm:
+            return sev
     return Severity.INFO
+
+
+def _as_confidence(value: object) -> float:
+    """Coerce anything into a 0.0-1.0 float — never raises."""
+    try:
+        conf = float(value)  # type: ignore[arg-type]
+    except (TypeError, ValueError):
+        return 0.5
+    if conf != conf:  # NaN
+        return 0.5
+    return max(0.0, min(1.0, conf))
 
 
 @dataclass

@@ -27,7 +27,7 @@ import urllib.parse
 import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-from .checks import ALL_ENGINES, CheckContext
+from .checks import ALL_ENGINES, CheckContext, run_all_engines
 from .ingestion import (PdfExtractionError, UnsupportedFormatError,
                         load_document)
 from .report import render_html
@@ -50,6 +50,44 @@ def _venue_options(selected: str = "generic") -> str:
             opts.append(f'<option value="{name}"{sel}>{name} — {_html.escape(describe(name))}</option>')
         opts.append("</optgroup>")
     return "\n".join(opts)
+
+
+def _venue_hint(venue: str) -> str:
+    """One-line human summary of a preset's key rules for the dropdown hint."""
+    p = PRESETS.get(venue)
+    if not p:
+        return "No venue rules — generic sanity checks only."
+    bits = []
+    if p.get("page_limit"):
+        bits.append(f"≤{p['page_limit']} pages")
+    if p.get("word_limit"):
+        bits.append(f"≤{p['word_limit']:,} words")
+    if p.get("abstract_word_limit"):
+        bits.append(f"abstract ≤{p['abstract_word_limit']} words")
+    if p.get("columns"):
+        bits.append(f"{p['columns']}-column")
+    if p.get("min_references"):
+        bits.append(f"≥{p['min_references']} references")
+    if p.get("double_blind"):
+        bits.append("double-blind (anonymize!)")
+    thr = p.get("plagiarism_threshold")
+    if isinstance(thr, dict) and thr.get("level_0_max") is not None:
+        bits.append(f"UGC similarity ≤{thr['level_0_max']}%")
+    elif p.get("plagiarism_threshold"):
+        bits.append("similarity limit enforced")
+    stmts = p.get("required_statements") or []
+    if stmts:
+        bits.append(f"statements: {', '.join(stmts[:4])}{'…' if len(stmts) > 4 else ''}")
+    if p.get("rules_last_verified"):
+        bits.append(f"limits verified {p['rules_last_verified']}")
+    return " · ".join(bits) if bits else "Standard venue checks."
+
+
+def _venue_hints_js() -> str:
+    import json as _json
+    mapping = {name: _venue_hint(name) for name in PRESETS}
+    mapping["generic"] = _venue_hint("generic")
+    return _json.dumps(mapping)
 
 
 def _page(form_html: str = "", result_html: str = "", error: str = "") -> str:
@@ -194,6 +232,9 @@ def _upload_form(selected: str = "generic") -> str:
     <div>
       <label for="venue">Venue preset</label>
       <select id="venue" name="venue">{_venue_options(selected)}</select>
+      <p id="venue-hint" style="margin:.4rem 0 0;font-size:.78rem;color:var(--muted);line-height:1.45;
+         background:var(--bg);border:1px solid var(--line);border-radius:.5rem;padding:.45rem .6rem;
+         min-height:2.4em;"></p>
     </div>
   </div>
   <button class="go" id="go" type="submit">Check my paper →</button>
@@ -205,6 +246,7 @@ def _upload_form(selected: str = "generic") -> str:
 </form>
 </div>
 <script>
+  const VENUE_HINTS = {_venue_hints_js()};
   const drop = document.getElementById('drop'), file = document.getElementById('file');
   drop.addEventListener('click', () => file.click());
   ['dragover','dragenter'].forEach(e => drop.addEventListener(e, ev => {{ ev.preventDefault(); drop.classList.add('over'); }}));
@@ -236,16 +278,25 @@ def _upload_form(selected: str = "generic") -> str:
   }});
   function syncVenues() {{
     const std = document.getElementById('standard').value;
+    const venue = document.getElementById('venue');
     document.querySelectorAll('#venue optgroup').forEach(g => {{
       g.style.display = (std === 'national') === (g.label.startsWith('National')) ? '' : 'none';
     }});
+    // reset a stale selection from the other standard so the submitted
+    // venue always agrees with the chosen standard
+    const opt = venue.options[venue.selectedIndex];
+    if (opt && opt.parentElement.tagName === 'OPTGROUP' && opt.parentElement.style.display === 'none') {{
+      venue.selectedIndex = 0;  // back to generic
+    }}
+    updateHint();
   }}
+  document.getElementById('venue').addEventListener('change', updateHint);
   document.getElementById('f').addEventListener('submit', () => {{
     document.getElementById('go').disabled = true;
     document.getElementById('go').textContent = 'Running {n} engines…';
     document.getElementById('status').textContent = 'Parsing, checking, scoring — this takes a few seconds…';
   }});
-  syncVenues();
+  syncVenues();  // also calls updateHint() once
 </script>"""
 
 
@@ -264,8 +315,11 @@ def _run_check(filename: str, data: bytes, standard: str, venue: str) -> str:
         report = RiskReport(document_name=doc.name, venue=describe(venue))
         report.stats = {"words": f"{doc.word_count:,}",
                         "standard": "National (Indian)" if standard == "national" else "International"}
-        for engine in ALL_ENGINES:
-            report.extend(engine(doc, ctx))
+        findings, engine_errors = run_all_engines(doc, ctx)
+        if engine_errors:
+            report.stats["engine warnings"] = ", ".join(
+                e.split(":")[0] for e in engine_errors)
+        report.extend(findings)
         return render_html(report)
     finally:
         try:
@@ -358,7 +412,13 @@ class Handler(BaseHTTPRequestHandler):
         venue = fields.get("venue", "generic")
         if venue != "generic" and venue not in PRESETS:
             venue = "generic"
-        # honor the national/international choice even when venue says otherwise
+        # Server-side coherence: the venue's own standard always wins. If the
+        # form's standard select disagrees (stale UI state), follow the venue
+        # so the applied ruleset and the displayed standard can never diverge.
+        venue_std = (PRESETS.get(venue) or {}).get("standard", "international")
+        if venue != "generic":
+            standard = venue_std
+        # honor the national/international choice when venue is generic
         if standard == "national" and venue == "generic":
             venue = "ugc_care"
         elif standard == "international" and venue == "generic":
