@@ -104,6 +104,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         description="Pre-submission rejection-risk engine for academic manuscripts.",
     )
     parser.add_argument("file", nargs="?", help="manuscript: .docx, .txt, .md, .markdown, .tex, or .pdf")
+    parser.add_argument("--version", action="store_true", help="print the PaperEngine version and exit")
     parser.add_argument("--standard", choices=["international", "national"], default=None,
                         help="checking standard: international (IEEE/Elsevier/ACM...) or national (UGC/AICTE/NAAC Indian rules)")
     parser.add_argument("--venue", default="generic",
@@ -135,6 +136,11 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser.add_argument("--format", choices=["console", "markdown", "html", "fixplan", "csv", "similarity", "similarity-html"], default="console")
     parser.add_argument("--out", default=None, help="write report to this file (default: print to stdout)")
     args = parser.parse_args(argv)
+
+    if args.version:
+        from . import __version__
+        print(f"PaperEngine (papercheck) {__version__}")
+        return 0
 
     if args.openalex_key:
         os.environ["OPENALEX_API_KEY"] = args.openalex_key

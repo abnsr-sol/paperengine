@@ -134,6 +134,63 @@ INTERNATIONAL_PRESETS: Dict[str, Dict] = {
         "heading_style": "numeric", "caption_style": "Figure N.", "table_caption_above": False,
         "plagiarism_threshold": None, "ai_policy": "disclosure_required", "double_blind": False,
     },
+    "lncs_springer": {
+        # Springer LNCS conference proceedings (author guidelines, verified 2026-09)
+        "standard": "international", "page_limit": 16, "word_limit": None,
+        "abstract_word_limit": 250, "columns": 1, "page_size": "A4",
+        "font_required": "Times New Roman", "font_size_required": 10,
+        "required_sections": ["Abstract", "Keywords", "References"],
+        "required_statements": ["Acknowledgment"],  # matcher accepts Acknowledgement(s) too
+        "citations_style": "springer", "publisher": "Springer", "min_references": 15,
+        "heading_style": "numeric", "caption_style": "Fig. N.", "table_caption_above": True,
+        "plagiarism_threshold": None, "ai_policy": "disclosure_required", "double_blind": True,
+    },
+    "science_journal": {
+        # Science / Science Advances research-article norms (verified 2026-09)
+        "standard": "international", "page_limit": None, "word_limit": 11500,
+        "abstract_word_limit": 125, "columns": 2, "page_size": "US Letter",
+        "font_required": None, "font_size_required": None,
+        "required_sections": ["Abstract", "Introduction", "Materials and Methods", "Supplementary Materials", "References"],
+        "required_statements": ["Acknowledgment", "Author contributions", "Conflict of interest", "Data availability"],
+        "citations_style": "science", "publisher": "AAAS", "min_references": 40,
+        "heading_style": "numeric", "caption_style": "Fig. N.", "table_caption_above": True,
+        "plagiarism_threshold": None, "ai_policy": "disclosure_required", "double_blind": False,
+    },
+    "medical_journal": {
+        # ICMJE-aligned general medical journal (Lancet/BJM-class norms, verified 2026-09)
+        "standard": "international", "word_limit": 5000, "page_limit": None,
+        "abstract_word_limit": 300, "columns": 1, "page_size": "A4",
+        "font_required": None, "font_size_required": None,
+        "required_sections": ["Abstract", "Introduction", "Methods", "Results", "Discussion", "References"],
+        "required_statements": ["Funding", "Conflict of interest", "Data availability", "Ethics"],
+        "citations_style": "vancouver", "publisher": "ICMJE-aligned", "min_references": 30,
+        "heading_style": "numeric", "caption_style": "Figure N.", "table_caption_above": True,
+        "plagiarism_threshold": None, "ai_policy": "disclosure_required", "double_blind": True,
+        # ICMJE extras enforced by the compliance engine
+        "require_trial_registration": True, "require_consort": True,
+    },
+    "cell_journal": {
+        # Cell-family research article norms (verified 2026-09)
+        "standard": "international", "word_limit": 12000, "page_limit": None,
+        "abstract_word_limit": 150, "columns": 1, "page_size": "A4",
+        "font_required": None, "font_size_required": None,
+        "required_sections": ["Summary", "Introduction", "Results", "Discussion", "Experimental Procedures", "References"],
+        "required_statements": ["Author contributions", "Declaration of interests", "Data availability"],
+        "citations_style": "cell", "publisher": "Cell Press", "min_references": 50,
+        "heading_style": "numeric", "caption_style": "Figure N.", "table_caption_above": True,
+        "plagiarism_threshold": None, "ai_policy": "disclosure_required", "double_blind": False,
+    },
+    "arxiv_preprint": {
+        # arXiv preprint sanity profile: minimal structure, generous limits
+        "standard": "international", "word_limit": None, "page_limit": None,
+        "abstract_word_limit": 400, "columns": 1, "page_size": "A4",
+        "font_required": None, "font_size_required": None,
+        "required_sections": ["Abstract"],
+        "required_statements": [],
+        "citations_style": "any", "publisher": "arXiv", "min_references": 1,
+        "heading_style": None, "caption_style": None, "table_caption_above": None,
+        "plagiarism_threshold": None, "ai_policy": "unknown", "double_blind": False,
+    },
 }
 
 UGC_THRESHOLD = {

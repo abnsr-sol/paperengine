@@ -148,10 +148,21 @@ def run(doc: Document, ctx: CheckContext) -> List[Finding]:
             ))
 
     # --- Required statements -------------------------------------------------------------
+    def _stmt_pattern(stmt: str):
+        """Case-insensitive literal match; 'Acknowledg...' accepts both spellings
+        (Acknowledgment / Acknowledgement, singular or plural) so a venue preset
+        written in one variant never false-flags a paper using the other."""
+        m = re.match(r"^(acknowledg)(e?)(ment)(s?)$", stmt.strip(), re.IGNORECASE)
+        if m:
+            pat = re.escape(m.group(1)) + "(e?)" + re.escape(m.group(3)) + "(s?)"
+        else:
+            pat = re.escape(stmt)
+        return re.compile(pat, re.IGNORECASE)
+
     required = rules.get("required_statements", [])
     missing_stmts = []
     for stmt in required:
-        pattern = re.compile(re.escape(stmt), re.IGNORECASE)
+        pattern = _stmt_pattern(stmt)
         if not pattern.search(full):
             missing_stmts.append(stmt)
     if missing_stmts:

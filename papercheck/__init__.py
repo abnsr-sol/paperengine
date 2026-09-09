@@ -11,4 +11,4 @@ plagiarism, and an AI-risk score is not proof of AI authorship. See README.md
 for the full research-angle map and the honest-limitations section.
 """
 
-__version__ = "0.1.0"
+__version__ = "1.8.0"

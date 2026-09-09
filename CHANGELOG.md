@@ -4,6 +4,36 @@ All notable changes to PaperEngine are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [SemVer](https://semver.org/).
 
+## [1.8.0] — 2026-09-09
+
+### Fixed — correctness and trust hardening (external audit adopted)
+- **`__version__` mismatch fixed**: the package reported 0.1.0 while PyPI
+  metadata said 1.7.x. A regression test now asserts `papercheck.__version__`
+  always equals `pyproject.toml`'s version, so they can never diverge again.
+- **`papercheck --version` flag added** to the CLI.
+- **Readiness score recalibrated.** The old saturation curves zeroed a
+  realistic messy draft (20 medium + 10 high findings, no criticals → 0/100),
+  which read as noise. Medium/High tier penalties now scale so the same draft
+  scores ~62 while two critical findings still drop below 65 and a clean
+  paper still scores 100. Benchmark monotonicity holds (clean 90 / flawed 32).
+- **Acknowledgment spelling flexibility**: venue required-statement matching
+  now accepts Acknowledgment/Acknowledgement(s) interchangeably, so presets
+  and papers written in either variant stop false-flagging each other.
+- **Stale docs corrected**: COVERAGE_MATRIX header (65→74 engines, live
+  counts), requirements.txt pypdf pin re-synced with pyproject.
+
+### Added — five new venue standards (19 → 24 presets)
+- **`lncs_springer`** — Springer LNCS proceedings: 16pp, A4, single column,
+  Times 10pt, keywords required.
+- **`science_journal`** — AAAS Science-class: 125-word abstract, ~11.5k words,
+  Materials and Methods + Supplementary Materials sections.
+- **`medical_journal`** — ICMJE-aligned (Lancet-class): double-blind, trial
+  registration + CONSORT flags, ethics statement required.
+- **`cell_journal`** — Cell Press: 150-word Summary, Experimental Procedures,
+  50-reference floor.
+- **`arxiv_preprint`** — minimal preprint sanity profile (abstract-only
+  structure, generous limits).
+
 ## [1.7.0] — 2026-09-09
 
 ### Fixed — the accuracy problem that mattered most: PDF extraction

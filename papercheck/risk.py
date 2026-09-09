@@ -92,17 +92,17 @@ class RiskReport:
         for f in self.findings:
             tier_sums[f.severity] += f.severity.weight * f.confidence
         scale = {
-            Severity.CRITICAL: 80.0,
-            Severity.HIGH: 120.0,
-            Severity.MEDIUM: 160.0,
+            Severity.CRITICAL: 60.0,
+            Severity.HIGH: 150.0,
+            Severity.MEDIUM: 300.0,
             Severity.LOW: 200.0,
             Severity.INFO: 1.0,
         }
         max_contrib = {
             Severity.CRITICAL: 60.0,
-            Severity.HIGH: 55.0,
-            Severity.MEDIUM: 35.0,
-            Severity.LOW: 20.0,
+            Severity.HIGH: 45.0,
+            Severity.MEDIUM: 25.0,
+            Severity.LOW: 18.0,
             Severity.INFO: 0.0,
         }
         penalty = 0.0

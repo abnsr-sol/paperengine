@@ -1,3 +1,4 @@
 # Optional — only needed for PDF ingestion.
 # The core engine is 100% standard-library Python.
-pypdf>=3.0
+# Keep in sync with pyproject.toml (source of truth).
+pypdf>=4.0
