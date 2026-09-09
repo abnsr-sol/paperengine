@@ -4,6 +4,34 @@ All notable changes to PaperEngine are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [SemVer](https://semver.org/).
 
+## [1.7.0] — 2026-09-09
+
+### Fixed — the accuracy problem that mattered most: PDF extraction
+- **Layout-aware, two-column PDF reading order.** Naive `extract_text()` reads
+  glyph operators in stream order, which interleaves the two columns of
+  IEEE/ACM-style papers line-by-line and silently corrupts *every* downstream
+  engine (sentences, headings, statistics, similarity). PDF pages are now
+  reconstructed from positioned text fragments: visual rows are grouped,
+  split into runs at the column gutter, classified as full-width bands vs.
+  left/right column runs, and emitted title-first, then left column, then
+  right column. Pages that are not two-column fall back to plain order.
+- **Running heads/footers removed cross-page, not per-page.** The previous
+  blanket top/bottom band filter could silently delete the title of a short
+  first page. Now a line is dropped only if it repeats identically on ≥60%
+  of pages *and* the document has 3+ pages — single-page and short papers
+  keep every line.
+- **Typographic normalization**: ligatures (ﬁ/ﬂ/ﬃ → fi/fl/ffi), zero-width
+  characters, soft hyphens, U+FFFD replacement chars, and end-of-line
+  hyphenation ('sig-\nnificant' → 'significant') are repaired before any
+  engine sees the text.
+- An extraction note is recorded when a two-column layout was reconstructed,
+  so users know the reading order was inferred.
+
+### Added
+- 9 ingestion tests (built with real generated PDFs): column separation,
+  title preservation, running-head stripping, single-page protection,
+  ligature/hyphen normalization. Suite at 225 tests.
+
 ## [1.6.1] — 2026-09-07
 
 ### Added — compilation-hygiene engine (#74)

@@ -217,7 +217,8 @@ confidence · concrete action**.
 ```
 papercheck/
 ├── __main__.py        CLI entry point (single file, batch, compare, gui modes)
-├── ingestion.py       DOCX (stdlib zip+XML), TXT/MD/TeX, PDF (optional pypdf)
+├── ingestion.py       DOCX (stdlib zip+XML), TXT/MD/TeX, PDF (pypdf, layout-aware:
+│                      two-column reading order, ligature/hyphen repair)
 ├── metrics.py         text statistics (readability, burstiness, n-grams, …)
 ├── venues.py          19 venue rule presets + --venue-json override
 ├── risk.py            Finding / Severity / RiskReport / readiness score

@@ -4,6 +4,14 @@ DOCX parsing uses the standard library only: a .docx is a zip of XML, so we
 extract paragraph text plus run-level font names/sizes to support font and
 formatting checks. PDF extraction requires `pypdf`; without it, PDF files are
 reported with a clear message instead of silently producing empty text.
+
+PDF extraction is **layout-aware**: naive extractors read glyph operators in
+stream order, which interleaves the two columns of IEEE/ACM papers and
+corrupts every downstream check (sentences, headings, statistics). Here each
+page's words are positioned via pypdf's word boxes, rows are reconstructed,
+full-width bands (titles/abstracts) are separated from column bands, and text
+is emitted in true reading order. Typographic ligatures (fi/fl/ffi), soft
+hyphens, and end-of-line hyphenation are normalized afterwards.
 """
 
 from __future__ import annotations
@@ -258,6 +266,195 @@ def _load_text(path: str) -> Document:
 # PDF (optional pypdf)
 # --------------------------------------------------------------------------
 
+# --------------------------------------------------------------------------
+# PDF: layout-aware extraction
+# --------------------------------------------------------------------------
+
+_LIGATURES = {
+    "\ufb00": "ff", "\ufb01": "fi", "\ufb02": "fl",
+    "\ufb03": "ffi", "\ufb04": "ffl", "\ufb05": "st", "\ufb06": "st",
+}
+_INVISIBLES = ("\u200b", "\u200c", "\u200d", "\u2060", "\ufeff", "\xad")
+
+
+def _normalize_pdf_text(text: str) -> str:
+    """Repair the typographic damage extractors leave behind.
+
+    - ligatures (fi/fl/ffi...) -> plain ASCII, so spelling/word metrics see
+      real words instead of U+FB01 glyphs
+    - zero-width characters, soft hyphens, U+FFFD replacement chars removed
+    - end-of-line hyphenation rejoined: 'sig-\\nificant' -> 'significant'
+    """
+    for k, v in _LIGATURES.items():
+        text = text.replace(k, v)
+    for ch in _INVISIBLES:
+        text = text.replace(ch, "")
+    text = text.replace("\u00a0", " ").replace("\ufffd", "")
+    # de-hyphenate: hyphen at end of line + lowercase continuation
+    text = re.sub(r"(\w)-\s*\n\s*([a-z])", r"\1\2", text)
+    return text
+
+
+def _rows_from_frags(frags: List[dict]) -> List[List[dict]]:
+    """Group positioned text fragments into visual rows (4pt vertical tolerance)."""
+    if not frags:
+        return []
+    fs = sorted(frags, key=lambda f: (f["top"], f["x0"]))
+    rows: List[List[dict]] = []
+    cur = [fs[0]]
+    for f in fs[1:]:
+        if abs(f["top"] - cur[-1]["top"]) <= 4.0:
+            cur.append(f)
+        else:
+            rows.append(cur)
+            cur = [f]
+    rows.append(cur)
+    return rows
+
+
+def _split_row_runs(row: List[dict], gap: float = 15.0) -> List[List[dict]]:
+    """Split a visual row into horizontal runs at large x-gaps (the column gutter).
+
+    Fragment end-x is estimated as x0 + len(text) * size * 0.5 (average glyph
+    width); real gutters are far wider than any within-sentence space.
+    """
+    runs: List[List[dict]] = []
+    cur = [row[0]]
+    for f in row[1:]:
+        prev = cur[-1]
+        prev_end = prev["x0"] + len(prev["text"]) * max(prev["size"], 1.0) * 0.5
+        if f["x0"] - prev_end > gap:
+            runs.append(cur)
+            cur = [f]
+        else:
+            cur.append(f)
+    runs.append(cur)
+    return runs
+
+
+def _page_text_layout(page) -> Tuple[str, str]:
+    """Extract one page's text in reading order.
+
+    Returns (text, layout) where layout is 'two-column' or 'single-column'.
+    Uses pypdf's visitor_text hook to get the x/y position of every text-show
+    operation, groups fragments into visual rows, splits rows into horizontal
+    runs at the column gutter, then classifies runs: a wide run crossing the
+    center is a full-width band (title/abstract); otherwise it belongs to the
+    left or right column. Two-column pages emit top full-width bands first,
+    then the entire left column, then the right column.
+    """
+    frags: List[dict] = []
+
+    def _visit(text: str, cm, tm, font_dict, font_size) -> None:
+        t = text.strip()
+        if not t:
+            return
+        try:
+            x = float(tm[4])
+            y = float(tm[5])
+            size = float(font_size) if font_size and float(font_size) > 0 else 10.0
+        except (TypeError, ValueError, IndexError):
+            return
+        frags.append({"x0": x, "y": y, "text": t, "size": size})
+
+    try:
+        page.extract_text(visitor_text=_visit)
+    except Exception:
+        try:
+            return (page.extract_text() or "", "single-column")
+        except Exception:
+            return ("", "single-column")
+    if not frags:
+        return ("", "single-column")
+
+    y_max = max(f["y"] for f in frags)
+    for f in frags:
+        f["top"] = y_max - f["y"]  # PDF y grows upward; top-down reading order
+
+    page_h = max(f["top"] for f in frags) or 1.0
+    # Running heads/footers are NOT filtered here: a blanket top/bottom band cut
+    # silently eats the title of short pages (the first page of a paper is
+    # mostly title). They are removed cross-page in _load_pdf via
+    # _strip_repeated_lines, which drops only lines repeated on most pages.
+    body = frags
+
+    left_x = min(f["x0"] for f in body)
+    right_x = max(
+        f["x0"] + len(f["text"]) * max(f["size"], 1.0) * 0.5 for f in body
+    )
+    width = max(1.0, right_x - left_x)
+    mid_lo = left_x + width * 0.42
+    mid_hi = left_x + width * 0.58
+    gutter_mid = (mid_lo + mid_hi) / 2.0
+
+    def _run_text(run: List[dict]) -> str:
+        return " ".join(f["text"] for f in sorted(run, key=lambda f: f["x0"]))
+
+    def _classify(run: List[dict]) -> str:
+        x0 = min(f["x0"] for f in run)
+        x1 = max(f["x0"] + len(f["text"]) * max(f["size"], 1.0) * 0.5 for f in run)
+        if x0 < mid_lo and x1 > mid_hi and (x1 - x0) > width * 0.6:
+            return "full"
+        return "left" if (x0 + x1) / 2.0 < gutter_mid else "right"
+
+    rows = _rows_from_frags(body)
+    full_runs, left_frags, right_frags = [], [], []
+    for row in rows:
+        for run in _split_row_runs(row):
+            kind = _classify(run)
+            if kind == "full":
+                full_runs.append(run)
+            elif kind == "left":
+                left_frags.append(run)
+            else:
+                right_frags.append(run)
+
+    n_frag = len(full_runs) + len(left_frags) + len(right_frags)
+    two_col = (
+        bool(left_frags) and bool(right_frags)
+        and len(left_frags) / n_frag >= 0.25
+        and len(right_frags) / n_frag >= 0.25
+    )
+    if not two_col:
+        everything = [(min(f["top"] for f in r), r) for r in full_runs + left_frags + right_frags]
+        everything.sort(key=lambda t: t[0])
+        return ("\n".join(_run_text(r) for _, r in everything), "single-column")
+
+    # full-width bands near the top (title/abstract) come first in y order
+    top_full = [r for r in full_runs if min(f["top"] for f in r) < page_h * 0.35]
+    rest_full = [r for r in full_runs if r not in top_full]
+    lines = [_run_text(r) for r in sorted(top_full, key=lambda r: min(f["top"] for f in r))]
+    lines += [_run_text(r) for r in left_frags]
+    lines += [_run_text(r) for r in right_frags]
+    lines += [_run_text(r) for r in rest_full]
+    return ("\n".join(lines), "two-column")
+
+
+def _strip_repeated_lines(pages: List[str], min_pages: int = 3) -> List[str]:
+    """Remove running heads/footers across pages.
+
+    A line is a running head only if it appears (identically) on >=60% of
+    pages AND the document has at least `min_pages` pages — single-page and
+    short documents keep every line, so titles are never lost.
+    """
+    if len(pages) < min_pages:
+        return pages
+    line_pages: Dict[str, set] = {}
+    for i, page in enumerate(pages):
+        for line in set(page.splitlines()):
+            t = line.strip()
+            if t:
+                line_pages.setdefault(t, set()).add(i)
+    cutoff = 0.6 * len(pages)
+    repeat = {t for t, ps in line_pages.items() if len(ps) >= cutoff}
+    if not repeat:
+        return pages
+    out = []
+    for page in pages:
+        out.append("\n".join(l for l in page.splitlines() if l.strip() not in repeat))
+    return out
+
+
 def _load_pdf(path: str) -> Document:
     try:
         from pypdf import PdfReader
@@ -268,14 +465,21 @@ def _load_pdf(path: str) -> Document:
         )
 
     reader = PdfReader(path)
-    pages = []
+    pages: List[str] = []
+    layouts = set()
     for page in reader.pages:
-        try:
-            pages.append(page.extract_text() or "")
-        except Exception:
-            pages.append("")
-    text = "\n".join(pages)
+        page_text, layout = _page_text_layout(page)
+        layouts.add(layout)
+        pages.append(page_text)
+    pages = _strip_repeated_lines(pages)
+    text = _normalize_pdf_text("\n".join(pages))
     paragraphs = [p.strip() for p in re.split(r"\n\s*\n", text) if p.strip()]
+    notes = []
+    if "two-column" in layouts:
+        notes.append(
+            "Two-column PDF layout detected; reading order was reconstructed "
+            "(title/abstract bands first, then each column)."
+        )
     doc = Document(
         path=path,
         name=os.path.basename(path),
@@ -285,6 +489,7 @@ def _load_pdf(path: str) -> Document:
         figures=len(re.findall(r"(?i)\bfigure\s+\d+", text)),
         tables=len(re.findall(r"(?i)\btable\s+\d+", text)),
         metadata={"pages": str(len(reader.pages))},
+        extraction_notes=notes,
     )
     _annotate_structure(doc)
     return doc
