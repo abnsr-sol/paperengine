@@ -121,6 +121,8 @@ def main(argv: Optional[List[str]] = None) -> int:
                         help="OpenAlex API key (or set OPENALEX_API_KEY env var) — raises rate limits; free at openalex.org")
     parser.add_argument("--update-rwdb", action="store_true",
                         help="download/refresh the Retraction Watch database cache and exit")
+    parser.add_argument("--sync-all", action="store_true",
+                        help="refresh ALL open-intelligence caches (Retraction Watch DB + PPS tortured phrases) and exit")
     parser.add_argument("--gui", action="store_true",
                         help="launch the local drag-and-drop web interface (http://localhost:8765) and exit when closed")
     parser.add_argument("--port", type=int, default=8765,
@@ -160,6 +162,16 @@ def main(argv: Optional[List[str]] = None) -> int:
             return 0
         print("RWDB download failed (offline?); the built-in seed list remains active.", file=sys.stderr)
         return 2
+
+    if args.sync_all:
+        from . import intel
+        result = intel.sync_all()
+        print("Open-intelligence cache sync:")
+        print(f"  tortured phrases : {result.get('tortured_phrases')}")
+        print(f"  retraction watch : {result.get('retraction_watch')}")
+        print(f"  cache dir        : {result.get('cache_dir')}")
+        print("Engines read these caches automatically; everything still works offline.")
+        return 0 if result.get("tortured_phrases_ok") or result.get("retraction_db_source") == "downloaded" else 2
 
     if args.list_venues:
         groups = list_venues()

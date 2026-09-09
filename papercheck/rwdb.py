@@ -18,7 +18,17 @@ import re
 import urllib.request
 from typing import List, Optional
 
-_RWDB_URL = "https://retractionwatch.com/wp-content/uploads/rwdb.csv"
+# The Retraction Watch database moved to Crossref hosting (Crossref acquired
+# it in 2023; bulk file served from Crossref Labs). Keep fallbacks in case
+# the primary moves again.
+_RWDB_URLS = (
+    "https://api.labs.crossref.org/data/retractionwatch",      # primary (verified 2026-09)
+    "https://retractionwatch.com/wp-content/uploads/rwdb.csv",  # legacy
+    "https://api.crossref.org/works?filter=has-retraction:true&rows=1000&select=DOI,title,issued",  # last-resort API slice
+)
+# Cap the raw download at 64 MB — the full RWDB CSV is ~60-80 MB; the
+# token-overlap screen never needs more than a large prefix of it.
+_MAX_BYTES = 64 * 1024 * 1024
 _TIMEOUT = 20.0
 
 # (surname, year, token) triples: the historically most-cited retractions.
@@ -69,23 +79,29 @@ def load_db(path: Optional[str] = None) -> List[dict]:
 
 
 def download_db(path: Optional[str] = None) -> bool:
-    """Download + normalize the RWDB CSV into `path` as JSON. Returns success."""
+    """Download + normalize the RWDB CSV into `path` as JSON. Returns success.
+
+    Tries each mirror in turn; a large DB is capped at a sane parse size so a
+    multi-hundred-MB CSV cannot exhaust memory (tail is as informative as
+    the head for token-overlap screening of a manuscript's reference list)."""
     if not path:
         path = default_cache_path()
-    try:
-        req = urllib.request.Request(_RWDB_URL, headers={"User-Agent": "papercheck/1.0"})
-        with urllib.request.urlopen(req, timeout=_TIMEOUT) as resp:
-            raw = resp.read().decode("utf-8", "replace")
-        entries = _parse_csv(raw)
-        if not entries:
-            return False
-        tmp = path + ".tmp"
-        with open(tmp, "w", encoding="utf-8") as fh:
-            json.dump(entries, fh)
-        os.replace(tmp, path)
-        return True
-    except Exception:
-        return False
+    for url in _RWDB_URLS:
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "papercheck/1.9"})
+            with urllib.request.urlopen(req, timeout=_TIMEOUT) as resp:
+                raw = resp.read(_MAX_BYTES).decode("utf-8", "replace")
+            entries = _parse_csv(raw)
+            if not entries:
+                continue
+            tmp = path + ".tmp"
+            with open(tmp, "w", encoding="utf-8") as fh:
+                json.dump(entries, fh)
+            os.replace(tmp, path)
+            return True
+        except Exception:
+            continue
+    return False
 
 
 def _parse_csv(raw: str) -> List[dict]:
@@ -104,8 +120,82 @@ def _parse_csv(raw: str) -> List[dict]:
     return out
 
 
+# Academic stopword filter: token overlap is only evidence when it shares
+# DISTINCTIVE words. Generic filler ("for", "models", "system") plus the
+# year bonus otherwise collides legit references with same-year DB entries
+# sharing only common words (the v1.9.0 benchmark false positive).
+_STOPWORDS = frozenset(
+    """for and the with using based from into over under between among via
+    their this that these those its our model models method methods approach
+    approaches system systems analysis novel framework frameworks study
+    performance based new improved effective efficient algorithm algorithms
+    data results paper research are was were has have had not but can could
+    may might will would shall should one two three four five six ten""".split())
+
+
 def _tokens(text: str) -> set:
-    return set(re.findall(r"[a-z0-9]{3,}", text.lower()))
+    return {t for t in re.findall(r"[a-z0-9]{3,}", text.lower())
+            if t not in _STOPWORDS}
+
+
+# Process-level screening index: (mtime, size) -> (entries, token_sets).
+# Parsing a 16 MB JSON and tokenizing 72k titles per *check* is the single
+# biggest hot-path cost once the real DB is downloaded; this cache pays it
+# once per server/CLI lifetime instead.
+_INDEX_CACHE: dict = {}
+
+
+def get_screening_index(path: Optional[str] = None):
+    """Return (entries, token_sets) for the DB at `path`, cached by mtime.
+
+    Falls back to the seed list (also cached) when no file exists. The
+    token_sets list parallels `entries` so screening never re-tokenizes."""
+    if not path:
+        path = default_cache_path()
+    key = None
+    if path and os.path.isfile(path):
+        st = os.stat(path)
+        key = (st.st_mtime_ns, st.st_size)
+    cached = _INDEX_CACHE.get(path)
+    if cached and cached[0] == key:
+        return cached[1], cached[2]
+    entries = load_db(path)
+    token_sets = [_tokens(e.get("title", "")) for e in entries]
+    _INDEX_CACHE[path] = (key, entries, token_sets)
+    return entries, token_sets
+
+
+def screen_references_bulk(refs: List[str], entries: List[dict],
+                           token_sets: Optional[List[set]] = None,
+                           min_overlap: int = 4) -> List[List[tuple]]:
+    """Screen many references against a pre-tokenized DB efficiently.
+
+    Returns, for each ref, a list of (ref_index, reason, db_title) hits
+    (at most one per ref — first match wins, same as screen_references).
+    """
+    if token_sets is None:
+        token_sets = [_tokens(e.get("title", "")) for e in entries]
+    per_ref: List[List[tuple]] = [[] for _ in refs]
+    for i, ref in enumerate(refs):
+        rt = _tokens(ref)
+        if not rt:
+            continue
+        for j, et in enumerate(token_sets):
+            if not et:
+                continue
+            # Two ways to be evidence of the same work:
+            #  1) >=min_overlap distinctive tokens (long titles), or
+            #  2) 3+ tokens covering >=50% of a short DB title
+            #     (e.g. 3 of 4 tokens in 'wakefield mmr autism lancet').
+            # A generic same-year collision shares few of MANY tokens and
+            # fails the coverage test (the v1.9.0 benchmark false positive).
+            overlap = len(rt & et)
+            if overlap >= min_overlap or (
+                    overlap >= 3 and overlap * 2 >= len(et)):
+                per_ref[i] = [(i, entries[j].get("reason", "unspecified"),
+                               entries[j].get("title", ""))]
+                break
+    return per_ref
 
 
 def screen_references(refs: List[str], db: List[dict], min_overlap: int = 4) -> List[tuple]:
@@ -120,12 +210,10 @@ def screen_references(refs: List[str], db: List[dict], min_overlap: int = 4) -> 
             et = _tokens(entry.get("title", ""))
             if not et:
                 continue
+            # Same dual rule as screen_references_bulk.
             overlap = len(rt & et)
-            # year agreement strengthens a weak overlap
-            year = entry.get("year")
-            if year and str(year) in ref:
-                overlap += 1
-            if overlap >= min_overlap:
+            if overlap >= min_overlap or (
+                    overlap >= 3 and overlap * 2 >= len(et)):
                 hits.append((i, entry.get("reason", "unspecified"), entry.get("title", "")))
                 break
     return hits

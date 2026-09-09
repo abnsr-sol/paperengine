@@ -4,6 +4,39 @@ All notable changes to PaperEngine are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [SemVer](https://semver.org/).
 
+## [1.9.0] — 2026-09-09
+
+### Added — open-source intelligence integration + efficiency wave
+- **`papercheck --sync-all`**: one command refreshes the local open-data
+  cache — the **Retraction Watch database** (now via its official Crossref
+  Labs home; the old retractionwatch.com URL 404s, which silently broke
+  the previous `--update-rwdb` flow) and the **PPS tortured-phrases
+  catalogue** (Cabanac et al.). Engines read the caches automatically;
+  everything still works fully offline from curated fallbacks.
+- **72,187 retracted papers** now screen every reference (up from a 14-entry
+  seed list), surfaced in the GUI as a live cache-status chip.
+- **SPRITE fabrication forensics** (engine #76): reconstructs whether ANY
+  integer dataset of N responses on a declared scale can produce a reported
+  M/SD pair — deterministic, same certainty class as GRIM/statcheck, with
+  proper GRIM handoff (impossible means are GRIM's finding, not SPRITE's).
+- **Tortured-phrase engine #75**: Aho-Corasick word-trie scanning of the PPS
+  catalogue (O(words × phrase depth)) with escalation by distinct-phrase
+  count and a translation-disclaimer escape hatch.
+
+### Fixed
+- **Retraction screening false positive** the real 72k-DB immediately
+  surfaced: generic same-year titles ("load balancing…for…models…networks")
+  collided with retracted works via stopwords + a year bonus. Tokens are now
+  filtered to distinctive words, the year can corroborate but never create a
+  match, and a short-title coverage rule keeps genuine seed-list matches
+  firing. Benchmark clean paper back to 90 with zero serious FPs.
+- **Efficiency: retraction screening index** — the 16 MB DB was re-parsed and
+  all 72k titles re-tokenized *per reference*; now a process-level index
+  pays 1.13 s once per server/CLI lifetime and re-accesses in 0.4 ms.
+- **Efficiency: LanguageTool probe TTL cache** — the 1.5–3 s connect
+  timeout was paid by every GUI check when no LT server runs; now cached
+  for 10 minutes (subsequent probes: 0.01 ms).
+
 ## [1.8.1] — 2026-09-09
 
 ### Fixed — the GUI 'bad operand type for unary -: str' crash class

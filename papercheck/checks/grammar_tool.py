@@ -34,14 +34,28 @@ def _server_url() -> str:
     return os.environ.get("LT_URL", "http://localhost:8081").rstrip("/")
 
 
+# Process-level probe cache with TTL: without it, every GUI check re-pays
+# the 1.5 s connect timeout when no LanguageTool server is running.
+_PROBE_TTL = 600.0  # seconds a negative/positive probe result stays valid
+_PROBE_CACHE: dict = {"ok": False, "at": 0.0}
+
+
 def _probe() -> bool:
+    import time as _time
+    now = _time.monotonic()
+    if now - _PROBE_CACHE["at"] < _PROBE_TTL:
+        return _PROBE_CACHE["ok"]
+    ok = False
     try:
         req = urllib.request.Request(_server_url() + "/v2/languages",
                                      headers={"User-Agent": "papercheck/1.0"})
         with urllib.request.urlopen(req, timeout=_TIMEOUT):
-            return True
+            ok = True
     except Exception:
-        return False
+        ok = False
+    _PROBE_CACHE["ok"] = ok
+    _PROBE_CACHE["at"] = now
+    return ok
 
 
 def _check_chunk(text: str, mailto: str) -> List[dict]:

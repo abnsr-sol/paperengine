@@ -95,6 +95,16 @@ def _page(form_html: str = "", result_html: str = "", error: str = "") -> str:
     if error:
         banner = f'<div class="error">{_html.escape(error)}</div>'
     n_engines = len(ALL_ENGINES)
+    try:
+        from .intel import db_status
+        _st = db_status()
+        _n = _st.get("retraction_db")
+        _src = _st.get("retraction_db_source", "")
+        intel_chip = (f"Retraction Watch: {int(_n):,} papers cached"
+                      if _src == "downloaded" and isinstance(_n, int)
+                      else "Retraction Watch: seed list (run papercheck --sync-all)")
+    except Exception:
+        intel_chip = "Open-intelligence cache"
     return f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -186,7 +196,8 @@ def _page(form_html: str = "", result_html: str = "", error: str = "") -> str:
   <div class="chips">
     <span class="chip">{n_engines} check engines</span>
     <span class="chip">International + Indian statutory standards</span>
-    <span class="chip">Statcheck · GRIM · UGC 2018</span>
+    <span class="chip">Statcheck · GRIM · SPRITE · UGC 2018</span>
+    <span class="chip">{intel_chip}</span>
     <span class="chip">100% local — zero telemetry</span>
   </div>
 </div></header>

@@ -46,8 +46,11 @@ def run(doc: Document, ctx: object) -> List[Finding]:
     if not refs:
         return out
     # Full RWDB if cached (or downloadable), else the built-in seed list.
-    db = rwdb.load_db(rwdb.default_cache_path())
-    for r in refs:
+    # Use the process-level screening index: parse+tokenize once per server
+    # lifetime, not once per reference (72k entries x N refs is minutes).
+    entries, token_sets = rwdb.get_screening_index(rwdb.default_cache_path())
+    per_ref = rwdb.screen_references_bulk(refs, entries, token_sets)
+    for i, r in enumerate(refs):
         low = r.lower()
         for (surname, year, token) in _KNOWN:
             if surname in low and year in low and token in low:
@@ -58,8 +61,7 @@ def run(doc: Document, ctx: object) -> List[Finding]:
                                    0.90))
                 break
         else:
-            hits = rwdb.screen_references([r], db)
-            for _, reason, title in hits[:1]:
+            for _, reason, title in per_ref[i][:1]:
                 out.append(Finding("Integrity", Severity.CRITICAL,
                                    "Reference matches retracted work (Retraction Watch DB)",
                                    "Retraction Watch lists this work (" + reason + "). Verify and remove or cite with a retraction note.",
