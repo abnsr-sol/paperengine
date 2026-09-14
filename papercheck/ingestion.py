@@ -584,8 +584,19 @@ def _annotate_structure(doc: Document) -> None:
 
 
 def _split_references(text: str) -> List[str]:
-    """Split a references block into individual entries."""
-    entries = re.split(r"\n(?=\[\d+\]|\d+[.)]\s+[A-Z])", text.strip())
+    """Split a references block into individual entries.
+
+    Handles: [1] Author..., 1. Author..., 1) Author..., Author (Year)..., and
+    Author et al. (Year)... formats.
+    """
+    entries = re.split(
+        r"\n(?="
+        r"[\[\d+]"          # [1] numbered
+        r"|\d+[.)]\s+[A-Z]"  # 1. Author or 1) Author
+        r"|\w+\s+et\s+al\." # Author et al.
+        r"|\w+\s+\(\d{4}\)" # Author (2024)
+        r"|\w+,\s+\w+\s+\(\d{4}\)" # Author, A. (2024)
+        r")", text.strip())
     out = []
     for e in entries:
         e = e.strip()

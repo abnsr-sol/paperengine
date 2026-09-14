@@ -34,9 +34,27 @@ def run_all_engines(doc: Document, ctx: CheckContext) -> Tuple[List["Finding"], 
     for engine in ALL_ENGINES:
         name = getattr(engine, "__module__", "engine").rsplit(".", 1)[-1]
         try:
-            findings.extend(engine(doc, ctx) or [])
+            engine_findings = engine(doc, ctx) or []
+            for f in engine_findings:
+                if not f.source:
+                    f.source = name
+            findings.extend(engine_findings)
         except Exception as exc:  # noqa: BLE001
             errors.append(f"{name}: {type(exc).__name__}: {exc}")
+    # Deduplicate: if two findings share (category, title), keep the higher-confidence one
+    seen: Dict[str, Finding] = {}
+    deduped: List[Finding] = []
+    for f in findings:
+        key = f"{f.category}|{f.title}|{f.source}" if f.source else f"{f.category}|{f.title}"
+        if key in seen:
+            if f.confidence > seen[key].confidence:
+                deduped.remove(seen[key])
+                seen[key] = f
+                deduped.append(f)
+        else:
+            seen[key] = f
+            deduped.append(f)
+    findings = deduped
     for err in errors:
         findings.append(Finding(
             "Engine", Severity.LOW,
@@ -68,6 +86,8 @@ def _import_engines() -> List[CheckFn]:
         grim_engine, openalex_verify,
         physical_plausibility, ml_fairness, corrections, proof_gaps,
         compilation_hygiene, tortured_phrases, sprite_engine,
+        asa_pvalues, power_adequacy, engineering_vv, country_standards,
+        tiva_engine, pcurve_engine, venue_hijack, trial_ethics, limitations,
     )
     return [
         compliance.run, structure.run, language.run, citations.run,
@@ -93,8 +113,12 @@ def _import_engines() -> List[CheckFn]:
         grammar_tool.run, cross_check.run,
         statcheck.run, ugc_14word.run, grim_engine.run, openalex_verify.run,
         physical_plausibility.run, ml_fairness.run, corrections.run,
-        proof_gaps.run, compilation_hygiene.run, tortured_phrases.run,
+        proof_gaps.run,        compilation_hygiene.run, tortured_phrases.run,
         sprite_engine.run,
+        asa_pvalues.run, power_adequacy.run, engineering_vv.run,
+        country_standards.run,
+        tiva_engine.run, pcurve_engine.run,
+        venue_hijack.run, trial_ethics.run, limitations.run,
     ]
 
 ALL_ENGINES: List[CheckFn] = _import_engines()

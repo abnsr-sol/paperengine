@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "paperengine"
-version = "1.9.0"
+version = "1.10.0"
 description = "Pre-submission rejection-risk engine for academic manuscripts (65 check engines, dual international/Indian standards, CLI + local web GUI)"
 readme = "README.md"
 requires-python = ">=3.10"

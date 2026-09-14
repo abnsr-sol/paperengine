@@ -12,6 +12,7 @@ are present so the manuscript cannot be desk-rejected for a missing statement.
 
 from __future__ import annotations
 
+import re
 from typing import Dict, List
 
 from ..ingestion import Document
@@ -79,8 +80,14 @@ def run(doc: Document, ctx: CheckContext) -> List[Finding]:
     # Scan the body only — reference titles legitimately mention 'artificial intelligence'.
     full = doc.body_text
 
-    has_decl = any(k in full.lower() for k in ("declaration of generative ai", "generative ai", "ai-assisted", "use of ai", "artificial intelligence", "chatgpt", "large language model", "llm", "ai tools"))
-    if pol["disclosure_required"]:
+    low = full.lower()
+    has_decl = any(k in low for k in ("declaration of generative ai", "generative ai", "ai-assisted", "use of ai", "chatgpt", "large language model", "llm", "ai tools"))
+    # Only require disclosure if AI writing tools were actually used.
+    # Papers that USE ML methods (deep learning, neural networks) for research
+    # are different from papers that USED AI tools for writing/analysis.
+    ai_writing_tools = re.search(r'chatgpt|gpt-?4|gpt-?5|claude|gemini|bard|copilot|llama|mistral|deepseek|llm|large language model|ai[- ]assisted (?:writing|drafting|language|grammar)', low)
+    ai_method_only = re.search(r'(?:deep|machine)\s+learning|neural\s+network|transformer|cnn|rnn|lstm', low) and not ai_writing_tools
+    if pol["disclosure_required"] and (ai_writing_tools or not ai_method_only):
         if not has_decl:
             findings.append(Finding(
                 category=cat, severity=Severity.MEDIUM,

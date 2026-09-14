@@ -4,6 +4,52 @@ All notable changes to PaperEngine are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [SemVer](https://semver.org/).
 
+## [1.10.0] — 2026-09-09
+
+### Added — global standards wave (engines #77–#80 + EQUATOR expansion)
+Built from the verified open-source research sweep (`RESEARCH_GLOBAL_2000_2026.md`,
+Appendix 10): refchecker's multi-source reference consensus, aclpubcheck's camera-ready
+preflight, Aletheia-Probe's multi-source venue verdicts, and the z-curve/p-curve
+family — plus the four highest-impact gaps from the country-by-country gap analysis.
+
+- **ASA p-value misuse engine (#77, `asa_pvalues`)**: the ASA 2016 statement's six
+  principles as mechanical checks — significance claimed with no effect size (P3),
+  threshold-only p-values (P2), magnitude rhetoric ("highly significant", P4),
+  nonsignificance read as no effect (P5), p-as-proof (P1), significance euphemisms
+  (P6). Papers that report effect sizes/CIs get a pass on the matching principles.
+- **Power & sample-size engine (#78, `power_adequacy`)**: the top cited peer-review
+  rejection cause — participant studies with no power/sample-size language, small-n
+  framed with "robust/conclusive" language, unexplained group imbalance after
+  randomization, power analysis named without alpha/power/effect-size parameters.
+- **EQUATOR expansion 4 → 13 families** (`reporting_guidelines`): CONSORT and PRISMA
+  (existing) joined by CONSORT-AI, SPIRIT, STROBE, STARD, TRIPOD/TRIPOD+AI,
+  ARRIVE 2.0, CARE, SRQR/COREQ, CHEERS 2022, SQUIRE 2.0, and MIQE. Families are
+  detected by study type and compose (an AI-RCT gets CONSORT + CONSORT-AI).
+  SPIRIT's gate is IRB-boilerplate-proof ("the study protocol was approved by..."
+  no longer triggers a false protocol-paper check — caught by the benchmark audit).
+- **Engineering V&V engine (#79, `engineering_vv`)**: simulation/FEA/CFD papers are
+  audited against ASME V&V / NAFEMS / NASA-STD-7009 expectations — mesh/grid
+  independence, validation against experiment, solver + scheme identification,
+  boundary conditions, uncertainty quantification, sourced material properties,
+  compute environment. Silent on non-simulation papers.
+- **Country standards engine (#80, `country_standards`)**: funder/jurisdiction
+  signals trigger the matching national regime — India (UGC 2018 tiers + NIRF 2025
+  retraction penalty), China (MOE early-warning list + national retraction review),
+  USA (Nelson Memo immediate OA + NIH DMS data sharing), EU (Plan S Rights
+  Retention Strategy), Japan (MEXT misconduct guidelines), Korea (KCI screening /
+  KISTI registration). Informational by design.
+- **29 new tests** (`test_standards_wave.py`); benchmark gate: clean paper 90/100
+  with zero serious findings, flawed paper 30, monotonicity PASS.
+
+### Research
+- `RESEARCH_GLOBAL_2000_2026.md` Appendix 10: verified deep dive on
+  markrussinovich/refchecker (borrow: DBLP/ACL Anthology consensus),
+  acl-org/aclpubcheck (borrow: Type-3-font preflight), Aletheia-Probe
+  (borrow: per-source venue verdicts), FBartos/zcurve (borrow: p-curve
+  right-skew signal); plus a corrected free-data-layer map (the "Retraction
+  Watch API costs $500/yr" claim circulating in community dumps is false —
+  the DB is free for research use and already cached offline).
+
 ## [1.9.0] — 2026-09-09
 
 ### Added — open-source intelligence integration + efficiency wave

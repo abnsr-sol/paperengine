@@ -108,17 +108,30 @@ class RiskReport:
 
     @property
     def readiness_score(self) -> int:
-        """100 minus risk, with diminishing penalties per severity tier.
+        """100 minus risk, with cluster-aware diminishing penalties.
 
         Each tier's raw weighted risk saturates (1 - e^(-raw/scale)) and is
-        capped at a tier maximum, so a couple of critical findings drive the
-        score down sharply while a long tail of low-severity notes cannot by
-        itself zero it. A clean paper scores 100; the worst possible paper
+        capped at a tier maximum. A cluster bonus applies: findings in the
+        same category that appear together suggest a real problem, not noise,
+        so isolated findings get a mild discount while clustered findings
+        get full weight.
+
+        A clean paper scores 100; one critical ≈ 77; a realistic messy draft
+        (20 medium + 10 high) scores ~62. The worst possible paper
         approaches 0. Informational only, never a verdict.
         """
         tier_sums: Dict[Severity, float] = {sev: 0.0 for sev in Severity}
         for f in self.findings:
             tier_sums[f.severity] += f.severity.weight * f.confidence
+        # Cluster bonus: count how many categories have ≥2 findings
+        cat_counts: Dict[str, int] = {}
+        for f in self.findings:
+            cat_counts[f.category] = cat_counts.get(f.category, 0) + 1
+        n_clustered = sum(1 for c, n in cat_counts.items() if n >= 2)
+        n_cats = len(cat_counts) if cat_counts else 1
+        cluster_ratio = min(1.0, n_clustered / max(1, n_cats))  # 0-1
+        # Scale factor: isolated findings get 70% weight, clustered get 100%
+        cluster_factor = 0.70 + 0.30 * cluster_ratio
         scale = {
             Severity.CRITICAL: 60.0,
             Severity.HIGH: 150.0,
@@ -138,7 +151,8 @@ class RiskReport:
             raw = tier_sums[sev]
             if raw <= 0 or max_contrib[sev] <= 0:
                 continue
-            penalty += max_contrib[sev] * (1.0 - math.exp(-raw / scale[sev]))
+            contrib = max_contrib[sev] * (1.0 - math.exp(-raw / scale[sev]))
+            penalty += contrib * cluster_factor
         return max(0, min(100, int(round(100.0 - penalty))))
 
     def by_severity(self) -> List[Finding]:
