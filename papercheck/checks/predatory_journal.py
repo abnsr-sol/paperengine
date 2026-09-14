@@ -40,12 +40,20 @@ def run(doc: Document, ctx: object) -> List[Finding]:
         missing.append("COPE membership")
     if 'apc' not in body.lower() and 'article processing charge' not in body.lower():
         missing.append("APC transparency")
-    if missing:
-        out.append(Finding("Submission", Severity.INFO,
-                           "Venue vetting checklist (Think.Check.Submit)",
-                           "Before paying anything or submitting, verify these. Predatory journals cost money, time, and publishability.",
-                           "Not verified in manuscript: " + "; ".join(missing), "Check: ISSN (issn.org), DOAJ (if OA), COPE membership, APC transparency, real editorial board, indexed in Scopus/WoS",
-                           0.95))
+    # Only fire venue vetting checklist when a journal is mentioned AND has predatory signals
+    # Don't fire on every paper just because ISSN/DOAJ/COPE aren't mentioned (they rarely are)
+    has_journal_mention = re.search(r'journal|proceedings|review|transactions|letters', body, re.IGNORECASE)
+    has_predatory_signal = re.search(
+        r'accepted\s+(?:within|in)\s+\d+\s+(?:hours|days)|guaranteed\s+(?:publication|acceptance)|'
+        r'quick\s+peer\s+review|submit\s+(?:now|today)|no\s+peer\s+review\s+fee|APC\s+(?:waived|free)',
+        body, re.IGNORECASE
+    )
+    if missing and (has_predatory_signal or (has_journal_mention and len(missing) >= 3)):
+        out.append(Finding("Submission", Severity.MEDIUM,
+                           "Venue vetting recommended (Think.Check.Submit)",
+                           "Some venue metadata could not be verified from the manuscript. Before paying or submitting, verify the journal.",
+                           "Not verified: " + "; ".join(missing), "Check: ISSN (issn.org), DOAJ (if OA), COPE membership, APC transparency",
+                           0.60))
 
     # Hijack check cue: journal name claiming big-name publisher + regional venue mismatch.
     if publisher and re.search(r'claims?\s+(?:to\s+be|indexed)|scopus|web\s+of\s+science|impact\s+factor', body, re.IGNORECASE):

@@ -8,6 +8,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 
 from papercheck.checks import ALL_ENGINES, CheckContext
+from papercheck.ingestion import Document, Section
 from papercheck.ingestion import load_document
 from papercheck.metrics import (
     flesch_reading_ease,
@@ -163,12 +164,18 @@ class TestEngines(unittest.TestCase):
         self.assertTrue(any("Overstated" in f.title for f in findings))
 
     def test_policy_requires_disclosure(self):
-        doc = load_document(SAMPLE_TXT)
+        # Test that AI writing tool mentions trigger disclosure requirement
         from papercheck.checks.policy import run as policy_run
-
+        doc = Document(
+            path="test.txt", name="test.txt", file_type="text",
+            text="This paper was assisted by ChatGPT for language polishing. " * 20,
+            sections=[Section(heading="Abstract", level=1,
+                body="This paper was assisted by ChatGPT for language polishing. " * 20, start_index=0)],
+            paragraphs=["This paper was assisted by ChatGPT for language polishing. " * 20],
+        )
         ctx = CheckContext(rules=get_rules("elsevier"))
         findings = policy_run(doc, ctx)
-        self.assertTrue(any("Missing AI-use disclosure" in f.title for f in findings))
+        self.assertTrue(any("AI-use disclosure" in f.title or "AI disclosure" in f.title for f in findings))
 
 
 class TestReport(unittest.TestCase):

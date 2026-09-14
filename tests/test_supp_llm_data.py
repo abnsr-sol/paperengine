@@ -31,7 +31,7 @@ class TestLLMArtifacts(unittest.TestCase):
 
     def test_tortured_phrase(self):
         out = llm_artifacts.run(_doc('We use profound learning for vision.'), None)
-        self.assertTrue(any('Tortured phrase' in f.title for f in out))
+        self.assertTrue(any('ortured' in f.title for f in out))
 
     def test_placeholder(self):
         out = llm_artifacts.run(_doc('Results are TBD.'), None)

@@ -108,8 +108,9 @@ def _find_tortured_phrases(text: str) -> List[dict]:
     low = text.lower()
     findings = []
     for phrase, intended in _TORTURED_PHRASES.items():
-        # Word-boundary match with flexible whitespace
-        pat = r"\b" + re.escape(phrase).replace(r" ", r"\s+") + r"\b"
+        # Word-boundary match with flexible whitespace between words
+        words = phrase.split()
+        pat = r"\b" + r"\s+".join(re.escape(w) for w in words) + r"\b"
         if re.search(pat, low):
             findings.append({"detected": phrase, "intended": intended})
     return findings

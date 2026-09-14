@@ -140,8 +140,14 @@ def run(doc: Document, ctx: object) -> List[Finding]:
         try:
             v = float(val)
             if v > 100 and v < 9999:
-                findings.append(Finding(category="Integrity", severity=Severity.CRITICAL, title=f"Impossible percentage: {val}%", detail="Percentage exceeds 100%.", evidence=f"{val}%", confidence=0.95, action="Verify percentage calculation"))
-                break
+                # Only flag if in proportion context (not increase/growth/change)
+                idx = body.find(val + "%")
+                context = body[max(0, idx-60):idx+60].lower() if idx >= 0 else ""
+                is_proportion = any(w in context for w in ("proportion", "percentage", "prevalence", "rate", "fraction", "of", "among", "between"))
+                is_change = any(w in context for w in ("increase", "improvement", "growth", "reduction", "change", "more", "less", "higher", "lower", "exceeded"))
+                if is_proportion and not is_change:
+                    findings.append(Finding(category="Integrity", severity=Severity.CRITICAL, title=f"Impossible percentage: {val}%", detail="Percentage exceeds 100% in a proportion context.", evidence=f"{val}%", confidence=0.90, action="Verify percentage calculation"))
+                    break
         except: pass
     # Impossible correlation
     for val in re.findall(r"r\s*=\s*([-.\d]+)", body):
@@ -149,10 +155,17 @@ def run(doc: Document, ctx: object) -> List[Finding]:
             if abs(float(val)) > 1.0:
                 findings.append(Finding(category="Integrity", severity=Severity.CRITICAL, title=f"Impossible r={val}", detail="Correlation must be [-1,1].", evidence=f"r={val}", confidence=0.99, action="Verify r-value"))
         except: pass
-    # Table vs text number mismatches (n= in different places)
-    ns = sorted(set(int(n) for n in re.findall(r"[nN]\s*=\s*(\d+)", body)))
-    if len(ns) >= 2:
-        findings.append(Finding(category="Integrity", severity=Severity.MEDIUM, title=f"Multiple sample sizes: {ns}", detail="Different n values found. Ensure each table/figure states its n.", evidence=f"n = {ns}", confidence=0.70, action="State n for each table/figure"))
+    # Inconsistent sample sizes within the same group
+    group_ns = re.findall(r"(\w+(?:\s+\w+)?)\s*\(?\s*n\s*=\s*(\d+)", body)
+    if group_ns:
+        from collections import defaultdict
+        group_map = defaultdict(set)
+        for group, n in group_ns:
+            group_map[group.lower().strip()].add(int(n))
+        inconsistent = {g: ns for g, ns in group_map.items() if len(ns) > 1}
+        if inconsistent:
+            details = "; ".join(f"{g}: n={ns}" for g, ns in inconsistent.items())
+            findings.append(Finding(category="Integrity", severity=Severity.MEDIUM, title="Inconsistent sample sizes within groups", detail=f"Same group reported with different n values: {details}", evidence=details, confidence=0.75, action="Verify that each group has a consistent sample size"))
     # p = 0.000
     if re.search(r"p\s*[=<>]\s*0\.000", body, re.IGNORECASE):
         findings.append(Finding(category="Integrity", severity=Severity.HIGH, title="p=0.000 reported", detail="Should be p < .001 per APA/AMA.", evidence="p=0.000 found", confidence=0.98, action="Replace with p < .001"))
