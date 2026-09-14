@@ -1,0 +1,270 @@
+{
+  "_meta": {
+    "description": "Venue intelligence bundle for PaperEngine venue_hijack engine",
+    "version": "1.0.0",
+    "last_updated": "2026-09-14",
+    "sources": [
+      "Retraction Watch Hijacked Journal Checker",
+      "DOAJ (Directory of Open Access Journals)",
+      "Think.Check.Submit",
+      "Cabell's Predatory Reports (offline indicator subset)"
+    ],
+    "note": "Run `papercheck --sync-venues` to refresh from live sources (future). For now, this is a curated offline snapshot."
+  },
+  "hijacked_journals": [
+    {
+      "title_norm": "american journal of industrial and business management",
+      "issn": "2160-5766",
+      "clone_of": "legitimate title varies — multiple hijack clones active",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title_norm": "international journal of advanced research in engineering and technology",
+      "issn": "0976-4259",
+      "clone_of": "generic predatory title — not a legitimate journal",
+      "source": "Think.Check.Submit / Beall criteria"
+    },
+    {
+      "title_norm": "journal of advanced research in science and technology",
+      "issn": null,
+      "clone_of": "generic predatory title",
+      "source": "Think.Check.Submit"
+    },
+    {
+      "title_norm": "international journal of sciences",
+      "issn": "2305-3925",
+      "clone_of": "generic predatory title with fake impact factor claims",
+      "source": "Retraction Watch"
+    },
+    {
+      "title_norm": "journal of cardiovascular disease and research",
+      "issn": "0975-9557",
+      "clone_of": "Medknow/Wolters Kluwer journal — hijacked by predatory publisher",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title_norm": "oncology letters",
+      "issn": "1792-1074",
+      "clone_of": "Legitimate Spandidos Publications journal — cloned sites active 2023-2025",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title_norm": "journal of cellular biochemistry",
+      "issn": "1097-4644",
+      "clone_of": "Legitimate Wiley journal — cloned sites harvesting APCs",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title_norm": "archives of medical research",
+      "issn": "0188-4409",
+      "clone_of": "Legitimate Elsevier journal — hijacked clone active 2024",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title_norm": "journal of clinical investigation",
+      "issn": "0021-9738",
+      "clone_of": "Legitimate ASH/jci.org journal — cloned sites 2023-2024",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title_norm": "medical journal of australia",
+      "issn": "0025-729X",
+      "clone_of": "Legitimate Wiley/MJA journal — multiple impostor sites",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title_norm": "acta medica iranica",
+      "issn": "0044-6025",
+      "clone_of": "Legitimate Iranian medical journal — hijacked clone active",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title_norm": "turkish journal of emergency medicine",
+      "issn": "2452-2405",
+      "clone_of": "Legitimate EMJ Turkey — cloned site active 2024",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title_norm": "journal of pharmaceutical research international",
+      "issn": "2231-2919",
+      "clone_of": "Predatory title — not indexed in legitimate databases",
+      "source": "Beall criteria / Think.Check.Submit"
+    },
+    {
+      "title_norm": "international journal of current research and review",
+      "issn": "0975-5241",
+      "clone_of": "Predatory publisher — low editorial standards",
+      "source": "Beall criteria"
+    },
+    {
+      "title_norm": "international journal of innovative research in science engineering and technology",
+      "issn": "2347-2935",
+      "clone_of": "Generic predatory title — no legitimate indexing",
+      "source": "Think.Check.Submit"
+    },
+    {
+      "title_norm": "journal of emerging technologies and innovative research",
+      "issn": "2348-8190",
+      "clone_of": "Predatory publisher — guaranteed acceptance language",
+      "source": "Beall criteria"
+    },
+    {
+      "title_norm": "international research journal of engineering and technology",
+      "issn": "2395-0056",
+      "clone_of": "Predatory publisher — spam email solicitations",
+      "source": "Think.Check.Submit"
+    },
+    {
+      "title_norm": "international journal of science and research",
+      "issn": "2319-7064",
+      "clone_of": "Predatory publisher — low-quality open access",
+      "source": "Beall criteria"
+    },
+    {
+      "title_norm": "journal of advanced research in mechanical engineering and technology",
+      "issn": null,
+      "clone_of": "Generic predatory title — no legitimate indexing",
+      "source": "Think.Check.Submit"
+    },
+    {
+      "title_norm": "international journal of engineering research and technology",
+      "issn": "2278-0181",
+      "clone_of": "Predatory publisher — high volume, low quality",
+      "source": "Beall criteria"
+    }
+  ],
+  "legitimate_publishers": {
+    "Elsevier": {
+      "domains": ["elsevier.com", "sciencedirect.com", "cell.com", "thelancet.com", "elsevierjournals.com"],
+      "issn_prefixes": ["0016", "0021", "0022", "0092", "0140", "0168", "0169", "0301", "0306", "0309", "0378", "0415", "0735", "0959", "1053", "1359", "1386", "1471", "1568", "1873", "2213", "2214", "2352", "2452", "2468"]
+    },
+    "Springer Nature": {
+      "domains": ["springer.com", "nature.com", "link.springer.com", "biomedcentral.com", "mpg.de"],
+      "issn_prefixes": ["0007", "0028", "0340", "0941", "0942", "0944", "0946", "0949", "0950", "0957", "0958", "0959", "1064", "1432", "1433", "1435", "1436", "1437", "1438", "1439", "1440", "1467", "1468", "1469", "1471", "1476", "1521", "1522", "1525", "1545", "1546", "1555", "1568", "1573", "1582", "1617", "1661"]
+    },
+    "IEEE": {
+      "domains": ["ieee.org", "ieeexplore.ieee.org"],
+      "issn_prefixes": ["0018", "0096", "0278", "0364", "0885", "1041", "1051", "1058", "1063", "1070", "1089", "1210", "1520", "1536", "1542", "1545", "1551", "1553", "1556", "1557", "1558", "1937", "1939", "1941", "1943", "1944", "2162", "2168", "2169", "2326", "2331", "2373", "2374"]
+    },
+    "ACM": {
+      "domains": ["acm.org", "dl.acm.org"],
+      "issn_prefixes": ["0001", "0098", "0164", "0360", "0362", "0730", "1049", "1094", "1530", "1535", "1542", "1550", "1551", "1557", "1558", "1559", "1573", "2374", "2375"]
+    },
+    "Wiley": {
+      "domains": ["wiley.com", "onlinelibrary.wiley.com", "journals.lww.com"],
+      "issn_prefixes": ["0022", "0023", "0028", "0366", "0887", "1097", "1098", "1520", "1521", "1554", "1555"]
+    },
+    "SAGE": {
+      "domains": ["sagepub.com", "journals.sagepub.com"],
+      "issn_prefixes": ["0002", "0027", "0266", "0300", "0306", "0716", "0959", "1049", "1065", "1077", "1078", "1176", "1473", "1552"]
+    },
+    "Taylor & Francis": {
+      "domains": ["tandfonline.com", "taylorandfrancis.com"],
+      "issn_prefixes": ["0014", "0048", "0141", "0143", "0144", "0162", "0163", "0165", "0169", "0267", "0276", "0306", "0308", "0309", "0731", "0736", "0883", "0954", "0958", "0960", "1025", "1028", "1029", "1362", "1368", "1464", "1468", "1469", "1476", "1478", "1743", "1744", "1745", "1746", "1747", "1748", "1749", "1751", "1752", "1753", "1754", "1755", "1756", "1757", "1758", "1759", "1760", "1873"]
+    },
+    "Oxford UP": {
+      "domains": ["oup.com", "academic.oup.com", "oxfordjournals.org"],
+      "issn_prefixes": ["0019", "0022", "0029", "0033", "0048", "0140", "0143", "0169", "0305", "0306", "0924", "0950", "0951", "0954", "0956", "1355", "1360", "1362", "1364", "1365", "1460", "1464", "1468", "1469", "1471", "1476", "1477", "1528", "1537", "1546", "1558", "1740", "1741", "1742", "1743", "1744", "1745", "1746", "1747", "1748", "1749", "1750", "1751", "1752", "1753", "1754", "1755", "1756", "1757", "1758", "1759", "1760", "2041", "2397"]
+    },
+    "Cambridge UP": {
+      "domains": ["cambridge.org", "cambridgecore.org"],
+      "issn_prefixes": ["0012", "0022", "0033", "0048", "0954", "0956", "1355", "1361", "1362", "1364", "1365", "1469", "1471", "1474", "1475", "1476", "1477", "1478", "1479", "1479", "1521", "1530", "1537", "1546", "1547", "1741", "1742", "1743", "1744", "1745", "1746", "1747", "1748", "1749", "1750", "1751", "1752", "1753", "1754", "1755", "1756", "1757", "1758", "1759", "1760", "2044", "2045", "2046", "2047", "2048"]
+    },
+    "Frontiers": {
+      "domains": ["frontiersin.org"],
+      "issn_prefixes": ["1664"]
+    },
+    "MDPI": {
+      "domains": ["mdpi.com"],
+      "issn_prefixes": ["1422", "2071", "2073", "2076", "2079"]
+    },
+    "PLOS": {
+      "domains": ["plos.org", "plosone.org", "plosbiology.org", "plosmedicine.org", "plosgenetics.org", "ploscompbiol.org", "plosntds.org", "plos neglected tropical diseases"],
+      "issn_prefixes": ["1932", "1544", "1545", "1546", "1553"]
+    },
+    "AAAS / Science": {
+      "domains": ["science.org", "aaas.org"],
+      "issn_prefixes": ["0036", "1095", "2375"]
+    },
+    "BMJ": {
+      "domains": ["bmj.com", "bmj.com.bmj"],
+      "issn_prefixes": ["0959", "1468", "1756", "1757"]
+    },
+    "AMA / JAMA": {
+      "domains": ["jamanetwork.com", "ama-assn.org"],
+      "issn_prefixes": ["0002", "0098"]
+    },
+    "NEJM": {
+      "domains": ["nejm.org"],
+      "issn_prefixes": ["0028"]
+    },
+    "Cell Press": {
+      "domains": ["cell.com"],
+      "issn_prefixes": ["0092", "0096", "0168", "1535", "1550", "2211", "2213", "2214"]
+    },
+    "Wolters Kluwer / LWW": {
+      "domains": ["lww.com", "journals.lww.com"],
+      "issn_prefixes": ["0003", "0007", "0014", "0020", "0022", "0025", "0032", "0036", "0049", "0146", "0147", "0148", "0193", "0196", "0197", "0271", "0363", "0364", "0885", "0897", "0972", "1043", "1044", "1054", "1064", "1065", "1068", "1079", "1079", "1097", "1098", "1525", "1526", "1527", "1528", "1530", "1532", "1533", "1534", "1535", "1536", "1537", "1538", "1539", "1540", "1541", "1542", "1543", "1544", "1545", "1546", "1547", "1548", "1549", "1550", "1551", "1552", "1553", "1554", "1555", "1556", "1557", "1558", "1559", "1560", "1561", "1562", "1563", "1564", "1565", "1566", "1567", "1568", "1569", "1570", "1571", "1572", "1573", "1574", "1575", "1576", "1577", "1578", "1579", "1580", "1581", "1582", "1583", "1584", "1585", "1586", "1587", "1588", "1589", "1590"]
+    },
+    "Hindawi": {
+      "domains": ["hindawi.com"],
+      "issn_prefixes": ["1110", "1687"]
+    }
+  },
+  "predatory_indicators": [
+    {
+      "id": "free_email",
+      "weight": 2,
+      "description": "Submission/contact email uses free webmail (gmail, outlook, yahoo, 163, qq, hotmail, protonmail)",
+      "test": "email domain matches free-webmail pattern"
+    },
+    {
+      "id": "generic_title",
+      "weight": 1,
+      "description": "Journal name contains generic prestige filler words (International Journal of Advanced/Modern/Innovative/World/Global/Universal/Excel)",
+      "test": "title word density > 30% generic prestige words"
+    },
+    {
+      "id": "fake_if",
+      "weight": 2,
+      "description": "Claims an impact factor but no Clarivate/Scopus listing can be verified",
+      "test": "IF mentioned in manuscript but journal not in bundled legit list"
+    },
+    {
+      "id": "no_index",
+      "weight": 2,
+      "description": "Journal title not found in any legitimate scholarly index",
+      "test": "title not in DOAJ, Crossref, or bundled legit publisher list"
+    },
+    {
+      "id": "no_doi_policy",
+      "weight": 1,
+      "description": "Publisher does not register DOIs / no Crossref membership",
+      "test": "no DOI prefix in publisher metadata"
+    },
+    {
+      "id": "no_board",
+      "weight": 1,
+      "description": "No named editorial board or editor names are unverifiable",
+      "test": "no editor/board mentioned in manuscript or metadata"
+    },
+    {
+      "id": "apc_unclear",
+      "weight": 1,
+      "description": "APC/fee structure absent or evasive",
+      "test": "no clear fee statement in manuscript or venue metadata"
+    },
+    {
+      "id": "fast_track",
+      "weight": 2,
+      "description": "Manuscript mentions guaranteed fast acceptance, quick peer review, or submission incentives",
+      "test": "manuscript text contains fast-track language"
+    },
+    {
+      "id": "spam_solicitation",
+      "weight": 1,
+      "description": "Manuscript contains language matching aggressive journal solicitation emails",
+      "test": "manuscript text contains solicitation phrases"
+    }
+  ]
+}
