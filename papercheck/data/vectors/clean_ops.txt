@@ -1,0 +1,77 @@
+# Federated Learning for Privacy-Preserving Health Analytics: Architecture and Evaluation
+
+G. Author, Q. Author — Department of Informatics, Example University.
+Corresponding author: g.author@example.edu
+
+## Abstract
+
+We present a federated learning architecture for privacy-preserving
+analytics across distributed hospital sites. Evaluation on a simulated
+federation shows comparable accuracy to centralized training with
+reduced data transfer. The system design and threat model are described.
+
+## Introduction
+
+Federated learning enables collaborative model training without sharing
+raw data [1] [2]. Applications in healthcare are growing [3]. We
+describe an architecture addressing communication efficiency and
+privacy guarantees.
+
+## Methods
+
+The federation comprises client nodes performing local training and an
+aggregation server applying secure averaging. Local epochs, compression
+of gradient updates, and differential-privacy noise injection are
+configurable. Threat models include honest-but-curious servers. Privacy
+accounting tracks the privacy budget across training rounds. Simulation
+experiments used two public datasets split across ten virtual clients.
+
+## Results
+
+Federated accuracy reached 91.2% versus 92.4% centralized, with 85%
+less data transferred. Differential-privacy noise reduced accuracy by
+1.8 percentage points at a moderate budget. Communication compression
+preserved convergence within 3% of baseline rounds.
+
+## Discussion
+
+The architecture achieves a practical privacy-utility balance. Threat
+model assumptions are stated explicitly; formal security proofs are
+deferred to future work. Simulation does not capture all real-federation
+effects such as stragglers and heterogeneous hardware.
+
+## Limitations
+
+Simulation-only evaluation; two datasets; no real-site deployment;
+privacy accounting approximates compositional bounds.
+
+## Conclusion
+
+Federated architectures are a practical privacy-preserving design for
+cross-site analytics when validation pipelines are kept intact.
+
+## Conflicts of Interest
+
+The authors declare no competing interests.
+
+## Funding
+
+This work was supported by the Example Institute's digital health
+programme (grant DH-2025-041).
+
+## Author Contributions
+
+G.A. designed the architecture; Q.A. ran the experiments; both authors
+wrote and approved the manuscript.
+
+## Data Availability
+
+Simulation configs and analysis scripts are archived at Zenodo
+(DOI 10.5281/zenodo.4445556) under a CC-BY 4.0 license.
+
+## References
+
+1. B. McMahan, "Communication-efficient learning of deep networks from decentralized data," AISTATS, 2017. doi:10.5555/3294771.3294784
+2. R. Shokri, "Privacy-preserving deep learning," CCS, 2015. doi:10.1145/2810103.2813677
+3. N. Rieke, "The future of digital health with federated learning," NPJ Digit. Med., 2020. doi:10.1038/s41746-020-00323-1
+4. C. Dwork, "The algorithmic foundations of differential privacy," Found. Trends Theor. Comput. Sci., 2014. doi:10.1561/0400000042

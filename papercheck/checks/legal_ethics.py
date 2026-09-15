@@ -9,6 +9,12 @@ _CLINICAL = r'patient|participant|human\s+subject|clinical|hospital|cohort|medic
 _SENSITIVE = r'medical\s+record|health\s+data|biometric|genetic\s+data|diagnos|clinical\s+data|personal\s+data|location\s+data|video\s+of\s+(?:people|subjects)|facial\s+(?:images?|data)|patient\s+images?'
 _DUAL_USE = r'CRISPR|pathogen|virus\s+(?:strain|engineering)|toxin|bioweapon|bioterror|explosive|chemical\s+synthesis|nerve\s+agent|biosecurity'
 _ADAPTED = r'adapted\s+from|reprinted\s+from|reproduced\s+from|with\s+permission\s+from|taken\s+from\s+\[|used\s+with\s+permission|reproduced\s+with'
+# Non-human-subject signals (see methodology.py): don't demand patient
+# consent from a systems paper that merely mentions hospitals.
+_NON_HUMAN = (r'simulation[- ]only|computer\s+simulation|in\s+silico|'
+              r'synthetic\s+(?:data|dataset)|no\s+human\s+(?:subjects|participants)|'
+              r'did\s+not\s+involve\s+(?:humans?|patients?|animals?)|'
+              r'publicly\s+available\s+(?:dataset|benchmark)|\bpublic\s+datasets?\b')
 
 
 def _f(sev, title, detail, evidence, conf, action):
@@ -21,8 +27,12 @@ def run(doc: Document, ctx: object) -> List[Finding]:
         return []
     out = []
 
-    if re.search(_CLINICAL, body, re.IGNORECASE):
-        if not re.search(r'consent\s+(?:for\s+publication|to\s+publish|was\s+obtained)|written\s+(?:informed\s+)?consent|signed\s+consent', body, re.IGNORECASE):
+    # Same recruitment override as methodology.py: recruiting people makes
+    # it human-subjects research regardless of dataset mentions.
+    if (re.search(_CLINICAL, body, re.IGNORECASE)
+            and not (re.search(_NON_HUMAN, body, re.IGNORECASE)
+                     and not re.search(r'recruit|enrol|questionnair|interview', body, re.IGNORECASE))):
+        if not re.search(r'consent\s+(?:for\s+publication|to\s+publish|was\s+obtained|had\s+been\s+obtained|will\s+be\s+obtained)|informed\s+consent|signed\s+consent', body, re.IGNORECASE):
             out.append(_f(Severity.HIGH, "No patient consent-for-publication statement",
                           "Journals require written informed consent for identifiable patient material.",
                           "Clinical keywords found, no consent-for-publication", 0.85,

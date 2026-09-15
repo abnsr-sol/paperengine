@@ -46,7 +46,7 @@ def run(doc: Document, ctx: object) -> List[Finding]:
     is_sr = bool(re.search(r'systematic\s+review|meta-?analysis|\bPRISMA\b', body, re.IGNORECASE))
     is_obs = bool(re.search(r'\bcohort\b|case-?control|case\s+series|cross-?sectional|observational', body, re.IGNORECASE))
     is_animal = bool(re.search(r'\bmice\b|\brats\b|zebrafish|animal\s+(?:model|study)|rodents?\b', body, re.IGNORECASE))
-    is_prediction = bool(re.search(r'prediction\s+model|prognostic\s+model|risk\s+(?:score|model|calculator)|predict(?:ive|ion)?\s+(?:algorithm|model)|machine\s+learning\s+(?:to\s+)?predict|classifier\s+to\s+predict', body, re.IGNORECASE))
+    is_prediction = bool(re.search(r'prediction\s+model|prognostic\s+model|risk\s+(?:score|model|calculator)|predict(?:ive|ion)?\s+(?:algorithm|model)|machine\s+learning\s+(?:to\s+)?predict|classifier\s+to\s+predict', body, re.IGNORECASE)) and not re.search(r'pre-?validated|previously\s+(?:externally\s+)?validated|deployment\s+of\s+(?:a|an|the)\s+(?:pre-?validated|published|existing)', body, re.IGNORECASE)
     is_diag = bool(re.search(r'diagnostic\s+accuracy|sensitivity\s+and\s+specificity|reference\s+standard|gold\s+standard\s+(?:test|comparison)|index\s+test', body, re.IGNORECASE))
     # NOTE: must NOT fire on IRB boilerplate like "the study protocol was
     # approved by our institutional review board" — a protocol *paper* is a

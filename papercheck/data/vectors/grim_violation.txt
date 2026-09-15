@@ -1,0 +1,54 @@
+# Gamified Micro-Learning and Retention in Introductory Statistics: A Randomized Classroom Trial
+
+S. Author, P. Author — Department of Education, Example University.
+Corresponding author: s.author@example.edu
+
+## Abstract
+
+In a randomized controlled trial across four classrooms, a gamified
+micro-learning module was compared with standard tutorials on quiz
+retention. The protocol was registered (NCT04123456) and the study
+approved by the institutional review board.
+
+## Introduction
+
+Gamification is reported to increase engagement in statistics education
+[1] [2]. Effects on durable retention are less studied. We conducted a
+pragmatic classroom randomized trial.
+
+## Methods
+
+Four classrooms (N = 96 students, ages 18-24) were randomly assigned to
+gamified modules or standard tutorials for three weeks. The primary
+outcome was retention quiz score at two weeks. Students provided informed
+consent; the trial was prospectively registered. Blinded graders scored
+quizzes against a fixed rubric.
+
+## Results
+
+A total of N = 48 students were analyzed across the four classrooms.
+Mean retention score in the intervention arm was M = 5.37 with SD = 1.2
+on the integer-correct count (0-10 range) derived from 10 discrete
+multiple-choice items scored right or wrong per student. The control
+arm mean was 4.90 (SD 1.1). Because each item was scored dichotomously
+and summed, scores are whole numbers; a mean of 5.37 over 48 students
+with 10 items should be verified against the raw item data.
+
+## Discussion
+
+No statistically significant difference in retention was found. The
+result contrasts with engagement-only effects reported elsewhere [2].
+Interpretation is limited to short-term retention in introductory
+settings.
+
+## Limitations
+
+Short intervention window, single institution, and novelty effects may
+mask longer-term differences.
+
+## References
+
+1. E. Deterding, "The lens of gamification," Commun. ACM, 2014.
+2. M. Rivera, "Gamification in STEM education: a meta-analysis," Educ. Res. Rev., 2020.
+3. K. Patel, "Retention intervals in classroom experiments," J. Educ. Psychol., 2018.
+4. H. Osei, "Rubric-based grading reliability," Assess. Eval. High. Educ., 2019.

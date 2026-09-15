@@ -1,0 +1,51 @@
+# A Protocol for a Multicenter Trial of a Digital Cognitive Training Programme in Older Adults
+
+N. Author, F. Author — Institute of Gerontology, Example University.
+Corresponding author: n.author@example.edu
+
+## Abstract
+
+This study protocol describes a two-arm randomized controlled trial of a
+digital cognitive training programme versus an active control in
+community-dwelling older adults. The trial protocol was approved by the
+regional ethics committee and the study is registered. Recruitment
+began in March 2025.
+
+## Introduction
+
+Age-related cognitive decline motivates scalable interventions [1] [2].
+Computerized training trials show mixed results [3]. We describe the
+design of a pragmatic trial.
+
+## Methods: trial design
+
+Participants aged 65-80 with subjective memory complaints will be
+randomly assigned 1:1 to 12 weeks of adaptive cognitive training or an
+active control (general health education). The primary outcome is a
+composite memory score at 12 months. The full eligibility criteria and
+the complete list of primary and secondary outcomes are published on the
+trial registry. Sample size was calculated for 80% power.
+
+## Ethics and dissemination
+
+The study protocol was approved by the regional ethics committee
+(REF-2024-887). Written informed consent will be obtained. Results will
+be disseminated regardless of direction of effect.
+
+## Discussion
+
+This protocol paper presents the rationale and design of a trial
+addressing limitations of prior cognitive-training studies. Strengths
+include the active comparator and long follow-up.
+
+## Limitations
+
+As a protocol, no results are reported; the design may require amendment
+after recruitment experience.
+
+## References
+
+1. C. Ball, "Effects of cognitive training interventions," JAMA, 2002.
+2. A. Lampit, "Computerized cognitive training in older adults: meta-analysis," PLoS Med., 2014.
+3. M. Simons, "Do memory training programs work?," Perspect. Psychol. Sci., 2016.
+4. T. Green, "Adaptive training algorithms," J. Int. Neuropsychol. Soc., 2019.

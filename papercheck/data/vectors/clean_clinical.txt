@@ -1,0 +1,89 @@
+# Decision Support with Pre-Validated Clinical Models: A Prospective Multicenter RCT Protocol Analysis
+
+E. Author, U. Author — Academic Medical Center, Example University.
+Corresponding author: e.author@example.edu
+
+## Abstract
+
+We report the planned and executed evaluation of a pre-validated
+clinical prediction model deployed as decision support in a randomized
+controlled trial across four hospitals. The protocol was registered
+(NCT04567890), the model was previously externally validated in two
+independent cohorts, and all deployment-site variables were identical
+to those in the validation cohorts.
+
+## Introduction
+
+Clinical prediction models frequently degrade after deployment because
+input pipelines differ from validation settings [1] [2]. TRIPOD
+reporting and prior external validation mitigate this risk [3]. We
+describe a trial comparing the pre-validated model against usual care
+with outcome adjudication by a blinded committee.
+
+## Methods
+
+A priori sample-size calculation targeted 640 participants to detect a
+risk ratio of 0.85 with 80% power at alpha 0.05. Participant flow from
+enrollment to analysis is summarized in the participant flow diagram
+(Figure 1). The model used five candidate predictors identical to its
+published specification; no variables were derived from the deployment
+data. The trial was registered before the first enrollment. A blinded
+adjudication committee classified outcomes against predefined
+definitions. Hospitals were randomly assigned to immediate or delayed
+deployment by a statistician independent of care delivery, using
+block randomization. The ethics board approved the protocol;
+participants provided informed consent.
+
+## Results
+
+Enrollment completed with 640 participants across four sites. Model
+inputs matched validation specifications at all sites. The adjudicated
+primary outcome occurred in 11.9% versus 12.8% of participants
+(risk ratio 0.93, 95% CI 0.72 to 1.21). No site-level drift in predictor
+distributions was detected during the trial window.
+
+## Discussion
+
+Deployment of a pre-validated model with unchanged inputs showed no
+signal of performance drift within the trial window. The result should
+not be generalized to models without prior external validation.
+Outcome adjudication was blinded but treating clinicians were aware of
+allocation.
+
+## Limitations
+
+Six-month follow-up may miss longer-horizon drift; four hospitals
+within one network limit site heterogeneity; the model itself was not
+retrained during the trial.
+
+## Conclusion
+
+Deploying a pre-validated clinical prediction model with unchanged
+inputs showed no drift signal within the trial window, supporting
+careful-deployment designs over retraining by default.
+
+## Conflicts of Interest
+
+The authors declare no competing interests.
+
+## Funding
+
+This work was supported by grant EX-2024-117 from the Example Research
+Foundation.
+
+## Author Contributions
+
+E.A. designed the trial and drafted the manuscript; U.A. conducted the
+statistical analysis; both authors approved the final version.
+
+## Data Availability
+
+De-identified trial data are archived at Zenodo
+(DOI 10.5281/zenodo.1112223) under a CC-BY 4.0 license.
+
+## References
+
+1. G. Collins, "Transparent reporting of a multivariable prediction model (TRIPOD)," BMJ, 2015. doi:10.1136/bmj.g3175
+2. M. van Smeden, "Decline in prediction model performance: causes and remedies," J. Clin. Epidemiol., 2019. doi:10.1016/j.jclinepi.2019.05.010
+3. L. Wynants, "Prediction models for diagnosis and prognosis," BMJ, 2020. doi:10.1136/bmj.m1328
+4. K. Moons, "Risk prediction models: external validation," Heart, 2012. doi:10.1136/heartjnl-2011-301244

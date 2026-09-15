@@ -1,0 +1,55 @@
+# Effects of a Structured Warm-Up Programme on Adolescent Sprint Performance
+
+M. Author, K. Author — Faculty of Sport Science, Example University.
+Corresponding author: m.author@example.edu
+
+## Abstract
+
+Wakefield et al. reported that 8 weeks of neuromuscular warm-up reduced
+non-contact injuries in adolescent athletes. We replicated the design in
+a two-arm randomized controlled trial across 12 schools. The programme
+improved 20 m sprint times and reduced injury incidence versus the
+standard warm-up. Outcomes were assessed by blinded assessors.
+
+## Introduction
+
+Injury prevention programmes in youth sport are widely recommended [1]
+[2]. The original neuromuscular warm-up trial demonstrated large effects
+in school settings [3]. However, replication evidence is limited. We
+therefore tested the programme in a new cohort, pre-registering the
+primary outcome.
+
+## Methods
+
+Twelve schools were randomly assigned to the intervention or control arm
+by an independent statistician using sealed opaque envelopes. Eligible
+athletes were aged 14 to 16 with no lower-limb injury in the prior six
+months. The trial was approved by the university ethics committee
+(IRB-2023-114) and informed consent was obtained from guardians. Blinded
+assessors measured 20 m sprint time at baseline and 8 weeks.
+
+## Results
+
+Sprint times improved by 0.08 s (95% CI -0.12 to 0.28; p = 0.42) in the
+intervention arm versus control. Injury incidence was 12% versus 15%
+(RR 0.80, 95% CI 0.61 to 1.05).
+
+## Discussion
+
+Our replication found no statistically significant sprint benefit,
+contrasting with the original trial [3]. Differences in coaching
+fidelity may explain the discrepancy. The study was limited by a
+moderately sized sample and a single season of follow-up.
+
+## Limitations
+
+The cohort was regional, assessors were blinded but coaches were not,
+and one school withdrew mid-season. Residual confounding by training
+volume outside the programme cannot be excluded.
+
+## References
+
+1. J. Smith, "Warm-up programmes in youth sport," J. Sports Sci., 2015.
+2. L. Jones, "Neuromuscular training and injury," Br. J. Sports Med., 2017.
+3. A. Wakefield, "Illness, gut dysbiosis, and the MMR vaccination programme in young athletes," J. Pediatr. Athl. Health, 1998.
+4. P. Kumar, "Blinded outcome assessment in school trials," Trials, 2019.

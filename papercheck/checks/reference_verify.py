@@ -34,12 +34,15 @@ def run(doc: Document, ctx: object) -> List[Finding]:
     bad = [i+1 for i,r in enumerate(refs) if re.search(r"wikipedia|blog|reddit|medium|news|twitter|youtube", r, re.IGNORECASE)]
     if bad:
         findings.append(Finding(category="References", severity=Severity.HIGH, title=f"Non-peer-reviewed sources: refs {bad[:5]}", detail="Blogs/Wikipedia/news not acceptable.", evidence=str(bad[:5]), confidence=0.90, action="Replace with peer-reviewed sources"))
-    # Duplicate refs
+    # Duplicate refs (numbering-insensitive: strip a leading [n] / 'n.'
+    # and normalize whitespace so identical entries are caught even when
+    # the list is numbered with different positions)
     seen = {}
     for i,r in enumerate(refs):
-        k = r[:60].lower().strip()
+        k = re.sub(r'^\s*(?:\[\d+\]|\d+[.)])\s*', '', r)[:60].lower().strip()
+        k = re.sub(r'\s+', ' ', k)
         if k in seen:
-            findings.append(Finding(category="References", severity=Severity.HIGH, title="Duplicate reference", detail=f"Refs [{seen[k]+1}] and [{i+1}] identical.", evidence=f"Positions {seen[k]+1},{i+1}", confidence=0.80, action="Remove duplicate"))
+            findings.append(Finding(category="References", severity=Severity.HIGH, title=f"Duplicate reference", detail=f"Refs [{seen[k]+1}] and [{i+1}] identical.", evidence=f"Positions {seen[k]+1},{i+1}", confidence=0.80, action="Remove duplicate"))
         else: seen[k] = i
     # Reference density
     wc = doc.word_count or len(body.split())

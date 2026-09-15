@@ -1,0 +1,46 @@
+# Effects of a Mindfulness App on Perceived Stress in University Students: A Pilot Study
+
+O. Author, Z. Author — Department of Psychology, Example University.
+Corresponding author: o.author@example.edu
+
+## Abstract
+
+We evaluated an eight-week mindfulness app in a randomized controlled
+trial with 60 university students. Perceived stress improved versus the
+waitlist control. Human subjects were recruited from campus
+announcements.
+
+## Introduction
+
+Perceived stress is prevalent among students [1]. Mindfulness
+interventions show promise [2] [3]. We tested a low-cost app delivery
+model.
+
+## Methods
+
+Sixty students aged 18-25 were randomly assigned to the app or waitlist.
+Perceived stress scales were administered at baseline and eight weeks.
+Participants used personal smartphones for daily exercises.
+
+## Results
+
+Stress scores decreased by 2.1 points in the intervention arm versus
+0.3 in controls (p = 0.03). Adherence was 71% at week eight.
+
+## Discussion
+
+App-delivered mindfulness reduced perceived stress in this pilot.
+Findings align with meta-analytic estimates [2]. Effects on clinical
+outcomes require further study.
+
+## Limitations
+
+Waitlist design cannot blind participants; self-report outcomes are
+subject to expectancy effects; the sample was from a single campus.
+
+## References
+
+1. A. Pascoe, "Prevalence of stress in university students," Med. J. Aust., 2020.
+2. J. Khoury, "Mindfulness-based interventions: meta-analysis," Clin. Psychol. Rev., 2015.
+3. S. Bohlmeijer, "Effects of mindfulness on psychological health," J. Consult. Clin. Psychol., 2011.
+4. D. Creswell, "Mindfulness interventions," Annu. Rev. Psychol., 2017.

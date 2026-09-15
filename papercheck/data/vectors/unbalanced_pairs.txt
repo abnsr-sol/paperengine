@@ -1,0 +1,52 @@
+# Heart-Rate Variability During Controlled Breathing in Two Posture Groups: A Cross-Over Study
+
+A. Author, W. Author — Cardiovascular Research Lab, Example University.
+Corresponding author: a.author@example.edu
+
+## Abstract
+
+We compared heart-rate variability (HRV) during paced breathing between
+two seated postures in a randomized cross-over design with 20 healthy
+volunteers. Participants were randomly assigned to posture sequence.
+The study was approved by the institutional ethics board.
+
+## Introduction
+
+HRV is a non-invasive marker of autonomic function [1]. Posture and
+breathing rate strongly influence HRV indices [2]. Standardizing
+recording conditions is therefore essential [3].
+
+## Methods
+
+Twenty healthy adults (10 per posture sequence) completed both
+conditions in randomized order with a 48-hour washout. ECG was recorded
+for 5 minutes per condition during 6 breaths/min paced breathing. The
+ethics board approved the protocol; volunteers gave informed consent.
+Time-domain and frequency-domain HRV indices were computed per
+condition.
+
+## Results
+
+During paced breathing, RMSSD was M = 58, SD = 2, n = 10 in the
+supine-like posture versus M = 22, SD = 44, n = 10 upright. The
+between-posture difference in dispersion was marked, with one condition
+showing near-zero spread and the other roughly twenty-fold greater.
+Low-frequency power differed accordingly between the two conditions.
+
+## Discussion
+
+The large difference in short-term variability indices between postures
+underscores the need for strict standardization. Findings are consistent
+with autonomic shift literature [2]. The cross-over design controls for
+between-subject variance but sequence effects cannot be fully excluded.
+
+## Limitations
+
+Small sample, healthy young volunteers, and single laboratory setting.
+
+## References
+
+1. Task Force, "Heart rate variability: standards of measurement," Eur. Heart J., 1996.
+2. G. Reyes, "Influence of posture on HRV," Physiol. Meas., 2013.
+3. F. Shaffer, "A healthy heart is not a metronome," Front. Psychol., 2014.
+4. M. Malik, "Clinical value of HRV," Cardiovasc. Res., 2001.

@@ -1,0 +1,51 @@
+{
+  "_comment": "Evaluation vectors: file -> expectations. 'expect_any' entries are (category, title_keyword) pairs; a vector PASSES if at least one pair matches a finding (category equal AND keyword appears in title+detail, case-insensitive). 'expect_none_serious': vector must produce zero CRITICAL+HIGH findings. Add new vectors here — declarative, not code.",
+  "retracted_citation.txt": {
+    "label": "cites a known-retracted work (Wakefield 1998 MMR)",
+    "expect_any": [["Integrity", "retracted"]]
+  },
+  "stat_error.txt": {
+    "label": "p-value contradicts reported chi-square (statcheck oracle)",
+    "expect_any": [["Statistics", "p-value"], ["Statistics", "decision"], ["Statistics", "mismatch"], ["Statistics", "chi"]]
+  },
+  "grim_violation.txt": {
+    "label": "mean impossible for integer data (GRIM oracle)",
+    "expect_any": [["GRIM", "impossible"], ["GRIM", "mean"], ["GRIM", "grim"], ["Statistics", "grim"]]
+  },
+  "tortured_phrases.txt": {
+    "label": "paper-mill tortured phrases (PPS fingerprints)",
+    "expect_any": [["Integrity", "tortured"], ["LLM Artifacts", "tortured"], ["Integrity", "phrase"], ["LLM Artifacts", "phrase"]]
+  },
+  "unregistered_rct.txt": {
+    "label": "RCT with no trial registration (desk-reject driver)",
+    "expect_any": [["Ethics", "registration"], ["Ethics", "registry"], ["Methodology", "registration"], ["Methodology", "registry"], ["Reporting Guidelines", "registration"], ["Ethics", "trial"], ["Methodology", "trial"], ["Reporting Guidelines", "trial"]]
+  },
+  "carlisle_baseline.txt": {
+    "label": "implausible RCT baseline difference (Carlisle z>4)",
+    "expect_any": [["Statistics", "carlisle"], ["Statistics", "baseline"]]
+  },
+  "unbalanced_pairs.txt": {
+    "label": "TIVA variance inconsistency across groups",
+    "expect_any": [["Statistics", "variance"], ["Statistics", "tiva"]]
+  },
+  "overclaimed_survey.txt": {
+    "label": "n=23 survey claiming robust proof of causation",
+    "expect_any": [["Statistics", "power"], ["Statistics", "sample"], ["Claims", "overclaim"], ["Claims", "causal"], ["Claims", "proof"]]
+  },
+  "missing_ethics.txt": {
+    "label": "human-subject study with no ethics/consent statement",
+    "expect_any": [["Ethics", "ethic"], ["Ethics", "consent"], ["Methodology", "ethic"], ["Methodology", "consent"]]
+  },
+  "duplicate_refs.txt": {
+    "label": "reference list with duplicated entries and numbering gap",
+    "expect_any": [["References", "duplicate"], ["Citations", "duplicate"], ["References", "Ref gaps"], ["Citations", "numbering"], ["References", "missing"]]
+  },
+  "clean_clinical.txt": {
+    "label": "well-formed registered RCT excerpt (negative control)",
+    "expect_none_serious": true
+  },
+  "clean_ops.txt": {
+    "label": "well-formed simulation/validation engineering paper (negative control)",
+    "expect_none_serious": true
+  }
+}

@@ -1,0 +1,49 @@
+# Student Adoption of a Version-Control Workflow in a Software Engineering Course
+
+C. Author, H. Author — Faculty of Engineering, Example University.
+Corresponding author: c.author@example.edu
+
+## Abstract
+
+We studied student adoption of a version-control workflow across two
+course cohorts. Survey data and repository analytics were combined to
+characterize usage patterns. Adoption increased steadily over the
+semester and correlated with project grades.
+
+## Introduction
+
+Version control is a core professional skill [1] [2]. Prior work
+reports mixed adoption in coursework [3]. We examined adoption
+trajectories using repository event logs.
+
+## Methods
+
+Two cohorts (N = 74 total) used the workflow across a 12-week project.
+We extracted commit frequency from repository logs and administered an
+end-of-semester questionnaire. Grades were obtained from course records
+after the teaching period.
+
+## Results
+
+Median commits per student rose from 6 in weeks 1-4 to 19 in weeks 9-12.
+Adoption correlated with project grades. Figures 1 and 3 summarize the
+trajectories; Table 4 lists per-cohort statistics. The improvement was
+echoed in the exit questionnaire [4].
+
+## Discussion
+
+Adoption grew with scaffolded instruction, consistent with prior
+findings [2]. The observational design cannot separate skill effects
+from engagement effects. Grade correlation should be read cautiously.
+
+## Limitations
+
+Single institution, two cohorts, and self-reported survey items limit
+generalizability. Log data cannot capture local uncommitted work.
+
+## References
+
+1. S. Frezza, "Integrating version control in software engineering education," Educ. Inf. Technol., 2018.
+2. T. Zimmermann, "Version control practices in industry and teaching," Empir. Softw. Eng., 2019.
+3. M. Edwards, "Student adoption of development tools," SIGCSE, 2017.
+2. S. Frezza, "Integrating version control in software engineering education," Educ. Inf. Technol., 2018.

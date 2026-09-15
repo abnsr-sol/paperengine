@@ -1,0 +1,55 @@
+# Association Between a Habitual Sleep Index and Metabolic Score in Shift Workers
+
+R. Author, D. Author — School of Public Health, Example University.
+Corresponding author: r.author@example.edu
+
+## Abstract
+
+A cross-sectional study of 412 shift workers examined the association
+between a composite sleep index and a metabolic risk score. Statistical
+analysis used chi-square tests for categorical associations. Higher sleep
+irregularity was associated with adverse metabolic profiles in women but
+not men.
+
+## Introduction
+
+Shift work disrupts circadian alignment and is associated with
+cardiometabolic risk [1] [2]. Prior cohort analyses report sex-specific
+associations [3]. We analyzed baseline data from an occupational cohort.
+
+## Methods
+
+Participants (N = 412) completed validated questionnaires. The exposure
+was a composite habitual sleep index; the outcome a continuous metabolic
+score dichotomized at cohort median. Associations were tested with
+chi-square tests of independence; alpha 0.05. The occupational cohort
+study was approved by the regional ethics board and participants gave
+informed consent.
+
+## Results
+
+The sleep index was dichotomized into irregular versus regular sleepers
+(178 vs 234 participants). Irregular sleepers more often had adverse
+metabolic profiles: chi-square(4) = 14.87, p = 0.005. Sex-stratified
+analyses are shown in Table 2. A companion test of dose-response was
+non-significant despite a large observed effect: chi2(3) = 18.42,
+p = 0.45, which is inconsistent with the reported effect magnitude.
+
+## Discussion
+
+Our findings align with prior observational evidence linking irregular
+sleep with metabolic risk [3]. Causal inference is not warranted given
+the cross-sectional design; reverse causality is plausible. Residual
+confounding by occupational role remains possible.
+
+## Limitations
+
+Cross-sectional design precludes causal claims; the sleep index was
+self-reported; the cohort is predominantly one occupational sector.
+
+## References
+
+1. T. Anders, "Circadian disruption and health," Sleep Med. Rev., 2018.
+2. G. Hallam, "Shift work and metabolic syndrome," Occup. Environ. Med., 2020.
+3. V. Rao, "Sex differences in sleep-metabolism associations," J. Clin. Sleep Med., 2021.
+4. W. Chen, "Composite sleep indices: a review," Chronobiol. Int., 2019.

@@ -1,0 +1,56 @@
+# Baseline Characteristics and Perioperative Outcomes of a Novel Anesthetic Regimen: A Randomized Trial
+
+B. Author, I. Author — Department of Anesthesiology, Example University.
+Corresponding author: b.author@example.edu
+
+## Abstract
+
+In a randomized double-blind controlled trial, 180 surgical patients
+were randomly assigned to the novel anesthetic regimen or standard care.
+Baseline characteristics were comparable and perioperative recovery
+scores favored the intervention. The trial was approved by the hospital
+ethics committee and registered before enrollment.
+
+## Introduction
+
+Fast-track anesthesia protocols aim to shorten recovery room stays [1]
+[2]. Evidence in elective abdominal surgery is limited [3]. We conducted
+a randomized trial comparing the novel regimen with standard care.
+
+## Methods
+
+Patients scheduled for elective laparoscopic cholecystectomy were
+randomly allocated 1:1 using computer-generated codes with concealed
+allocation. The outcome assessor was blinded to group assignment. Written
+informed consent was obtained from all participants. Baseline variables
+were recorded before induction of anesthesia.
+
+## Results
+
+Baseline characteristics: age 41.6 (12.4) vs 42.1 (11.9) years; weight
+74.3 (13.1) vs 73.8 (12.7) kg; height 169.8 (8.9) vs 170.2 (9.1) cm;
+BMI 25.8 (3.4) vs 25.6 (3.3); duration of surgery 78.4 (18.2) vs 79.1
+(17.8) min; ASA score distribution similar across groups; baseline pain
+score 3.2 (1.4) vs 3.1 (1.5); preoperative hemoglobin 13.4 (1.2) vs
+13.5 (1.3) g/dL; baseline heart rate 72.6 (9.8) vs 73.0 (10.2) bpm;
+baseline systolic pressure 124.7 (11.3) vs 125.1 (11.8) mmHg; recovery
+room stay 41.9 (12.6) vs 42.4 (13.0) min. Recovery scores at 2 hours
+favored the intervention arm.
+
+## Discussion
+
+Baseline comparability supports the internal validity of the
+randomization. Recovery benefits were modest. Generalizability is
+limited to elective laparoscopic surgery at a single center.
+
+## Limitations
+
+Single center, unblinded surgeons, and a homogeneous elective population
+restrict generalizability.
+
+## References
+
+1. J. White, "Fast-track anesthesia programs," Anesthesiology, 2007.
+2. S. Joshi, "Enhanced recovery pathways," Anesth. Analg., 2019.
+3. P. Marret, "Meta-analysis of recovery after laparoscopy," Br. J. Anaesth., 2018.
+4. D. Miller, "Blinded outcome assessment in surgical trials," Surgery, 2020.

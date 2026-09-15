@@ -10,6 +10,13 @@ _ANIMAL = r'\bmice\b|\brats\b|zebrafish|animal\s+model|rodent'
 _TRIAL = r'trial|randomized|randomised|intervention'
 _STUDY = r'\bstudy\b|cohort|case-control|observational'
 _METHOD = r'we\s+(?:propose|present|introduce)|our\s+(?:method|model|framework|approach)|proposed\s+method'
+# Non-human-subject research signals: a CS/engineering paper that merely
+# mentions "hospital sites" or "clinical data" is not human-subjects
+# research and must not be told to obtain IRB approval (vector-eval FP).
+_NON_HUMAN = (r'simulation[- ]only|computer\s+simulation|in\s+silico|'
+              r'synthetic\s+(?:data|dataset)|no\s+human\s+(?:subjects|participants)|'
+              r'did\s+not\s+involve\s+(?:humans?|patients?|animals?)|'
+              r'publicly\s+available\s+(?:dataset|benchmark)|\bpublic\s+datasets?\b')
 
 def _f(sev, title, detail, evidence, conf, action):
     return Finding("Methodology", sev, title, detail, evidence, action, conf)
@@ -24,7 +31,11 @@ def run(doc: Document, ctx: object) -> List[Finding]:
     trial = bool(re.search(_TRIAL, body, re.IGNORECASE))
     study = bool(re.search(_STUDY, body, re.IGNORECASE))
 
-    if clinical:
+    # Suppress only for genuinely non-human work: a paper that recruits or
+    # enrolls people is human-subjects research even if it also uses
+    # public datasets alongside.
+    if clinical and not (re.search(_NON_HUMAN, body, re.IGNORECASE)
+                         and not re.search(r'recruit|enrol|consent|questionnair|interview', body, re.IGNORECASE)):
         if not re.search(r'ethics\s+(?:committee|board|approval)|IRB|IEC\b|institutional\s+review|approval\s+(?:number|no\.?|ref)|protocol\s+(?:no\.?|number)', body, re.IGNORECASE):
             out.append(_f(Severity.CRITICAL if trial else Severity.HIGH,
                           "No ethics approval statement (IRB/IEC)",

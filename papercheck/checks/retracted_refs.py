@@ -51,8 +51,8 @@ def run(doc: Document, ctx: object) -> List[Finding]:
     # Full RWDB if cached (or downloadable), else the built-in seed list.
     # Use the process-level screening index: parse+tokenize once per server
     # lifetime, not once per reference (72k entries x N refs is minutes).
-    entries, token_sets = rwdb.get_screening_index(rwdb.default_cache_path())
-    per_ref = rwdb.screen_references_bulk(refs, entries, token_sets)
+    entries, token_sets, generic = rwdb.get_screening_index(rwdb.default_cache_path())
+    per_ref = rwdb.screen_references_bulk(refs, entries, token_sets, generic=generic)
     for i, r in enumerate(refs):
         low = r.lower()
         if _CITED_AS_RETRACTED.search(r):
