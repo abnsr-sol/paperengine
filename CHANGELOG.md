@@ -4,6 +4,35 @@ All notable changes to PaperEngine are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [SemVer](https://semver.org/).
 
+## [1.10.1] — 2026-09-15
+
+### Fixed — trust-pass: false positives & duplicate findings (live-run verified)
+
+- **retracted_refs no longer fires CRITICAL on fuzzy matches**: token-overlap
+  screening against the 72k-entry Retraction Watch cache is a *signal*, not proof —
+  a placeholder citation in the sample paper matched a DB entry and fired CRITICAL.
+  Fuzzy matches now escalate to HIGH "verify" with innocent-explanation language;
+  CRITICAL is reserved for the curated seed list. Citations that explicitly note a
+  retraction/withdrawal are no longer flagged (honest citing is correct practice).
+- **Cross-engine duplicate findings removed (single ownership)**: "Most references
+  lack DOIs" fired 3× (integrity, citation_integrity, reference_verify); reference
+  numbering/mixed-format/duplicate-ref checks fired 2× (citation_integrity +
+  reference_verify); ablation/baseline checks fired 2× (methodology +
+  reproducibility). Each check now has exactly one owning engine.
+- Sample run: 61 → 56 findings, duplicates NONE, engine errors 0, CRITICAL 0.
+
+### Added — Carlisle baseline-balance engine (#86, `carlisle_engine`)
+
+The text-only, offline subset of the method Carlisle used to expose fabricated RCTs:
+extracts mean(SD) vs mean(SD) baseline comparisons from running text, computes
+standardized differences, and flags (a) implausible single-variable baseline
+differences (z>4, p<6e-5 — real randomization almost never produces these) and
+(b) "too-perfect" balance (p-value pile-up above 0.6 across ≥8 baseline variables —
+the fabricated-RCT signature). Flag-not-verdict: findings list innocent causes
+(SD/SE transcription, matched designs) and require ≥4 baseline comparisons.
+
+- Docs corrected to 86 engines.
+
 ## [1.10.0] — 2026-09-09
 
 ### Added — global standards wave (engines #77–#80 + EQUATOR expansion)

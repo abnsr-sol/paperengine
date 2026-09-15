@@ -88,6 +88,7 @@ def _import_engines() -> List[CheckFn]:
         compilation_hygiene, tortured_phrases, sprite_engine,
         asa_pvalues, power_adequacy, engineering_vv, country_standards,
         tiva_engine, pcurve_engine, venue_hijack, trial_ethics, limitations,
+        carlisle_engine,
     )
     return [
         compliance.run, structure.run, language.run, citations.run,
@@ -119,6 +120,7 @@ def _import_engines() -> List[CheckFn]:
         country_standards.run,
         tiva_engine.run, pcurve_engine.run,
         venue_hijack.run, trial_ethics.run, limitations.run,
+        carlisle_engine.run,
     ]
 
 ALL_ENGINES: List[CheckFn] = _import_engines()
