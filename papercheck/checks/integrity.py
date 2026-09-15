@@ -209,28 +209,9 @@ def _reference_checks(doc: Document, ctx: CheckContext) -> List[Finding]:
     if not refs:
         return findings
 
-    bad_dois: List[str] = []
-    no_doi_or_url = 0
-    for ref in refs:
-        doi = _DOI_RE.search(ref)
-        url = _URL_RE.search(ref)
-        if doi:
-            pass
-        elif url:
-            pass
-        else:
-            no_doi_or_url += 1
-
-    if no_doi_or_url > max(1, len(refs) // 2):
-        findings.append(Finding(
-            category="Integrity",
-            severity=Severity.MEDIUM,
-            title="Most references lack DOI/URL identifiers",
-            detail=f"{no_doi_or_url} of {len(refs)} references have neither a DOI nor a URL.",
-            evidence="DOI regex and URL regex hits",
-            action="Add DOIs; missing identifiers make references hard to verify and are a red flag for hallucinated entries.",
-            confidence=0.7,
-        ))
+    # NOTE: "references lack DOI/URL" coverage is owned by `reference_verify`
+    # (it was triple-fired across integrity/citation_integrity/reference_verify,
+    # confirmed on a live sample run).
 
     if ctx.online and ctx.max_online_checks > 0 and refs:
         findings.extend(_verify_dois_online(refs[: ctx.max_online_checks], ctx))

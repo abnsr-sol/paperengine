@@ -23,12 +23,9 @@ def run(doc: Document, ctx: object) -> List[Finding]:
     has_author = bool(re.search(r'\([A-Z][a-z]+(?:\s+(?:et\s+al|and|&))?\s*,?\s*\d{4}\)', body))
     if has_numeric and has_author:
         findings.append(Finding(category="Citations", severity=Severity.HIGH, title='Mixed citation formats', detail='Both [1] (numeric) and (Author, Year) formats detected. Pick one style.', evidence='Numeric [n] and author-year (Name, Year) both present', confidence=0.95, action='Use consistent citation format throughout'))
-    # Reference list: check for DOIs/URLs
-    refs_with_doi = sum(1 for r in refs if re.search(r'doi|http|10\.\d{4,}', r, re.IGNORECASE))
-    if refs and refs_with_doi == 0:
-        findings.append(Finding(category="Citations", severity=Severity.HIGH, title='No DOIs or URLs in any reference', detail=f'All {len(refs)} references lack DOIs. Editors use DOIs to verify reference validity.', evidence=f'0/{len(refs)} refs have DOI/URL', confidence=0.95, action='Add DOI to every reference (use CrossRef or DOI lookup)'))
-    elif refs and refs_with_doi < len(refs) * 0.3:
-        findings.append(Finding(category="Citations", severity=Severity.MEDIUM, title='Most references lack DOIs', detail=f'Only {refs_with_doi}/{len(refs)} references have DOIs.', evidence=f'{refs_with_doi}/{len(refs)} with DOI', confidence=0.85, action='Add DOIs to remaining references'))
+    # NOTE: reference-numbering gaps, mixed citation formats, DOI coverage and
+    # duplicate references are owned by `reference_verify` (single ownership —
+    # they were double-fired here, confirmed on a live sample run).
     # Citation density: intro should have many, results few
     intro_match = re.search(r'(?:1\s*\.?\s*)?[Ii]ntroduction', body)
     results_match = re.search(r'(?:[Rr]esults?|[Ee]xperimental?)', body)
@@ -45,13 +42,5 @@ def run(doc: Document, ctx: object) -> List[Finding]:
         ratio = word_count / len(refs)
         if ratio > 500:
             findings.append(Finding(category="Citations", severity=Severity.MEDIUM, title='Low reference density', detail=f'{len(refs)} references for {word_count} words (1 ref per {ratio:.0f} words). Reviewers expect adequate literature coverage.', evidence=f'{len(refs)} refs / {word_count} words', confidence=0.70, action='Add more references, especially to recent and foundational work'))
-    # Duplicate references (same title appearing twice)
-    titles = {}
-    for i, r in enumerate(refs):
-        # Extract first ~30 chars as title proxy
-        t = r[:60].lower().strip()
-        if t in titles:
-            findings.append(Finding(category="Citations", severity=Severity.HIGH, title='Duplicate reference detected', detail=f'References [{titles[t]+1}] and [{i+1}] appear identical.', evidence=f'Positions {titles[t]+1} and {i+1}', confidence=0.80, action='Remove the duplicate reference'))
-        else:
-            titles[t] = i
+    # NOTE: duplicate-reference detection is owned by `reference_verify`.
     return findings

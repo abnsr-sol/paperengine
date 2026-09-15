@@ -45,6 +45,9 @@ def run(doc: Document, ctx: object) -> List[Finding]:
     out = []
     if not refs:
         return out
+    # A citation that EXPLICITLY notes the retraction/withdrawal is correct
+    # scholarly practice — flagging it would punish honest citing (F5).
+    _CITED_AS_RETRACTED = re.compile(r"retract|withdraw", re.IGNORECASE)
     # Full RWDB if cached (or downloadable), else the built-in seed list.
     # Use the process-level screening index: parse+tokenize once per server
     # lifetime, not once per reference (72k entries x N refs is minutes).
@@ -52,6 +55,8 @@ def run(doc: Document, ctx: object) -> List[Finding]:
     per_ref = rwdb.screen_references_bulk(refs, entries, token_sets)
     for i, r in enumerate(refs):
         low = r.lower()
+        if _CITED_AS_RETRACTED.search(r):
+            continue
         for (surname, year, token) in _KNOWN:
             if surname in low and year in low and token in low:
                 out.append(Finding("Integrity", Severity.CRITICAL,
@@ -61,13 +66,18 @@ def run(doc: Document, ctx: object) -> List[Finding]:
                                    0.90))
                 break
         else:
+            # Token-overlap screening is a SIGNAL, not proof: a 4-token match
+            # against 72k DB entries flags false positives (confirmed live on
+            # placeholder citations). Per the P1 spec, heuristic-only matches
+            # escalate to HIGH "verify", never CRITICAL — CRITICAL is reserved
+            # for the curated seed list above (exact surname+year+topic).
             for _, reason, title in per_ref[i][:1]:
-                out.append(Finding("Integrity", Severity.CRITICAL,
-                                   "Reference matches retracted work (Retraction Watch DB)",
-                                   "Retraction Watch lists this work (" + reason + "). Verify and remove or cite with a retraction note.",
+                out.append(Finding("Integrity", Severity.HIGH,
+                                   "Reference may match retracted work (verify)",
+                                   "Token overlap suggests Retraction Watch entry '" + title[:60] + "' (" + reason + "). This is a fuzzy match, not proof — verify the title before acting.",
                                    "Ref: " + r[:120] + " | DB entry: " + title[:80],
-                                   "Remove the reference or cite it explicitly as retracted with a warning",
-                                   0.85))
+                                   "Compare the full title; if it IS the retracted work, remove it or cite it explicitly as retracted",
+                                   0.60))
     if getattr(ctx, "online", False):
         mailto = getattr(ctx, "mailto", "") or ""
         cap = max(1, min(len(refs), getattr(ctx, "max_online_checks", 10)))

@@ -78,17 +78,9 @@ def run(doc: Document, ctx: object) -> List[Finding]:
                           "Dataset keywords found, no split ratio", 0.65,
                           "Describe the data split (e.g., 80/10/10, k-fold)"))
 
-    if re.search(_METHOD, body, re.IGNORECASE):
-        if not re.search(r'state-of-the-art|SOTA|baseline|compared?\s+(?:with|to|against)|compet(?:ing|itive)|existing\s+methods|prior\s+work', body, re.IGNORECASE):
-            out.append(_f(Severity.HIGH, "No comparison with existing methods (SOTA/baselines)",
-                          "A proposed method should be benchmarked against state-of-the-art or baseline approaches.",
-                          "Proposed-method keywords found, no comparison terms", 0.85,
-                          "Add a comparison table against at least 2-3 baselines/SOTA methods"))
-        if not re.search(r'ablation|component\s+stud|without\s+(?:the\s+)?(?:our\s+)?(?:module|component|block|stage|branch)|removing|eliminat|w/o\b', body, re.IGNORECASE):
-            out.append(_f(Severity.MEDIUM, "No ablation study",
-                          "Multi-component methods should be ablated to justify each component's contribution.",
-                          "Proposed-method keywords found, no ablation terms", 0.75,
-                          "Add an ablation study removing/adding each component"))
+    # NOTE: "no comparison with existing methods" and "no ablation study" are
+    # owned by `reproducibility` (single ownership — they were double-fired
+    # here under different titles, confirmed on a live sample run).
 
     if re.search(r'train(?:ed|ing)?\b|model\s+was\s+trained', body, re.IGNORECASE):
         if not re.search(r'GPU|TPU|NVIDIA|A100|V100|RTX|CUDA|hours?\s+of\s+(?:training|compute)|compute\s+time|FLOPs|memory\s+usage|batch\s+size', body, re.IGNORECASE):
