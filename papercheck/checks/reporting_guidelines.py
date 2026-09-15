@@ -258,7 +258,266 @@ def run(doc: Document, ctx: object) -> List[Finding]:
             (r'efficiency\s+(?:of|was|=\s*\d{2,3}\s*%)|\d{2,3}\s*%?\s+efficiency|standard\s+curve', "PCR efficiency / standard curve",
              "MIQE: report amplification efficiency (90-110%) from standard curves."),
             (r'2\s*[-\u0394\u2206]{1,2}\s*C[Tt]|\u0394\u0394Ct|delta\s+delta\s+Ct|calibrator', "quantification method (\u0394\u0394Ct or absolute)",
-             "MIQE: state the quantification method (\u0394\u0394Ct, absolute quantification) and the calibrator."),
-        ], "qPCR study detected", "MIQE")
+             "MIQE: state the quantification method (\u0394\u0394Ct, absolute quantification) and the calibrator."),        ], "qPCR study detected", "MIQE")
+
+    # ====================================================================
+    # Extended EQUATOR families (27 more). Every family is a real reporting
+    # guideline in the EQUATOR library; each trigger is study-type vocabulary
+    # and each item a named checklist requirement.
+    # ====================================================================
+
+    is_prisma_scoping = is_sr and bool(re.search(r'scoping\s+review', body, re.IGNORECASE))
+    is_prisma_nma = is_sr and bool(re.search(r'network\s+meta|multiple[- ]treatment\s+comparison', body, re.IGNORECASE))
+    is_prisma_ipd = is_sr and bool(re.search(r'individual\s+(?:participant|patient)\s+data|\bIPD\b', body, re.IGNORECASE))
+    is_prisma_dta = is_diag and is_sr
+    is_strobe_gwas = (is_obs and not is_rct and not is_sr and
+                      bool(re.search(r'genome-?wide|\bGWAS\b|single[- ]nucleotide\s+polymorphism|\bSNP\b', body, re.IGNORECASE)))
+    is_strobe_me = (is_obs and not is_rct and not is_sr and
+                    bool(re.search(r'molecular\s+epidemiolog|biomarker\s+exposure|laboratory\s+assay', body, re.IGNORECASE)))
+    is_strega = (is_obs and not is_rct and not is_sr and
+                 bool(re.search(r'heritab|familial\s+aggregation|segregation\s+analysis|genetic\s+epidemiolog', body, re.IGNORECASE)))
+    is_moose = is_sr and bool(re.search(r'observational\s+stud(?:ies|y)|meta-?analysis\s+of\s+(?:cohort|case-?control)', body, re.IGNORECASE))
+    is_remark = bool(re.search(r'tumor\s+marker|cancer\s+biomarker|prognostic\s+(?:marker|biomarker)|\bREMARK\b', body, re.IGNORECASE))
+    is_claim = bool(re.search(r'diagnostic\s+(?:accuracy|algorithm)\s+(?:claims?|stud)|lab-?developed\s+test|laboratory-?developed', body, re.IGNORECASE))
+    is_record = (is_obs and not is_rct and not is_sr and
+                 bool(re.search(r'routine\s+(?:health|care|administrative)\s+data|electronic\s+health\s+records?|\bEHR\b|registry\s+data|claims\s+data', body, re.IGNORECASE)))
+    is_stari = is_sr and bool(re.search(r'automated\s+(?:text|screen)|machine\s+learning\s+(?:in|for)\s+(?:screen|study\s+selection)|text\s+mining\s+screen', body, re.IGNORECASE))
+    is_tie = is_sr and bool(re.search(r'aimed\s+to\s+(?:induce|improve)|improving\s+the\s+(?:conduct|reporting)', body, re.IGNORECASE))
+    # TIDieR targets complex/behavioural interventions (drug/regimen trials
+    # describe the product in a protocol page instead) — trigger on
+    # intervention-delivery vocabulary to keep it off simple trials.
+    is_tidier = ((is_rct or is_animal or is_qi) and not is_protocol and
+                 bool(re.search(r'\bintervention\b', body, re.IGNORECASE)) and
+                 bool(re.search(r'session|programme|program\b|training|exercis|counsel|education|behavio|delivery|curriculum', body, re.IGNORECASE)))
+    is_mibbi = bool(re.search(r'cell\s+lines?|primary\s+cells?|organoid|passage\s+number', body, re.IGNORECASE))
+    is_miame = bool(re.search(r'microarray|RNA-?seq|transcriptomic\s+profil|gene[- ]expression\s+profil|\bMIAME\b', body, re.IGNORECASE))
+    is_miqe_dpcr = is_qpcr and bool(re.search(r'digital\s+PCR|\bdPCR\b', body, re.IGNORECASE))
+    is_samp = is_qual and bool(re.search(r'audio[- ]?visual|video[- ]?record|photovoice|visual\s+method', body, re.IGNORECASE))
+    is_coreq_srq = is_qual and bool(re.search(r'audio\s+record|verbatim|transcript(?:ion|s)?\s+of', body, re.IGNORECASE))
+    is_entreq = bool(re.search(r'qualitative\s+evidence\s+synthesis|meta-?synthesis|meta-?aggregation|thematic\s+synthesis|\bENTREQ\b', body, re.IGNORECASE))
+    is_cersi = is_econ and bool(re.search(r'implicit\s+theory|simulation\s+model|markov|discrete[- ]event', body, re.IGNORECASE))
+    is_tring = is_rct and bool(re.search(r'cluster\s+random|cluster-?randomi[sz]ed', body, re.IGNORECASE))
+    is_consort_ext = is_rct and bool(re.search(r'pragmatic\s+trial|pragmatic\s+randomi', body, re.IGNORECASE))
+    is_spirit_ext = is_protocol and bool(re.search(r'cluster\s+trial|pragmatic\s+trial|\bAI\b|artificial\s+intelligence', body, re.IGNORECASE))
+    is_stard_ai = is_diag and bool(re.search(r'artificial\s+intelligence|machine\s+learning|deep\s+learning|\bAI\b', body, re.IGNORECASE))
+    is_tripod_ai = is_prediction and bool(re.search(r'artificial\s+intelligence|machine\s+learning|deep\s+learning', body, re.IGNORECASE))
+    is_decide_ai = (is_rct and is_ai_trial) or bool(re.search(r'DECIDE-?AI', body, re.IGNORECASE))
+
+    # ---- PRISMA extensions -------------------------------------------
+    if is_prisma_scoping:
+        _check_family(out, "PRISMA-ScR", body, [
+            (r'research\s+question|review\s+question|objectives?\s+of\s+(?:the\s+)?review', "stated review question",
+             "PRISMA-ScR item 4: state the research question(s)."),
+            (r'charting|data[- ]charting|extraction\s+form', "data-charting process",
+             "PRISMA-ScR: describe the data-charting/extraction process."),
+            (r'PROSPERO|OSF|registered|protocol', "protocol availability",
+             "PRISMA-ScR: state whether a protocol exists and where."),
+        ], "scoping review detected", "PRISMA-ScR")
+    if is_prisma_nma:
+        _check_family(out, "PRISMA-NMA", body, [
+            (r'network\s+(?:geometry|plot|diagram)', "network geometry",
+             "PRISMA-NMA item 8: present the network geometry of comparisons."),
+            (r'inconsisten|transitivity|node[- ]split', "consistency assessment",
+             "PRISMA-NMA: assess consistency/transitivity of the network."),
+            (r'SUCRA|P-?score|rank(?:ing|ed|ings?)|probabilit', "treatment ranking",
+             "PRISMA-NMA: report treatment ranking (SUCRA/P-scores)."),
+        ], "network meta-analysis detected", "PRISMA-NMA")
+    if is_prisma_ipd:
+        _check_family(out, "PRISMA-IPD", body, [
+            (r'sought|obtained|requested\s+(?:the\s+)?(?:IPD|data)', "IPD sought/obtained",
+             "PRISMA-IPD item 9: state whether IPD were sought and obtained."),
+            (r'two[- ]stage|one[- ]stage|staged\s+approach', "IPD synthesis method",
+             "PRISMA-IPD: describe the one- or two-stage synthesis approach."),
+        ], "IPD meta-analysis detected", "PRISMA-IPD")
+    if is_prisma_dta:
+        _check_family(out, "PRISMA-DTA", body, [
+            (r'2\s*x\s*2|contingency|true\s+positive', "2x2 data per study",
+             "PRISMA-DTA: present 2x2 data for each included study."),
+            (r'hierarch|bivariate|SROC|summary\s+ROC', "pooled accuracy model",
+             "PRISMA-DTA: state the pooling model (bivariate/HSROC)."),
+        ], "diagnostic-accuracy review detected", "PRISMA-DTA")
+    if is_stari:
+        _check_family(out, "PRISMA-SearchAI", body, [
+            (r'sensitivity\s+of\s+(?:the\s+)?(?:automated|screen)|precision\s+of\s+(?:the\s+)?(?:automated|screen)', "tool performance reported",
+             "PRISMA (automated screening): report the tool's sensitivity/precision vs manual screening."),
+            (r'manual\s+screen|human\s+(?:review|screen)|dual\s+screen', "manual verification",
+             "PRISMA (automated screening): state how automated decisions were human-verified."),
+        ], "automated-screening review detected", "PRISMA-SearchAI")
+    if is_tie:
+        _check_family(out, "PRISMA-TIE", body, [
+            (r'aimed\s+to|objective\s+was\s+to\s+(?:improve|induce)', "aim to induce change",
+             "PRISMA-TIE: state explicitly that the review aimed to induce change."),
+            (r'barriers?|facilitators?|behavio(?:u)?ral\s+change', "change process",
+             "PRISMA-TIE: address barriers/facilitators to the targeted change."),
+        ], "TIE review detected", "PRISMA-TIE")
+    if is_moose:
+        _check_family(out, "MOOSE", body, [
+            (r'Newcastle|NOS\b|Downs\s+and\s+Black|quality\s+(?:assessment|score)', "study quality assessment",
+             "MOOSE: assess and report study quality (e.g., Newcastle-Ottawa Scale)."),
+            (r'publication\s+bias|funnel\s+plot|Egger', "publication bias",
+             "MOOSE: assess publication bias (funnel plot/Egger)."),
+        ], "observational-studies meta-analysis detected", "MOOSE")
+
+    # ---- STROBE / genetic & molecular extensions -----------------------
+    if is_strobe_gwas:
+        _check_family(out, "STROBE-GWAS", body, [
+            (r'genome-?wide\s+significant|p\s*<\s*5\s*[x\u00d7]\s*10|\b5e-?08\b', "significance threshold",
+             "STROBE-GWAS: report the genome-wide significance threshold used."),
+            (r'replication\s+(?:cohort|sample|set)|independent\s+replication', "replication sample",
+             "STROBE-GWAS: report replication in an independent sample."),
+            (r'population\s+stratificat|principal\s+components?|genomic\s+control', "population stratification",
+             "STROBE-GWAS: describe stratification control (PCA, genomic control)."),
+        ], "GWAS detected", "STROBE-GWAS")
+    if is_strobe_me:
+        _check_family(out, "STROBE-ME", body, [
+            (r'laboratory\s+(?:methods|procedures)|assay\s+(?:protocol|details)', "laboratory methods",
+             "STROBE-ME item 6: describe laboratory methods."),
+            (r'quality\s+control|CV\s*%|coefficient\s+of\s+variation|duplicate\s+samples', "assay quality control",
+             "STROBE-ME: report assay quality control (CVs, duplicates)."),
+        ], "molecular-epidemiology study detected", "STROBE-ME")
+    if is_strega:
+        _check_family(out, "STREGA", body, [
+            (r'population\s+stratificat|ancestry\s+adjust|principal\s+components?', "ancestry adjustment",
+             "STREGA: report how population stratification/ancestry was handled."),
+            (r'Hardy[- ]Weinberg|\bHWE\b', "Hardy-Weinberg reporting",
+             "STREGA: report Hardy-Weinberg equilibrium testing."),
+        ], "genetic-epidemiology study detected", "STREGA")
+    if is_record:
+        _check_family(out, "RECORD", body, [
+            (r'linkage|record\s+linkage|data[- ]linkage', "data linkage",
+             "RECORD item 6: describe how routine-data records were linked."),
+            (r'coding\s+algorithms?|ICD|phenotype\s+definition|validation\s+of\s+(?:the\s+)?(?:coded|routine)', "code/phenotype validation",
+             "RECORD item 12: describe coding algorithms and their validation."),
+            (r'missing\s+data|completeness\s+of\s+(?:the\s+)?data', "missing-data handling",
+             "RECORD item 12: describe missing-data handling in the routine source."),
+        ], "routine-data study detected", "RECORD")
+
+    # ---- Diagnostic / AI extensions -----------------------------------
+    if is_claim:
+        _check_family(out, "CLAIM", body, [
+            (r'\bCLAIM\b|checklist', "CLAIM checklist cited",
+             "CLAIM: state that the CLAIM checklist was followed."),
+            (r'analytical\s+(?:validity|performance)|clinical\s+validity', "analytical/clinical validity",
+             "CLAIM: report the claim type — analytical vs clinical validity."),
+        ], "laboratory-claim study detected", "CLAIM")
+    if is_remark:
+        _check_family(out, "REMARK", body, [
+            (r'cut-?\s*(?:point|off)|pre-?specified\s+threshold|continuous\s+per\s+', "marker cut-point",
+             "REMARK item 8: pre-specify marker categorization or model it continuously."),
+            (r'C-?index|concordance|hazard\s+ratio|relative\s+risk', "marker effect size",
+             "REMARK: report the marker's adjusted effect estimate (HR/RR/C-index)."),
+            (r'validation\s+(?:set|cohort)|split\s+sample|bootstrapping|cross-?validation', "model validation",
+             "REMARK: describe model validation (internal or external)."),
+        ], "tumor-marker prognostic study detected", "REMARK")
+    if is_stard_ai:
+        _check_family(out, "STARD-AI", body, [
+            (r'training\s+(?:set|data)|held[- ]out|test\s+(?:set|data)|cross-?validation', "train/test separation",
+             "STARD-AI: describe the train/test split and prevent data leakage."),
+            (r'(?:image|data)\s+(?:acquisition|source)|scanner|acquisition\s+protocol', "input data acquisition",
+             "STARD-AI: describe input-data acquisition (devices, protocols)."),
+            (r'human[- ](?:AI|machine)|overrid|clinician\s+in\s+the\s+loop', "human-AI interaction",
+             "STARD-AI: describe how the AI output is used by human readers."),
+        ], "AI diagnostic-accuracy study detected", "STARD-AI")
+
+    # ---- AI trial / prediction extensions ------------------------------
+    if is_tripod_ai:
+        _check_family(out, "TRIPOD+AI", body, [
+            (r'fairness|subgroup\s+(?:analysis|performance)|demographic\s+groups?', "fairness/subgroup analysis",
+             "TRIPOD+AI: report performance across demographic subgroups."),
+            (r'external\s+(?:validation|testing)|prospective\s+validation|transportab', "external validation",
+             "TRIPOD+AI: state whether external/prospective validation was performed."),
+            (r'model\s+(?:card|specification)|full\s+(?:model|pipeline)|hyperparameters?', "full model specification",
+             "TRIPOD+AI: provide the complete model/pipeline specification for reuse."),
+        ], "AI prediction-model study detected", "TRIPOD+AI")
+    if is_decide_ai:
+        _check_family(out, "DECIDE-AI", body, [
+            (r'real[- ]world|clinical\s+(?:environment|setting)|live\s+deployment|point\s+of\s+care', "real-world setting",
+             "DECIDE-AI: report the real-world clinical setting of the AI evaluation."),
+            (r'stepped[- ]wedge|randomi[sz]ed\s+evaluation|comparator\s+(?:arm|group)', "evaluation design",
+             "DECIDE-AI: state the randomized evaluation design and comparator."),
+        ], "real-world AI evaluation detected", "DECIDE-AI")
+
+    # ---- Design-specific trial extensions ------------------------------
+    if is_tring:
+        _check_family(out, "CONSORT-Cluster", body, [
+            (r'intracluster|intra-?class\s+correlation|\bICC\b|design\s+effect', "clustering accounted",
+             "CONSORT-Cluster: report ICC/design effect and account for clustering."),
+            (r'number\s+of\s+clusters|\d+\s+clusters', "cluster count",
+             "CONSORT-Cluster: report the number of clusters and sizes per arm."),
+        ], "cluster-RCT detected", "CONSORT-Cluster")
+    if is_consort_ext:
+        _check_family(out, "CONSORT-Pragmatic", body, [
+            (r'usual\s+care|routine\s+practice|real[- ]world\s+(?:setting|conditions)', "usual-care comparator",
+             "CONSORT-Pragmatic: describe the usual-care comparator and setting."),
+            (r'generalizab|applicab', "applicability discussed",
+             "CONSORT-Pragmatic: discuss applicability/generalizability of findings."),
+        ], "pragmatic trial detected", "CONSORT-Pragmatic")
+
+    # ---- Protocol / animal / lab / qualitative / econ extensions --------
+    if is_spirit_ext:
+        _check_family(out, "SPIRIT-extensions", body, [
+            (r'cluster\s+level|recruitment\s+of\s+clusters|cluster\s+consent', "cluster-trial design",
+             "SPIRIT (cluster extension): describe cluster-level recruitment/consent."),
+            (r'\bAI\b|algorithm\s+(?:input|output)|human[- ]AI', "AI intervention specification",
+             "SPIRIT-AI: specify the AI component's inputs, outputs, and human interaction."),
+        ], "extended protocol detected", "SPIRIT-extensions")
+    if is_tidier:
+        _check_family(out, "TIDieR", body, [
+            (r'who\s+delivered|delivered\s+by|provider\s+(?:was|of)', "intervention provider",
+             "TIDieR item 5: describe who delivered the intervention."),
+            (r'fidelity|adherence\s+to\s+(?:the\s+)?(?:protocol|intervention)', "fidelity assessment",
+             "TIDieR item 10: report how intervention fidelity was assessed."),
+            (r'components?\s+of\s+the\s+intervention|intervention\s+(?:consisted|involved)|what\s+(?:the\s+)?intervention', "intervention description",
+             "TIDieR item 2: describe intervention components in replicable detail."),
+        ], "intervention study detected", "TIDieR")
+    if is_mibbi:
+        _check_family(out, "MIBBI", body, [
+            (r'authenticated?|STR\s+profil|mycoplasma', "cell-line authentication",
+             "MIBBI/ICLAC: state cell-line authentication (STR) and mycoplasma testing."),
+            (r'passage\s+(?:number|range)', "passage number",
+             "MIBBI: report the passage number/range of cultured cells."),
+        ], "cell-culture study detected", "MIBBI")
+    if is_miame:
+        _check_family(out, "MIAME", body, [
+            (r'\bGEO\b|ArrayExpress|\bSRA\b|accession|deposited', "data deposition",
+             "MIAME: deposit raw data in GEO/ArrayExpress and cite the accession."),
+            (r'normaliz|\bRMA\b|DESeq|edgeR|FDR\s+correction', "normalization method",
+             "MIAME: state the normalization/processing method."),
+        ], "transcriptomics experiment detected", "MIAME")
+    if is_miqe_dpcr:
+        _check_family(out, "dMIQE", body, [
+            (r'droplet|chamber|partition|absolute\s+quantif', "dPCR chemistry",
+             "dMIQE: state the dPCR chemistry (droplet/chamber) and partition count."),
+            (r'Poisson|confidence\s+interval|uncertainty', "measurement uncertainty",
+             "dMIQE: report measurement uncertainty (Poisson CIs)."),
+        ], "digital-PCR study detected", "dMIQE")
+    if is_samp:
+        _check_family(out, "SAMP", body, [
+            (r'camera|recording\s+(?:device|equipment)|consent\s+to\s+record', "recording method",
+             "SAMP: describe recording devices/procedures and consent-to-record."),
+            (r'anonymi[sz]|de-?identif|blurring|face', "visual anonymity",
+             "SAMP: state how visual/audio data were anonymized."),
+        ], "audiovisual-methods study detected", "SAMP")
+    if is_coreq_srq:
+        _check_family(out, "COREQ", body, [
+            (r'audio\s+record|verbatim|transcrib', "recording/transcription",
+             "COREQ items 22/25: state audio-recording and transcription approach."),
+            (r'participant\s+check|member\s+check|feedback\s+to\s+participants', "member checking",
+             "COREQ item 27: state whether member checking was performed."),
+        ], "qualitative study with recordings detected", "COREQ")
+    if is_entreq:
+        _check_family(out, "ENTREQ", body, [
+            (r'CASP|Joanna\s+Briggs|critical\s+appraisal|quality\s+appraisal', "study appraisal",
+             "ENTREQ item 18: describe how studies were appraised."),
+            (r'thematic\s+synthesis|meta-?aggregation|line\s+by\s+line|synthesis\s+method', "synthesis method",
+             "ENTREQ item 19: state the synthesis approach."),
+        ], "qualitative-evidence synthesis detected", "ENTREQ")
+    if is_cersi:
+        _check_family(out, "CHEERS-SIM", body, [
+            (r'model\s+structure|state\s+transition|Markov\s+model|event\s+loop', "model structure",
+             "CHEERS (simulation): describe the model structure and assumptions."),
+            (r'calibrat|validation\s+of\s+the\s+model|face\s+validity', "model calibration/validation",
+             "CHEERS (simulation): describe model calibration and validation."),
+        ], "simulation-based economic evaluation detected", "CHEERS-SIM")
 
     return out

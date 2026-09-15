@@ -3,7 +3,7 @@
 # PaperEngine
 
 **Pre-submission rejection-risk analysis for academic manuscripts —
-86 engines incl. deterministic p-value verification (statcheck) · dual
+86+ engines incl. deterministic p-value verification (statcheck) · dual
 international / Indian standards · 100% local**
 
 [![CI](https://github.com/abnsr-sol/paperengine/actions/workflows/ci.yml/badge.svg)](https://github.com/abnsr-sol/paperengine/actions/workflows/ci.yml)
@@ -83,7 +83,7 @@ Then, in the browser:
    readiness score + findings table (severity · finding · evidence · confidence · how to fix)
 
 **Privacy / no retention:** the GUI runs on your machine only (localhost).
-The file is parsed in memory, checked by the same 86 engines as the CLI, and
+The file is parsed in memory, checked by the same 86+ engines as the CLI, and
 the temporary copy is **deleted the moment your report is rendered — every
 time, no exceptions**. Nothing is stored, nothing leaves the machine.
 
@@ -228,7 +228,7 @@ papercheck/
 ├── batch.py           folder scanning, worst-first ranking, CSV writer
 ├── rwdb.py            Retraction Watch DB download/cache/screening
 ├── webui.py           local drag-and-drop GUI (stdlib http.server)
-└── checks/            86 engines — one per rejection angle
+└── checks/            86+ engines — one per rejection angle
     compliance · structure · language · citations · claims · ai_risk ·
     integrity · novelty · consistency · figures · forensics · policy ·
     statistics · overclaiming · self_plagiarism · citation_integrity ·

@@ -4,6 +4,35 @@ All notable changes to PaperEngine are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [SemVer](https://semver.org/).
 
+## [1.11.0] — 2026-09-15
+
+### Added — evaluation harness, EQUATOR 40+, PDF image forensics
+
+- **Real-world vector evaluation harness (`scripts/vector_eval.py`)**: a labeled
+  corpus (10 positive vectors embedding known flaw archetypes + 2 negative
+  controls) with a declarative manifest. Exits non-zero on regression, so
+  real-world detection can no longer silently break. Runs alongside the
+  synthetic benchmark (which stays untouched and green).
+- **EQUATOR expansion: 13 → 40 guideline families** in `reporting_guidelines`:
+  PRISMA-ScR/NMA/IPD/DTA + MOOSE + PRISMA-SearchAI/TIE, STROBE-GWAS/ME +
+  STREGA + RECORD, REMARK + CLAIM + STARD-AI, TRIPOD+AI + DECIDE-AI,
+  CONSORT-Cluster/Pragmatic, SPIRIT-extensions, ARRIVE-Abstract, TIDieR,
+  MIBBI, MIAME, dMIQE, SAMP, COREQ, ENTREQ, CHEERS-SIM. Each family is
+  keyword-triggered by study-type vocabulary and verifies named checklist
+  items (missing items → HIGH findings).
+- **PDF image forensics**: `image_forensics` now extracts embedded raster
+  images from PDFs via pypdf (pure Python, offline) and runs the same
+  duplicate/near-duplicate perceptual-hash analysis as DOCX. Verified on a
+  synthetic PDF with a duplicated panel. Rasterized vector graphics remain
+  out of scope (documented).
+- **Engine fixes surfaced by the vector harness**: retraction-screening
+  generic-token false positives (IDF-style filter), consent-statement
+  phrasing, non-human-subject suppression for CS papers mentioning clinical
+  sites, TRIPOD no longer firing on pre-validated model deployments,
+  duplicate-reference detection on numbered reference lists.
+- Sample run improved 46/100 → 69/100 with the false-positive fixes; flawed
+  detection unchanged.
+
 ## [1.10.1] — 2026-09-15
 
 ### Fixed — trust-pass: false positives & duplicate findings (live-run verified)
