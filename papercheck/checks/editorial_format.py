@@ -46,4 +46,42 @@ def run(doc: Document, ctx: object) -> List[Finding]:
     if words and words < 1500 and re.search(r"abstract|introduction|conclusion", low):
         out.append(_f(Severity.LOW, "Manuscript is very short - check article type", "Short manuscripts may belong in Letters/Short Communications rather than a full research article.",
                       str(words) + " words", 0.55, "Choose the correct article type or expand the manuscript"))
+    # --- Type-3 bitmap font detection (PDF preflight) ---
+    # IEEE/ACM/Elsevier camera-ready preflight rejects PDFs compiled with
+    # bitmap (Type 3) fonts. Detectable by walking pypdf page resources.
+    if doc.file_type == "pdf" and doc.source_path:
+        try:
+            from pypdf import PdfReader
+            reader = PdfReader(doc.source_path)
+            type3_fonts = set()
+            for page in reader.pages:
+                resources = page.get("/Resources")
+                if not resources:
+                    continue
+                fonts = resources.get("/Font")
+                if not fonts:
+                    continue
+                for fname in fonts:
+                    try:
+                        font_obj = fonts[fname].get_object()
+                        if font_obj.get("/Subtype") == "/Type3":
+                            type3_fonts.add(str(fname))
+                    except Exception:
+                        continue
+            if type3_fonts:
+                names = ", ".join(sorted(type3_fonts)[:5])
+                out.append(_f(
+                    Severity.HIGH,
+                    "Type-3 bitmap fonts detected",
+                    f"PDF contains bitmap (Type 3) fonts: {names}. "
+                    "IEEE, ACM, and most publishers reject camera-ready PDFs with bitmap fonts. "
+                    "Recompile using vector fonts (TrueType/OpenType).",
+                    f"Type3 fonts: {names}",
+                    0.95,
+                    "Recompile the PDF with vector fonts (pdflatex/xelatex/lualatex with TTF/OTF)"
+                ))
+        except ImportError:
+            pass  # pypdf not installed; skip silently
+        except Exception:
+            pass  # corrupt PDF; don't crash the engine
     return out

@@ -137,7 +137,7 @@ def main(argv: Optional[List[str]] = None) -> int:
                         help="scan every supported manuscript in this folder and exit (use with --format csv)")
     parser.add_argument("--compare", default=None, metavar="REVISED",
                         help="compare this ORIGINAL against REVISED: shows fixed / still-open / new findings (use --format html for a rich report)")
-    parser.add_argument("--format", choices=["console", "markdown", "html", "fixplan", "csv", "similarity", "similarity-html"], default="console")
+    parser.add_argument("--format", choices=["console", "markdown", "html", "fixplan", "csv", "json", "similarity", "similarity-html"], default="console")
     parser.add_argument("--out", default=None, help="write report to this file (default: print to stdout)")
     args = parser.parse_args(argv)
 
@@ -268,7 +268,29 @@ def main(argv: Optional[List[str]] = None) -> int:
         print(f"Error: file not found: {args.file}", file=sys.stderr)
         return 2
 
-    if args.format == "markdown":
+    if args.format == "json":
+        import json as _json
+        output = _json.dumps({
+            "document": report.document_name,
+            "venue": report.venue,
+            "readiness_score": report.readiness_score,
+            "stats": report.stats,
+            "findings": [
+                {
+                    "category": f.category,
+                    "severity": f.severity.name,
+                    "title": f.title,
+                    "detail": f.detail,
+                    "evidence": f.evidence,
+                    "action": f.action,
+                    "confidence": round(f.confidence, 2),
+                    "location": f.location,
+                    "source": f.source,
+                }
+                for f in report.findings
+            ],
+        }, indent=2, ensure_ascii=False)
+    elif args.format == "markdown":
         output = render_markdown(report)
     elif args.format == "html":
         output = render_html(report)
