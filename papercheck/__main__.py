@@ -139,12 +139,28 @@ def main(argv: Optional[List[str]] = None) -> int:
                         help="compare this ORIGINAL against REVISED: shows fixed / still-open / new findings (use --format html for a rich report)")
     parser.add_argument("--format", choices=["console", "markdown", "html", "fixplan", "csv", "json", "similarity", "similarity-html"], default="console")
     parser.add_argument("--out", default=None, help="write report to this file (default: print to stdout)")
+    parser.add_argument("--export-bibtex", default=None, metavar="FILE",
+                        help="export corrected references as BibTeX to this file")
+    parser.add_argument("--config", default=None, metavar="FILE",
+                        help="path to papercheck.toml configuration file")
     args = parser.parse_args(argv)
 
     if args.version:
         from . import __version__
         print(f"PaperEngine (papercheck) {__version__}")
         return 0
+
+    # Load configuration file
+    from .config import load_config, should_ignore_finding
+    config = load_config(args.config)
+
+    # Apply config defaults (CLI args override config)
+    if args.venue == "generic" and "venue" in config:
+        args.venue = config["venue"]
+    if args.standard is None and "standard" in config:
+        args.standard = config["standard"]
+    if not args.online and config.get("online", False):
+        args.online = True
 
     if args.openalex_key:
         os.environ["OPENALEX_API_KEY"] = args.openalex_key
@@ -305,6 +321,30 @@ def main(argv: Optional[List[str]] = None) -> int:
         print(f"Report written to {args.out}")
     else:
         print(output)
+
+    # BibTeX export
+    if args.export_bibtex:
+        from .checks.bibtex_export import generate_bibtex
+        refs = doc.references or []
+        if refs:
+            bibtex = generate_bibtex(refs)
+            with open(args.export_bibtex, "w", encoding="utf-8") as fh:
+                fh.write(bibtex)
+            print(f"BibTeX exported to {args.export_bibtex} ({len(refs)} references)")
+        else:
+            print("No references found to export", file=sys.stderr)
+
+    # Apply ignore patterns from config
+    if config.get("ignore_patterns"):
+        original_count = len(report.findings)
+        report.findings = [
+            f for f in report.findings
+            if not should_ignore_finding(f.title, config)
+        ]
+        ignored = original_count - len(report.findings)
+        if ignored > 0:
+            print(f"({ignored} findings suppressed by config ignore patterns)")
+
     return 0
 
 

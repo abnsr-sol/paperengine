@@ -90,6 +90,8 @@ def _import_engines() -> List[CheckFn]:
         tiva_engine, pcurve_engine, venue_hijack, trial_ethics, limitations,
         carlisle_engine,
         compression_ai, iclac_celllines, author_identity,
+        rrid_validate, pubmed_verify, clinicaltrials_gov,
+        bibtex_export, citation_graph,
     )
     return [
         compliance.run, structure.run, language.run, citations.run,
@@ -123,6 +125,8 @@ def _import_engines() -> List[CheckFn]:
         venue_hijack.run, trial_ethics.run, limitations.run,
         carlisle_engine.run,
         compression_ai.run, iclac_celllines.run, author_identity.run,
+        rrid_validate.run, pubmed_verify.run, clinicaltrials_gov.run,
+        bibtex_export.run, citation_graph.run,
     ]
 
 ALL_ENGINES: List[CheckFn] = _import_engines()
