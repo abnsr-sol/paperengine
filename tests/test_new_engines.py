@@ -42,9 +42,13 @@ class TestMethodology(unittest.TestCase):
     def test_ml_paper_without_ablation_flags(self):
         text = ("We propose a novel deep framework for detection. Our model uses a "
                 "transformer backbone with a custom attention module. ") * 8
-        fs = methodology_run(_doc(text), CheckContext(rules=get_rules("generic")))
+        # NOTE: ablation + baseline-comparison checks are owned by the
+        # `reproducibility` engine (single ownership; methodology's copies
+        # were removed in the duplicate-findings fix).
+        from papercheck.checks.reproducibility import run as repro_run
+        fs = repro_run(_doc(text), CheckContext(rules=get_rules("generic")))
         titles = " | ".join(f.title for f in fs)
-        self.assertIn("comparison with existing methods", titles.lower())
+        self.assertIn("baseline comparison", titles.lower())
         self.assertIn("ablation", titles.lower())
 
 

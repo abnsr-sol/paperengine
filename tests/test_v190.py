@@ -143,8 +143,8 @@ class TestRwdbIndex(unittest.TestCase):
 
     def test_index_cache_hit(self):
         from papercheck import rwdb
-        e1, t1 = rwdb.get_screening_index(rwdb.default_cache_path())
-        e2, t2 = rwdb.get_screening_index(rwdb.default_cache_path())
+        e1, t1, g1 = rwdb.get_screening_index(rwdb.default_cache_path())
+        e2, t2, g2 = rwdb.get_screening_index(rwdb.default_cache_path())
         self.assertIs(e1, e2)
         self.assertEqual(len(t1), len(e1))
 
