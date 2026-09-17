@@ -67,11 +67,17 @@ def _extract_venue_name(doc: Document, body: str) -> Optional[str]:
 
 
 def _check_hijacked(title_norm: str, issn: Optional[str], hijacked_list: List[Dict]) -> Optional[Dict]:
-    """Check title/ISSN against known hijacked journals."""
+    """Check title/ISSN against known hijacked journals.
+    
+    Uses exact match after normalization (not substring/superset) to avoid
+    false positives on legitimate journals that merely contain a hijack phrase.
+    ISSN match remains exact.
+    """
     for entry in hijacked_list:
         entry_title = entry.get("title_norm", "")
         entry_issn = entry.get("issn")
-        if title_norm and entry_title and title_norm in entry_title or entry_title in title_norm:
+        # Exact match only (both directions would be redundant since normalized)
+        if title_norm and entry_title and title_norm == entry_title:
             return entry
         if issn and entry_issn and issn == entry_issn:
             return entry
@@ -130,8 +136,12 @@ def _run(doc: Document, ctx: object) -> List[Finding]:
     publishers = intel.get("legitimate_publishers", {})
     indicators = intel.get("predatory_indicators", [])
 
-    # Extract venue signals
-    venue_name = _extract_venue_name(doc, body)
+    # Extract venue signals — ctx.venue is primary when specified
+    ctx_venue = getattr(ctx, "venue", None)
+    if ctx_venue and ctx_venue != "generic":
+        venue_name = ctx_venue
+    else:
+        venue_name = _extract_venue_name(doc, body)
     issn = _extract_issn(body)
 
     title_norm = _normalize_title(venue_name) if venue_name else ""

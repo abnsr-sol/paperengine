@@ -150,10 +150,11 @@ def run(doc: Document, ctx: object) -> List[Finding]:
                     break
         except: pass
     # Impossible correlation
-    for val in re.findall(r"r\s*=\s*([-.\d]+)", body):
+    for val in re.findall(r"\br\s*=\s*([-.\d]+)", body):
         try:
             if abs(float(val)) > 1.0:
                 findings.append(Finding(category="Integrity", severity=Severity.CRITICAL, title=f"Impossible r={val}", detail="Correlation must be [-1,1].", evidence=f"r={val}", confidence=0.99, action="Verify r-value"))
+                break  # report once, not per occurrence
         except: pass
     # Inconsistent sample sizes within the same group
     group_ns = re.findall(r"(\w+(?:\s+\w+)?)\s*\(?\s*n\s*=\s*(\d+)", body)
