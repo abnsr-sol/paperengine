@@ -31,3 +31,7 @@ Thumbs.db
 # Test/coverage artifacts
 .coverage
 htmlcov/
+
+# thread test artifacts
+pe_sample.txt
+test_report.html

@@ -105,7 +105,7 @@ def run(doc: Document, ctx: object) -> List[Finding]:
         checked = 0
 
         for rrid in set(rrids):
-            if checked >= max_checks:
+            if online and checked >= max_checks:
                 break
 
             if online:

@@ -118,7 +118,7 @@ def run(doc: Document, ctx: object) -> List[Finding]:
         checked = 0
 
         for trial_id, registry in trial_ids:
-            if checked >= max_checks:
+            if online and checked >= max_checks:
                 break
 
             if online:

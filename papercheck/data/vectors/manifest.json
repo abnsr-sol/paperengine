@@ -6,11 +6,11 @@
   },
   "stat_error.txt": {
     "label": "p-value contradicts reported chi-square (statcheck oracle)",
-    "expect_any": [["Statistics", "p-value"], ["Statistics", "decision"], ["Statistics", "mismatch"], ["Statistics", "chi"]]
+    "expect_any": [["Statistics", "p-value"], ["Statistics", "decision"], ["Statistics", "chi"]]
   },
   "grim_violation.txt": {
     "label": "mean impossible for integer data (GRIM oracle)",
-    "expect_any": [["GRIM", "impossible"], ["GRIM", "mean"], ["GRIM", "grim"], ["Statistics", "grim"]]
+    "expect_any": [["GRIM", "impossible"], ["GRIM", "mean"], ["GRIM", "grim"]]
   },
   "tortured_phrases.txt": {
     "label": "paper-mill tortured phrases (PPS fingerprints)",
@@ -18,7 +18,7 @@
   },
   "unregistered_rct.txt": {
     "label": "RCT with no trial registration (desk-reject driver)",
-    "expect_any": [["Ethics", "registration"], ["Ethics", "registry"], ["Methodology", "registration"], ["Methodology", "registry"], ["Reporting Guidelines", "registration"], ["Ethics", "trial"], ["Methodology", "trial"], ["Reporting Guidelines", "trial"]]
+    "expect_any": [["Methodology", "trial"], ["Methodology", "registration"], ["Reporting Guidelines", "trial"]]
   },
   "carlisle_baseline.txt": {
     "label": "implausible RCT baseline difference (Carlisle z>4)",
@@ -30,15 +30,15 @@
   },
   "overclaimed_survey.txt": {
     "label": "n=23 survey claiming robust proof of causation",
-    "expect_any": [["Statistics", "power"], ["Statistics", "sample"], ["Claims", "overclaim"], ["Claims", "causal"], ["Claims", "proof"]]
+    "expect_any": [["Claims", "overclaim"], ["Claims", "causal"], ["Claims", "causation"]]
   },
   "missing_ethics.txt": {
     "label": "human-subject study with no ethics/consent statement",
-    "expect_any": [["Ethics", "ethic"], ["Ethics", "consent"], ["Methodology", "ethic"], ["Methodology", "consent"]]
+    "expect_any": [["Methodology", "ethic"], ["Methodology", "consent"], ["Legal & Ethics", "consent"]]
   },
   "duplicate_refs.txt": {
     "label": "reference list with duplicated entries and numbering gap",
-    "expect_any": [["References", "duplicate"], ["Citations", "duplicate"], ["References", "Ref gaps"], ["Citations", "numbering"], ["References", "missing"]]
+    "expect_any": [["References", "duplicate"], ["References", "Ref gaps"], ["References", "broken reference-list"]]
   },
   "clean_clinical.txt": {
     "label": "well-formed registered RCT excerpt (negative control)",

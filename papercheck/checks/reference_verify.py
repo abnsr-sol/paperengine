@@ -19,6 +19,30 @@ def run(doc: Document, ctx: object) -> List[Finding]:
         if missing:
             ms = ", ".join(str(x) for x in missing)
             findings.append(Finding(category="References", severity=Severity.HIGH, title=f"Ref gaps: [{ms}]", detail=f"Refs should be 1..{mx}. Missing numbers look sloppy.", evidence=f"Missing: {missing}", confidence=0.95, action="Renumber references consecutively"))
+    # Reference LIST numbering continuity (not just citations): a fully
+    # numbered list must run 1..n. Duplicate or missing list numbers break
+    # citation links and are invisible to the body-citation check above.
+    list_nums = []
+    for r in refs:
+        m = re.match(r"\s*(?:\[(\d+)\]|(\d+)[.)])", r)
+        if m:
+            list_nums.append(int(m.group(1) or m.group(2)))
+    if refs and len(list_nums) == len(refs):
+        dups = sorted({n for n in list_nums if list_nums.count(n) > 1})
+        missing = sorted(set(range(1, len(refs) + 1)) - set(list_nums))
+        problems = []
+        if missing:
+            problems.append("missing " + ", ".join(f"[{n}]" for n in missing))
+        if dups:
+            problems.append("duplicated " + ", ".join(f"[{n}]" for n in dups))
+        if problems:
+            findings.append(Finding(
+                category="References", severity=Severity.HIGH,
+                title="Ref gaps: broken reference-list numbering (" + "; ".join(problems) + ")",
+                detail=f"Reference list numbering is not 1..{len(refs)}: " + "; ".join(problems) + ".",
+                evidence=f"list numbers = {list_nums[:12]}",
+                confidence=0.9,
+                action="Renumber the reference list consecutively; numbering gaps break citation links."))
     # Mixed citation formats
     has_num = bool(re.search(r"\[\d+\]", body))
     has_ay = bool(re.search(r"\([A-Z][a-z]+\s*,?\s*\d{4}\)", body))
