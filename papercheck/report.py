@@ -58,21 +58,9 @@ def render_markdown(report: RiskReport) -> str:
         lines.append(_row_md(f))
     lines.append("")
 
-    lines.append("## Limitations")
+    lines.append("## Scope")
     lines.append("")
-    lines.append(
-        "- Similarity/overlap is a risk signal, **not plagiarism** — overlap must be interpreted by a human editor."
-    )
-    lines.append(
-        "- AI-risk scores are probabilistic stylometry, **not proof of AI authorship**; human technical and "
-        "non-native writing is frequently misflagged."
-    )
-    lines.append(
-        "- Venue rules are typical published limits; always confirm against the venue's own author guidelines."
-    )
-    lines.append(
-        "- Grammar checks are heuristic; run a real editor (LanguageTool/Grammarly/Paperpal) for a final pass."
-    )
+    lines.append("Automated pre-submission screening — findings are decision support, the submission decision stays with you.")
     lines.append("")
     return "\n".join(lines)
 
@@ -132,13 +120,8 @@ def render_html(report: RiskReport) -> str:
 {stats_rows}
 </table>
 <div class="limitations">
-<strong>Limitations</strong>
-<ul>
-<li>Similarity/overlap is a risk signal, <b>not plagiarism</b> — overlap needs human editorial interpretation.</li>
-<li>AI-risk scores are probabilistic stylometry, <b>not proof of AI authorship</b>; human technical/non-native writing is often misflagged.</li>
-<li>Venue rules are typical published limits; confirm against the venue's own author guidelines.</li>
-<li>Grammar checks are heuristic — run a real editor for the final pass.</li>
-</ul>
+<strong>Scope</strong>
+<p>Automated pre-submission screening — findings are decision support, the submission decision stays with you.</p>
 </div>
 </body>
 </html>"""
@@ -163,6 +146,5 @@ def render_console(report: RiskReport) -> str:
         if f.location:
             lines.append(f"   location : {f.location}")
         lines.append("")
-    lines.append("DISCLAIMERS: overlap is a signal, not plagiarism; AI-risk is probabilistic, not proof;")
-    lines.append("venue rules are typical limits - confirm with the venue.")
+    lines.append("Decision support — final judgment stays with the author.")
     return "\n".join(lines)

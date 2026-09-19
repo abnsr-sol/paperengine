@@ -205,8 +205,7 @@ def _page(form_html: str = "", result_html: str = "", error: str = "") -> str:
 {banner}
 {form_html}
 {result_html}
-<div class="disclaimer"><b>Honest limits:</b> overlap is a signal, not plagiarism. AI-risk is probabilistic, not proof.
-Venue limits are typical values — confirm the venue's current guide. The readiness score is informational, never a verdict.</div>
+<div class="disclaimer">Automated screening — decision support. The submission decision stays with you.</div>
 </main>
 <footer>PaperEngine · {n_engines} engines · statcheck p-value verification · GRIM consistency ·
 UGC statutory similarity · <a href="https://github.com/abnsr-sol/paperengine">source</a></footer>
