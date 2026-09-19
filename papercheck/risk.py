@@ -167,6 +167,12 @@ class RiskReport:
             out[f.severity.value] = out.get(f.severity.value, 0) + 1
         return out
 
+    def by_severity_counts(self) -> List[tuple]:
+        """Severity counts as (label, n) ordered CRITICAL..INFO."""
+        counts = self.counts()
+        order = [s.value for s in Severity]
+        return [(k, counts[k]) for k in order if k in counts]
+
 
 def fmt_confidence(value: float) -> str:
     pct = int(round(value * 100.0))

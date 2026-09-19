@@ -154,6 +154,8 @@ def load_config(path: Optional[str] = None) -> Dict[str, Any]:
     
     try:
         with open(path, "r", encoding="utf-8") as f:
+            config["_loaded_from"] = path
+        
             text = f.read()
         
         # Try TOML parsing

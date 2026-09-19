@@ -22,7 +22,7 @@ from typing import List
 from ..ingestion import Document
 from ..risk import Finding, Severity
 
-_TIMEOUT = 1.5
+_TIMEOUT = 0.5
 _CHUNK = 15000  # characters per API call
 
 
@@ -31,7 +31,10 @@ def _f(title, detail, evidence, action):
 
 
 def _server_url() -> str:
-    return os.environ.get("LT_URL", "http://localhost:8081").rstrip("/")
+    # Default to 127.0.0.1, NOT localhost: on Windows 'localhost' resolves to
+    # ::1 first, and each failed family burns the full connect timeout —
+    # a 3s tax on every offline run. 127.0.0.1 fails in one fast attempt.
+    return os.environ.get("LT_URL", "http://127.0.0.1:8081").rstrip("/")
 
 
 # Process-level probe cache with TTL: without it, every GUI check re-pays

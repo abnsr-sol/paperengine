@@ -153,6 +153,10 @@ def main(argv: Optional[List[str]] = None) -> int:
     # Load configuration file
     from .config import load_config, should_ignore_finding
     config = load_config(args.config)
+    if args.config and not config.get("_loaded_from"):
+        print(f"Warning: config file not found or unreadable: {args.config}", file=sys.stderr)
+    elif config.get("_loaded_from"):
+        print(f"Using config: {config['_loaded_from']}", file=sys.stderr)
 
     # Apply config defaults (CLI args override config)
     if args.venue == "generic" and "venue" in config:
@@ -284,6 +288,19 @@ def main(argv: Optional[List[str]] = None) -> int:
         print(f"Error: file not found: {args.file}", file=sys.stderr)
         return 2
 
+    # Apply ignore patterns from config BEFORE rendering, so suppressed
+    # findings never appear in any output format (previously filtered after
+    # rendering — the filter did nothing user-visible).
+    if config.get("ignore_patterns"):
+        original_count = len(report.findings)
+        report.findings = [
+            f for f in report.findings
+            if not should_ignore_finding(f.title, config)
+        ]
+        ignored = original_count - len(report.findings)
+        if ignored > 0:
+            print(f"({ignored} findings suppressed by config ignore patterns)", file=sys.stderr)
+
     if args.format == "json":
         import json as _json
         output = _json.dumps({
@@ -322,10 +339,16 @@ def main(argv: Optional[List[str]] = None) -> int:
     else:
         print(output)
 
-    # BibTeX export
+    # BibTeX export (re-load the document by path — build_report does not
+    # expose its parsed doc, and references parsing is cheap).
     if args.export_bibtex:
         from .checks.bibtex_export import generate_bibtex
-        refs = doc.references or []
+        try:
+            doc = load_document(args.file)
+            refs = doc.references or []
+        except Exception as exc:  # noqa: BLE001 — export must never crash the run
+            print(f"Warning: could not re-load document for BibTeX export: {exc}", file=sys.stderr)
+            refs = []
         if refs:
             bibtex = generate_bibtex(refs)
             with open(args.export_bibtex, "w", encoding="utf-8") as fh:
@@ -333,17 +356,6 @@ def main(argv: Optional[List[str]] = None) -> int:
             print(f"BibTeX exported to {args.export_bibtex} ({len(refs)} references)")
         else:
             print("No references found to export", file=sys.stderr)
-
-    # Apply ignore patterns from config
-    if config.get("ignore_patterns"):
-        original_count = len(report.findings)
-        report.findings = [
-            f for f in report.findings
-            if not should_ignore_finding(f.title, config)
-        ]
-        ignored = original_count - len(report.findings)
-        if ignored > 0:
-            print(f"({ignored} findings suppressed by config ignore patterns)")
 
     return 0
 

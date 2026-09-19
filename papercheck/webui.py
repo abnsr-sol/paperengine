@@ -402,6 +402,16 @@ class Handler(BaseHTTPRequestHandler):
         except ValueError:
             length = 0
         if length <= 0 or length > _MAX_UPLOAD + 65536:
+            # Drain a bounded amount so the client can finish SENDING and
+            # cleanly receive the 413 — responding while the client is still
+            # mid-upload resets the connection (raw WinError/browser error)
+            # instead of showing our friendly limit page.
+            remaining = min(length, 64 * 1024 * 1024)
+            while remaining > 0:
+                chunk = self.rfile.read(min(65536, remaining))
+                if not chunk:
+                    break
+                remaining -= len(chunk)
             self._send_html(_page(form_html=_upload_form(),
                                   error="Upload missing or too large (25 MB limit)."), code=413)
             return

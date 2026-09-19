@@ -19,31 +19,52 @@ from ..ingestion import Document
 from ..risk import Finding, Severity
 
 
+def _parse_reference(ref: str) -> dict:
+    """Parse a real-world numbered reference into author/title/year parts.
+
+    Handles the common IEEE-ish shapes:
+      [1] K. Author, "Cloud computing for big data analytics," IEEE
+          Transactions..., 2021.
+      2. J. Doe and A. Smith, Title without quotes. Journal, 2019.
+    """
+    clean = re.sub(r"^\s*(?:\[\d+\]|\d+[.)])\s*", "", ref.strip())
+
+    year_m = re.search(r"\b(?:19|20)\d{2}\b", clean)
+    year = year_m.group(0) if year_m else ""
+
+    # Title: the first quoted segment (straight or curly quotes).
+    title_m = re.search(r'["\u201c]([^"\u201d]{8,300})["\u201d]', clean)
+    if title_m:
+        title = title_m.group(1).strip().rstrip(",").strip()
+        author = clean[:title_m.start()].strip().rstrip(",").strip()
+    else:
+        # No quotes: author is the leading comma-separated phrase, title is
+        # the remainder up to the first period (best effort).
+        head, sep, tail = clean.partition(",")
+        author = head.strip()
+        title = tail.strip().split(".")[0].strip() if sep else ""
+
+    return {"author": author, "title": title, "year": year}
+
+
 def _format_bibtex_entry(ref: str, index: int) -> str:
     """Convert a reference string to a BibTeX entry."""
-    # Try to extract author, year, title
-    # Pattern: [Author, Year] Title. Journal, Volume, Pages.
-    author_match = re.match(r"\[([^\]]+)\]", ref)
-    author = author_match.group(1) if author_match else f"Author{index}"
+    parts = _parse_reference(ref)
+    author = parts["author"] or f"Author{index}"
+    title = parts["title"] or re.sub(r"^\s*(?:\[\d+\]|\d+[.)])\s*", "", ref.strip())
+    year = parts["year"] or "n.d."
 
-    year_match = re.search(r"\b(19|20)\d{2}\b", ref)
-    year = year_match.group(0) if year_match else "2024"
-
-    # Generate a citation key
-    last_name = author.split(",")[0].strip().split()[-1] if author else f"ref{index}"
-    key = f"{last_name.lower()}{year}_{index}"
-
-    # Clean up the reference text
-    clean_ref = ref.strip()
-    if clean_ref.startswith("["):
-        clean_ref = clean_ref[clean_ref.index("]") + 1:].strip()
-    if clean_ref.endswith("."):
-        clean_ref = clean_ref[:-1]
+    # Citation key: last author token + year, letters/digits only.
+    last_name = re.split(r"\s+(?:and|&)\s+|,", author)[0].strip().split()[-1] \
+        if author else f"ref{index}"
+    safe_name = re.sub(r"[^A-Za-z0-9]", "", last_name).lower() or f"ref{index}"
+    safe_year = re.sub(r"[^0-9]", "", year) or "nd"
+    key = f"{safe_name}{safe_year}_{index}"
 
     return (
         f"@article{{{key},\n"
         f"  author = {{{author}}},\n"
-        f"  title = {{{clean_ref}}},\n"
+        f"  title = {{{title}}},\n"
         f"  year = {{{year}}}\n"
         f"}}"
     )

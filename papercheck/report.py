@@ -38,7 +38,7 @@ def render_markdown(report: RiskReport) -> str:
     counts = report.counts()
     lines.append(
         "- **Findings:** "
-        + ", ".join(f"{k}: {v}" for k, v in sorted(counts.items(), key=lambda kv: -report.by_severity()[0].severity.weight if False else 0))
+        + ", ".join(f"{k}: {v}" for k, v in report.by_severity_counts())
         if counts
         else "- **Findings:** none"
     )
