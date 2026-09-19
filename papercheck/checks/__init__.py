@@ -18,6 +18,20 @@ class CheckContext:
     max_online_checks: int = 10
     online_cache: Dict[str, object] = field(default_factory=dict)
 
+    def __post_init__(self) -> None:
+        # Library callers (GUIs, scripts, notebooks) sometimes pass None for
+        # the optional fields. Normalize here — one boundary — so no engine
+        # ever sees None where a str/dict is contracted (the v1.8.0 crash
+        # class was exactly this kind of assumption).
+        if self.venue is None:
+            self.venue = "generic"
+        if self.rules is None:
+            self.rules = {}
+        if self.corpus is None:
+            self.corpus = []
+        if self.online_cache is None:
+            self.online_cache = {}
+
 
 def run_all_engines(doc: Document, ctx: CheckContext) -> Tuple[List["Finding"], List[str]]:
     """Run every registered engine with fault isolation.

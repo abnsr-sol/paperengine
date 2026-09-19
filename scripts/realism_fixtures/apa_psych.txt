@@ -1,0 +1,76 @@
+# Realistic paper 1: psychology survey, APA author-year citations (no IEEE markers)
+# Deliberately: no [n] markers, narrative citations, no DOI strings, passive voice, "novel" used innocently.
+# Expected: useful findings (statements missing), NOT citation-format false alarms.
+
+# Testing Human Memory Consolidation Across Sleep Cycles
+
+J. Ramirez, K. Osei — Department of Psychology, Example University.
+Corresponding author: j.ramirez@example.edu
+
+## Abstract
+
+We examined how sleep deprivation affects memory consolidation using a
+within-subjects design with 32 participants. Participants completed a
+word-pair recall task after normal sleep and after sleep deprivation.
+Recall accuracy dropped significantly after deprivation (d = 0.74).
+Findings suggest sleep plays a causal role in consolidating declarative
+memories.
+
+## Introduction
+
+Prior work shows sleep supports memory consolidation (Rasch and Born,
+2013). Sleep deprivation impairs hippocampal function (Yoo et al.,
+2007). However, few studies isolate declarative recall from procedural
+learning (Walker, 2017).
+
+## Methods
+
+Thirty-two undergraduate volunteers (18 female, mean age 20.4) took part
+for course credit. Participants gave written informed consent. The
+protocol was approved by the Example University IRB (Protocol #2024-118).
+Each participant completed two sessions: one after a normal night's sleep
+and one after 24 hours of sleep deprivation, in counterbalanced order.
+
+## Results
+
+Recall accuracy fell from 71.2% (SD = 9.8) after normal sleep to 58.6%
+(SD = 11.3) after deprivation, t(31) = 4.12, p < 0.001. The effect was
+stable across genders.
+
+## Discussion
+
+Results are consistent with the active-consolidation hypothesis (Rasch
+and Born, 2013). Sleep loss selectively impaired declarative recall,
+mirroring (Yoo et al., 2007). Limitations include the young sample and
+single-deprivation dose.
+
+## Conclusion
+
+Sleep deprivation causally impairs declarative memory consolidation in
+young adults.
+
+## Data Availability
+
+De-identified data are available from the corresponding author on
+reasonable request.
+
+## Conflicts of Interest
+
+The authors declare no conflicts of interest.
+
+## Funding
+
+This work was supported by Example University internal grant IN-2024-07.
+
+## Author Contributions
+
+J.R. designed the study, K.O. ran the sessions, both wrote the paper.
+
+## References
+
+1. Rasch, B., and Born, J. (2013). About sleep's role in memory. Physiol
+   Rev., 93(2). doi:10.1152/physrev.00032.2012
+2. Yoo, S., Hu, P., Gujar, N., Jolesz, F., and Walker, M. (2007). A
+   deficit in the ability to form new human memories without sleep. Nat
+   Neurosci., 10(3). doi:10.1038/nn1851
+3. Walker, M. (2017). Why we sleep. Scribner.

@@ -194,11 +194,24 @@ class StatResult:
     recomputed_p: Optional[float]
     context: str         # the matched sentence fragment
     position: int
+    p_decimals: int = 3  # decimals in the RAW reported p (for rounding intervals)
 
     @property
     def decision_error(self) -> bool:
-        """Reported and recomputed p fall on opposite sides of .05."""
+        """Reported and recomputed p fall on opposite sides of .05.
+
+        Rounding-aware: the reported p is itself a rounded value — '.05'
+        stands for any true p in [0.045, 0.055). If that interval straddles
+        the alpha boundary, the report cannot contradict the statistic no
+        matter which side the exact p lands on (e.g. F(2,57)=3.16, p=.05
+        recomputes to 0.049948 — pure 2-decimal rounding, NOT an error).
+        Only an interval entirely on one side can produce a decision error.
+        """
         if self.recomputed_p is None or self.operator not in ("=",):
+            return False
+        half = 0.5 * 10 ** (-self.p_decimals)
+        lo, hi = self.reported_p - half, self.reported_p + half
+        if lo <= 0.05 <= hi:
             return False
         return (self.reported_p < 0.05) != (self.recomputed_p < 0.05)
 
@@ -218,6 +231,13 @@ def _norm_p(raw: str) -> float:
         return float(raw)
     except ValueError:
         return float("nan")
+
+
+def _p_decimals(raw: str) -> int:
+    """Decimal places in the RAW reported p (e.g. '.05' -> 2, '0.013' -> 3).
+    Defines the rounding interval a printed p legitimately covers."""
+    raw = raw.strip().lstrip("0").lstrip(".")
+    return max(2, len(raw)) if raw else 2
 
 
 def extract_results(text: str) -> List[StatResult]:
@@ -268,9 +288,12 @@ def extract_results(text: str) -> List[StatResult]:
                 continue
             if math.isnan(ncalc):
                 continue
+            pm = re.search(r"p\s*[=<>\u2264\u2265]\s*([.0-9]+)", m.group(0))
+            p_raw = pm.group(1) if pm else ""
             out.append(StatResult(
                 stat=stat, statistic=statval, reported_p=rep, operator=op,
                 recomputed_p=round(ncalc, 6),
+                p_decimals=_p_decimals(p_raw),
                 context=re.sub(r"\s+", " ", m.group(0)).strip(),
                 position=m.start(),
             ))

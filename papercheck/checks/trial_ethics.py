@@ -27,8 +27,10 @@ _REGISTRY_IDS = re.compile(
 _ETHICS_PATTERNS = [
     r"(?:ethics|IRB|IEC|institutional\s+review\s+board|ethics\s+committee|"
     r"review\s+board|ethical\s+approval|approved\s+by)\s+(?:committee|board|approval|review)",
-    r"(?:was|were)\s+(?:approved|reviewed|authorized)\s+by\s+(?:the\s+)?(?:ethics|IRB|IEC|"
-    r"institutional|review)",
+    r"(?:was|were)\s+(?:approved|reviewed|authorized)\s+by\s+(?:the\s+)?(?:ethics|IRB|IEC|institutional\s+review)",
+    # Real-world phrasing: the IRB usually follows an institution name
+    # ("approved by the Example University IRB (Protocol #2024-118)").
+    r"approved\s+by\s+(?:the\s+)?[a-z][\w\s,&\-]{0,60}?(?:irb|iec|institutional\s+review\s+board|ethics\s+committee)\b",
     r"ethical\s+(?:approval|clearance|permit)",
     r"institutional\s+review\s+board\s+\((?:IRB|IEC)\)",
     r"experiment(?:s)?\s+were\s+performed\s+(?:in\s+accordance|according)\s+with",
@@ -56,7 +58,9 @@ _ANIMAL_WELFARE_PATTERNS = [
 _AVAILABILITY_PATTERNS = [
     r"data\s+(?:availability|sharing|access)\s+statement",
     r"code\s+(?:availability|sharing|access)\s+statement",
-    r"(?:data|code)\s+(?:is\s+)?(?:available|accessible|deposited)",
+    r"(?:data|code)\s+(?:is|are)\s+(?:available|accessible|deposited)",
+    r"(?:available|obtainable)\s+(?:from|upon|on)\s+(?:the\s+)?(?:corresponding\s+author|first\s+author|request)",
+    r"available\s+on\s+reasonable\s+request",
     r"supplementary\s+(?:data|material|information)\s+(?:is\s+)?(?:available|attached)",
     r"github\.com|zenodo\.org|figshare\.com|dryad\.org|osf\.io",
 ]

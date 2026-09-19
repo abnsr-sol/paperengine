@@ -169,8 +169,8 @@ def run(doc: Document, ctx: object) -> List[Finding]:
         has_rrid = _RRID_MENTION.search(text)
         if not has_rrid:
             # Check if the venue requires RRIDs
-            venue = getattr(ctx, "venue", "generic")
-            requires_rrid = bool(_RRID_REQUIRED_CONTEXTS.search(venue))
+            venue = getattr(ctx, "venue", None) or ""
+            requires_rrid = bool(venue and _RRID_REQUIRED_CONTEXTS.search(venue))
 
             if requires_rrid:
                 return [Finding(

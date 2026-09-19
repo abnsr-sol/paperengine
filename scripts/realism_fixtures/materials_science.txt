@@ -1,0 +1,71 @@
+# Realistic paper 2: materials-science (not engineering V&V / CFD) with copy-paste and ligature/hyphenation artifacts
+# Expected: duplication caught, ligature text still matched; NOT mesh-independence/BC demands on a non-CFD paper.
+
+# Oxygen-Vacancy Effects in Room-Temperature Ferromagnetism of ZnO Thin Films
+
+A. Kumar, M. Chen — Department of Physics, Example University.
+Corresponding author: a.kumar@example.edu
+
+## Abstract
+
+Thin films of ZnO were grown by pulsed laser deposition. X-ray
+diffraction shows wurtzite structure. Magnetic measurements reveal weak
+ferromagnetism at room temperature. We propose oxygen vacancies mediate
+the magnetic ordering.
+
+## Introduction
+
+Dilute magnetic oxides have been investigated extensively (Kumar and
+Chen, 2019). Room-temperature ferromagnetism in ZnO remains debated
+(Chen, 2020).
+
+## Experimental Section
+
+Thin films of ZnO were deposited on sapphire substrates by pulsed laser
+deposition. A KrF excimer laser (248 nm) was used at 2 J/cm2. The
+chamber base pressure was 1e-6 Torr.
+
+Thin films of ZnO were deposited on sapphire substrates by pulsed laser
+deposition. A KrF excimer laser (248 nm) was used at 2 J/cm2. The
+chamber base pressure was 1e-6 Torr.
+
+X-ray diffraction was performed on a diffractometer with Cu K-alpha
+radiation. Magnetization was measured with a SQUID magnetometer at 300
+K. The ca ﬁlm showed a clear hysteresis loop; the eﬀect was reproducible
+across the co-processed samples.
+
+## Results and Discussion
+
+The co-processed samples showed saturation magnetization of 0.8 emu/g.
+Oxygen vacancies were quantiﬁed by photoluminescence. The eﬀect of
+deposition temperature was studied; the ca ﬁlms were characterized by
+AFM.
+
+## Conclusions
+
+Oxygen vacancies mediate room-temperature ferromagnetism in ZnO thin
+films grown under the described conditions.
+
+## Data Availability
+
+The datasets generated during the current study are available in the
+institutional repository at doi:10.5555/example.zno.2024.
+
+## Conflicts of Interest
+
+The authors declare no competing interests.
+
+## Funding
+
+No external funding was received.
+
+## Author Contributions
+
+A.K. grew the films, M.C. performed magnetometry, both wrote the paper.
+
+## References
+
+1. Kumar, A., and Chen, M. (2019). Defect-induced magnetism in oxides. J.
+   Appl. Phys. doi:10.1063/1.5090001
+2. Chen, M. (2020). Ferromagnetism in wide-band-gap oxides. Phys. Rev.
+   Mater. doi:10.1103/PhysRevMaterials.4.044401

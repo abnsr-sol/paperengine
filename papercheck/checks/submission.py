@@ -8,7 +8,9 @@ from ..risk import Finding, Severity
 def run(doc: Document, ctx: object) -> List[Finding]:
     findings = []
     body = doc.body_text or doc.text
-    if not body:
+    # Tiny fragments (previews, empty uploads, garbage input) are not
+    # manuscripts — demanding email/limitations/contribution is pure noise.
+    if not body or doc.word_count < 100:
         return findings
     rules = ctx.rules if hasattr(ctx, 'rules') else {}
     # Limitations section
@@ -44,7 +46,7 @@ def run(doc: Document, ctx: object) -> List[Finding]:
     if 'Acknowledgment' in required_stmts and not has_ack:
         findings.append(Finding(category="Submission", severity=Severity.HIGH, title='Missing Acknowledgment section', detail='This venue requires an Acknowledgment section.', evidence='Acknowledgment not found', confidence=0.90, action='Add Acknowledgment section'))
     # Clinical trial registration (medical papers)
-    if re.search(r'(?:clinical\s+trial|patient|participant|cohort|randomiz)', body, re.IGNORECASE):
+    if re.search(r'(?:clinical\s+trial|patient\s+s?|cohort\s+study|randomiz)', body, re.IGNORECASE):
         has_reg = bool(re.search(r'(?:ClinicalTrials\.gov|ISRCTN|ISRCTN|registered|registration\s+(?:number|no))', body, re.IGNORECASE))
         if not has_reg:
             findings.append(Finding(category="Submission", severity=Severity.HIGH, title='Clinical research without trial registration', detail='Clinical/patient research should have a trial registration number.', evidence='Clinical keywords found, no registration', confidence=0.80, action='Register the trial at ClinicalTrials.gov or equivalent and include the registration number'))

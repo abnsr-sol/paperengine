@@ -11,7 +11,9 @@ DATA_STATEMENT = r'(?:data\s+(?:availab|deposited|available|repository|set)|data
 def run(doc: Document, ctx: object) -> List[Finding]:
     findings = []
     body = doc.body_text or doc.text
-    if not body:
+    # Tiny fragments (GUI previews, drips of text, empty uploads) cannot
+    # meaningfully "lack" a statement — demanding one there is pure noise.
+    if not body or doc.word_count < 100:
         return findings
     # Data/code availability statement
     has_data_stmt = bool(re.search(DATA_STATEMENT, body, re.IGNORECASE))

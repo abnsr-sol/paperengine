@@ -42,6 +42,10 @@ def run(doc: Document, ctx: CheckContext) -> List[Finding]:
     cat = "Structure"
     full = doc.text
     rules = ctx.rules
+    # Sub-manuscript fragments (empty uploads, previews, garbage) get no
+    # structural verdicts — "no title" on a 2-word file is noise, not signal.
+    if doc.word_count < 100:
+        return findings
 
     # --- Title -------------------------------------------------------------------
     title = _title(doc)
