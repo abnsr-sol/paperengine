@@ -2,7 +2,39 @@
 
 All notable changes to PaperEngine are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
-versioning follows [SemVer](https://semver.org/).## [1.12.0] — 2026-09-20
+versioning follows [SemVer](https://semver.org/).## [1.13.0] — 2026-09-20
+
+### Added — free-resource integration wave
+
+- **Semantic-similarity engine (`semantic_similarity`)** — the audit's #1
+  missing capability (#12). Two complementary signals against `--corpus`:
+  sentence-level stemmed Jaccard (catches restructured/lightly-reworded reuse
+  that contiguous shingles miss) and document-level TF-IDF cosine (near-verbatim
+  territory). Honest scope documented in the finding itself: aggressive
+  synonym-swap paraphrase evades lexical matching — embedding models remain
+  the roadmap item. 6 tests including the negative boundary.
+- **Image deep-forensics engine (`image_deep_forensics`)** — closes audit #13
+  beyond duplicate-panel dhash: Error-Level Analysis (spliced/enhanced regions
+  glow under uniform-quality re-save) and copy-move clone detection (identical
+  non-adjacent textured blocks inside one panel; flat blocks excluded so gel
+  backgrounds don't trigger). Screening signals only — LOW/MEDIUM cap,
+  never verdicts. 5 tests with synthesized images.
+- **ORCID checksum validation** (`author_info`) — ISO 7064 MOD 11-2 check digit
+  verified fully offline; catches typos and fabricated identities (a paper-mill
+  signature). Validated against ORCID's canonical test iD. 5 tests.
+- **`--explain`: opt-in plain-language findings explainer** via a local Ollama
+  server (audit 5.1) — fully offline, zero new dependencies, strict no-verdict
+  prompt, and degrades to the standard report with a one-line hint when Ollama
+  is absent. Configurable via `PAPERCHECK_OLLAMA` / `PAPERCHECK_OLLAMA_MODEL`.
+
+### Fixed
+- **Engine-count drift, again (94, not 97):** the 1.12.0 entry claimed 3
+  engines that were never registered in the registry — README, pyproject and
+  COVERAGE_MATRIX now carry the audited true count. Registry audit: 96 files,
+  96 registered, 0 orphans (94 + 2 new this release).
+
+## [1.12.0] — 2026-09-20
+
 
 ### Fixed
 - **Finding action/confidence transposition (14 engines).** Several engines
@@ -18,16 +50,33 @@ versioning follows [SemVer](https://semver.org/).## [1.12.0] — 2026-09-20
   `scripts/benchmark.py` (monotonicity + zero CRITICAL on the clean paper) and
   `scripts/vector_eval.py` (labeled real-world vectors) on every push/PR.
 - Refreshed stale counts: `pyproject.toml` description and README test badge
-  now reflect the real engine count and 315 tests. Version 1.11.0 → 1.12.0.
+  now reflect the real engine count and 319 tests. Version 1.11.0 → 1.12.0.
+
+### Performance
+- **`compression_ai` no longer allocates an 8 MB compressor per paragraph.**
+  `lzma.compress()` defaults to `preset=6`, which builds an ~8 MB dictionary
+  plus hash tables on *every* call. As the pipeline compresses one paragraph
+  at a time (~1 KB each) this was the single most expensive engine (~74 ms per
+  paragraph, 24% of total runtime). Switched to `preset=1`; paragraphs this
+  small never fill the dictionary, so presets 0-3 return byte-identical ratios
+  while preset 1 runs ~2x faster. Calibration is unchanged (per-paragraph
+  `<0.65` verdicts identical on the benchmark corpus).
+- **`design_claims` regex backtracking removed.** The `[^.]*VERB[^.]*\.`
+  patterns backtracked quadratically (382 ms + 231 ms on a 47 KB body, ~13% of
+  runtime). Because `[^.]` cannot cross a period, the patterns operate at
+  sentence granularity — splitting once and testing each segment is equivalent
+  and ~18x faster (21 ms), with identical hit counts on every test corpus.
+
+### Rejected (measured, not shipped)
+- **Thread-pooled engine pipeline.** A `ThreadPoolExecutor` variant of
+  `run_all_engines` was implemented and benchmarked, then deliberately
+  removed: the engines are CPU-bound pure Python under the GIL (one engine is
+  24% of runtime), so threads added overhead instead of removing it
+  (wall-clock 0.67x-0.92x on real-size documents; CPU time flat). The real
+  wins were algorithmic (above), not concurrent. `run_all_engines` stays
+  sequential and now routes fault isolation through one `_run_engine` helper.
 
 ### Added
-- **Parallel engine pipeline.** `run_all_engines` now runs the 97 engines
-  through a small thread pool (default 4 workers, `PAPERCHECK_WORKERS`
-  override; ~3.7× faster on a representative manuscript). Output is
-  byte-for-byte identical to the sequential path — results are re-ordered by
-  engine index, so reports and scores never depend on thread scheduling.
-  Offline runs keep sequential semantics; a shared fault-isolation helper
-  covers both paths. Regression-guarded by `tests/test_parallel_pipeline.py`.
 - **Coercive-citation / venue-stacking detection (`citation_cartel`).** The
   engine had a dead stub where the target-venue reference-share check should
   be; it now measures how heavily the reference list cites the target venue

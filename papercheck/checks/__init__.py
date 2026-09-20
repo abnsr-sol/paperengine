@@ -127,6 +127,7 @@ def _import_engines() -> List[CheckFn]:
         compression_ai, iclac_celllines, author_identity,
         rrid_validate, pubmed_verify, clinicaltrials_gov,
         bibtex_export, citation_graph,
+        semantic_similarity, image_deep_forensics,
     )
     return [
         compliance.run, structure.run, language.run, citations.run,
@@ -162,6 +163,7 @@ def _import_engines() -> List[CheckFn]:
         compression_ai.run, iclac_celllines.run, author_identity.run,
         rrid_validate.run, pubmed_verify.run, clinicaltrials_gov.run,
         bibtex_export.run, citation_graph.run,
+        semantic_similarity.run, image_deep_forensics.run,
     ]
 
 ALL_ENGINES: List[CheckFn] = _import_engines()

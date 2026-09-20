@@ -36,4 +36,27 @@ def run(doc: Document, ctx: object) -> List[Finding]:
     if len(initials_only) >= 2:
         out.append(_f(Severity.LOW, "Authors listed as initials only", "Most journals require full given names, not initials.",
                       "Found: " + ", ".join(initials_only[:4]), 0.60, "Expand initials to full given names"))
+    # ORCID checksum validation (ISO 7064 MOD 11-2) — catches typos and
+    # fabricated identifiers (a paper-mill signature) fully offline.
+    for orcid in re.findall(r"\b(\d{4}-\d{4}-\d{4}-\d{3}[0-9X])\b", head):
+        if not _orcid_checksum_ok(orcid):
+            out.append(_f(Severity.MEDIUM, "ORCID iD fails its checksum",
+                          "This ORCID identifier does not satisfy the ISO 7064 MOD 11-2 "
+                          "check digit, so it cannot be a valid ORCID — a typo at best, "
+                          "a fabricated identity at worst (editors and ORCID verify this).",
+                          orcid, 0.90,
+                          "Correct the ORCID iD against orcid.org; every author ORCID must validate"))
     return out
+
+
+def _orcid_checksum_ok(orcid: str) -> bool:
+    """ISO 7064 MOD 11-2 check digit for a 16-digit ORCID (hyphenated form)."""
+    digits = orcid.replace("-", "")
+    if len(digits) != 16 or not digits[:15].isdigit():
+        return False
+    total = 0
+    for ch in digits[:15]:
+        total = (total + int(ch)) * 2
+    result = (12 - total % 11) % 11
+    expected = "X" if result == 10 else str(result)
+    return digits[15].upper() == expected

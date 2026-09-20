@@ -143,6 +143,8 @@ def main(argv: Optional[List[str]] = None) -> int:
                         help="export corrected references as BibTeX to this file")
     parser.add_argument("--config", default=None, metavar="FILE",
                         help="path to papercheck.toml configuration file")
+    parser.add_argument("--explain", action="store_true",
+                        help="append plain-language explanations of the top findings via a local Ollama server (fully offline; needs Ollama running)")
     args = parser.parse_args(argv)
 
     if args.version:
@@ -331,6 +333,22 @@ def main(argv: Optional[List[str]] = None) -> int:
         output = render_fix_plan(report)
     else:
         output = render_console(report)
+
+    # Opt-in plain-language explanations (local Ollama). Strictly additive:
+    # failure to reach the server degrades to the standard report with a hint,
+    # never an error.
+    if args.explain:
+        from .explain import explain_findings, ollama_available
+        if ollama_available():
+            explanations = explain_findings(report.findings)
+            if explanations:
+                output += ("\n\n" + "=" * 64 +
+                           "\nPLAIN-LANGUAGE EXPLANATIONS (local Ollama)\n" +
+                           "=" * 64 + "\n" + explanations + "\n")
+            else:
+                print("Warning: Ollama returned no explanation; showing the standard report.", file=sys.stderr)
+        else:
+            print("Note: --explain needs a local Ollama server (https://ollama.com, then: ollama pull llama3.2). Showing the standard report.", file=sys.stderr)
 
     if args.out:
         with open(args.out, "w", encoding="utf-8") as fh:
