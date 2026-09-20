@@ -57,9 +57,17 @@ class Finding:
 
     def __post_init__(self) -> None:
         """Defensive coercion: a transposed positional argument in any of the
-        74 engines can produce a string confidence or a string severity.
+        94 engines can produce a string confidence or a string severity.
         Repair it at construction so sorting/scoring can never crash on bad
         types (e.g. 'bad operand type for unary -: str' in by_severity)."""
+        # Repair a transposed (confidence, action) pair FIRST. Several engines
+        # pass the numeric confidence into the `action` slot and the advice
+        # text into `confidence`; without this, _as_confidence() would silently
+        # coerce the advice text to 0.5 and the readiness score (weight x
+        # confidence) would be understated. Detect by shape: numeric action
+        # with non-numeric confidence is always the transposition.
+        if _looks_numeric(self.action) and not _looks_numeric(self.confidence):
+            self.action, self.confidence = self.confidence, self.action
         self.severity = severity_from_string(self.severity)
         self.confidence = _as_confidence(self.confidence)
         for name in ("category", "title", "detail", "evidence", "action",
@@ -91,6 +99,24 @@ def _as_confidence(value: object) -> float:
     if conf != conf:  # NaN
         return 0.5
     return max(0.0, min(1.0, conf))
+
+
+def _looks_numeric(value: object) -> bool:
+    """True if value is a number or a numeric-looking string (e.g. '0.95').
+
+    Used to detect a transposed (confidence, action) pair at construction so a
+    numeric action slot can be repaired back into confidence."""
+    if isinstance(value, bool):
+        return False
+    if isinstance(value, (int, float)):
+        return True
+    if isinstance(value, str):
+        try:
+            float(value.strip())
+            return True
+        except (TypeError, ValueError):
+            return False
+    return False
 
 
 @dataclass

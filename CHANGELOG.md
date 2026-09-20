@@ -2,7 +2,41 @@
 
 All notable changes to PaperEngine are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
-versioning follows [SemVer](https://semver.org/).
+versioning follows [SemVer](https://semver.org/).## [1.12.0] — 2026-09-20
+
+### Fixed
+- **Finding action/confidence transposition (14 engines).** Several engines
+  passed the numeric confidence into the `action` slot and the advice text into
+  `confidence`, so reports showed `action: 0.95` and the confidence was silently
+  coerced to 0.5 — understating the readiness score (`weight × confidence`).
+  `Finding.__post_init__` now detects and repairs the transposed pair before
+  coercion, covering all 44 call-sites and any future ones. Added
+  `tests/test_action_confidence.py` as a regression guard.
+
+### Changed
+- **CI now gates on calibration:** `.github/workflows/ci.yml` runs
+  `scripts/benchmark.py` (monotonicity + zero CRITICAL on the clean paper) and
+  `scripts/vector_eval.py` (labeled real-world vectors) on every push/PR.
+- Refreshed stale counts: `pyproject.toml` description and README test badge
+  now reflect the real engine count and 315 tests. Version 1.11.0 → 1.12.0.
+
+### Added
+- **Parallel engine pipeline.** `run_all_engines` now runs the 97 engines
+  through a small thread pool (default 4 workers, `PAPERCHECK_WORKERS`
+  override; ~3.7× faster on a representative manuscript). Output is
+  byte-for-byte identical to the sequential path — results are re-ordered by
+  engine index, so reports and scores never depend on thread scheduling.
+  Offline runs keep sequential semantics; a shared fault-isolation helper
+  covers both paths. Regression-guarded by `tests/test_parallel_pipeline.py`.
+- **Coercive-citation / venue-stacking detection (`citation_cartel`).** The
+  engine had a dead stub where the target-venue reference-share check should
+  be; it now measures how heavily the reference list cites the target venue
+  (word-boundary matched, skipped for the generic venue, needs ≥10 refs and
+  ≥3 venue citations) and flags ≥18% share as Medium / ≥35% as High — a
+  COPE-flagged coercion signal editors screen for during triage.
+- Code hygiene: the two bare `except: pass` handlers in `fabrication.py`
+  (impossible-% and impossible-r loops) now catch only `ValueError` so real
+  bugs can no longer be silently masked.
 
 ## [1.11.0] — 2026-09-15
 

@@ -21,6 +21,10 @@ jobs:
         run: pip install -e .[all]
       - name: Run test suite
         run: python -m unittest discover -s tests -v
+      - name: Benchmark gate (monotonicity + no CRITICAL on clean)
+        run: python scripts/benchmark.py
+      - name: Vector eval gate (labeled real-world vectors)
+        run: python scripts/vector_eval.py
       - name: Smoke test CLI
         run: |
           papercheck --list-venues

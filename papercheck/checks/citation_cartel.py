@@ -100,8 +100,37 @@ def run(doc: Document, ctx: object) -> List[Finding]:
                                0.65))
 
     # Coercive-citation tell: reference list heavy in the target venue's own journal.
-    venue = str(getattr(ctx, 'venue', ''))
-    if venue:
-        for r in refs:
-            pass
+    # Editors pressuring authors to add citations to their own journal is a documented
+    # integrity problem (COPE guidance). A submission whose reference list cites the
+    # target venue far above field-normal rates reads as coercion compliance - and
+    # editors notice it during triage. Flag it so the author can trim to what is
+    # genuinely substantive before submission.
+    venue_raw = str(getattr(ctx, 'venue', '') or '')
+    rules = getattr(ctx, 'rules', None) or {}
+    venue_label = venue_raw if venue_raw and venue_raw != 'generic' else str(rules.get('_name', '') or '')
+    venue_label = venue_label.replace('_', ' ').replace('-', ' ').strip().lower()
+    if venue_label and venue_label != 'generic' and len(refs) >= 10:
+        # Word-boundary match so short tokens ("acm") cannot hit inside unrelated
+        # words ("Macmillan"); multi-word labels ("ieee access") still substring-match.
+        pattern = re.compile(r'\b' + re.escape(venue_label) + r'\b') if ' ' not in venue_label else None
+        if pattern is not None:
+            venue_cites = [r for r in refs if pattern.search(r.lower())]
+        else:
+            venue_cites = [r for r in refs if venue_label in r.lower()]
+        cnt = len(venue_cites)
+        if cnt >= 3:
+            ratio = cnt / float(len(refs))
+            if ratio >= 0.35:
+                sev, conf = Severity.HIGH, 0.75
+            elif ratio >= 0.18:
+                sev, conf = Severity.MEDIUM, 0.65
+            else:
+                sev = None
+            if sev is not None:
+                out.append(Finding("Citation Integrity", sev,
+                                   "Reference list heavy in the target venue (" + str(cnt) + "/" + str(len(refs)) + " = " + str(int(ratio * 100)) + "%)",
+                                   "Far more citations to the target venue than field-normal rates signal coercive-citation compliance (editors requesting citations to their own journal - a COPE-flagged practice) or venue-stacking. Editors increasingly screen for this during triage.",
+                                   venue_label + " cited in " + str(cnt) + " of " + str(len(refs)) + " refs; e.g. " + (venue_cites[0][:80] if venue_cites else ""),
+                                   "Keep only venue citations that are genuinely indispensable; a bloated venue share invites a manipulation query before review even starts",
+                                   conf))
     return out
