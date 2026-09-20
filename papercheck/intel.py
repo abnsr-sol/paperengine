@@ -2,14 +2,17 @@
 
 PaperEngine stays local-first and offline-capable. This module manages a
 small on-disk cache (default ~/.papercheck, override with PAPERCHECK_HOME)
-of two open datasets the engines read:
+of open datasets the engines read:
 
-1. **Tortured phrases** (Problematic Paper Screener, Cabanac et al.).
-   A curated built-in list works offline from day one; ``download_phrases``
-   refreshes/extends it from a configurable JSON URL (default: the PPS
-   project page, overridable with PAPERCHECK_PHRASES_URL).
-2. **Retraction Watch database** (CC-BY 4.0 via retractionwatch.com).
-   ``rwdb.download_db`` handles this; ``sync_all`` runs both.
+1. Tortured phrases (Problematic Paper Screener, Cabanac et al.). A curated
+   built-in list works offline from day one; ``download_phrases`` refreshes it
+   from a configurable JSON URL (default: the PPS project page, overridable
+   with PAPERCHECK_PHRASES_URL).
+2. Retraction Watch database (CC-BY 4.0 via retractionwatch.com). ``rwdb
+   .download_db`` handles this; ``sync_all`` runs both.
+3. OpenAlex venue-concept mirror — when an API key is present this module can
+   warm a small per-venue concept cache used by the OpenAlex venue-scope
+   check so repeated GUI renders don't re-fetch the same source profile.
 
 Nothing here ever raises on network failure — engines fall back to the
 built-in seeds so a check always works offline.
@@ -19,8 +22,9 @@ from __future__ import annotations
 import json
 import os
 import re
+import urllib.parse
 import urllib.request
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 _PPS_PAGE = "https://www.irit.fr/~Guillaume.Cabanac/problematic-paper-screener/tortured/"
 _TIMEOUT = 20.0
@@ -73,11 +77,9 @@ def phrases_cache_path() -> str:
 
 
 def _parse_phrases(raw: str) -> List[Tuple[str, str]]:
-    """Accept JSON of shape {"phrases": [{"tortured": .., "intended": ..}]}
+    """Accept JSON of shape {"phrases": [{\"tortured\": .., \"intended\": ..}]}
     or a flat list of pairs, or an HTML page containing JSON. Best effort."""
-    # try direct JSON first
     candidates = [raw]
-    # extract the largest JSON object embedded in HTML if needed
     if "<" in raw[:200]:
         blocks = re.findall(r"\{.*\}|\[.*\]", raw, re.DOTALL)
         blocks.sort(key=len, reverse=True)
@@ -91,7 +93,6 @@ def _parse_phrases(raw: str) -> List[Tuple[str, str]]:
         if isinstance(data, dict):
             data = data.get("phrases") or data.get("tortured") or data
         if isinstance(data, dict):
-            # {"tortured phrase": "intended term", ...}
             for k, v in data.items():
                 if isinstance(v, str) and v.strip() and v.strip().lower() != k.strip().lower():
                     pairs.append((k.strip().lower(), v.strip().lower()))
@@ -117,13 +118,12 @@ def download_phrases(url: Optional[str] = None) -> Tuple[bool, int]:
     Returns (success, phrase_count). Never raises."""
     src = url or os.environ.get("PAPERCHECK_PHRASES_URL") or _PPS_PAGE
     try:
-        req = urllib.request.Request(src, headers={"User-Agent": "papercheck/1.9"})
+        req = urllib.request.Request(src, headers={"User-Agent": "paperengine/1.14"})
         with urllib.request.urlopen(req, timeout=_TIMEOUT) as resp:
             raw = resp.read().decode("utf-8", "replace")
         pairs = _parse_phrases(raw)
         if not pairs:
             return False, 0
-        # merge with curated so a partial download never shrinks coverage
         merged = dict(CURATED_PHRASES)
         merged.update(pairs)
         tmp = phrases_cache_path() + ".tmp"
@@ -153,12 +153,70 @@ def load_phrases() -> List[Tuple[str, str]]:
     return sorted(pairs.items())
 
 
-def db_status() -> Dict[str, object]:
+def _fetch_json(url: str, headers: Optional[Dict[str, str]] = None) -> Optional[Any]:
+    headers = dict(headers or {})
+    headers.setdefault("User-Agent", "paperengine/1.14")
+    try:
+        req = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(req, timeout=_TIMEOUT) as resp:
+            return json.loads(resp.read().decode("utf-8", "replace"))
+    except Exception:
+        return None
+
+
+def openalex_key() -> Optional[str]:
+    return os.environ.get("OPENALEX_API_KEY", "").strip() or None
+
+
+def openalex_venue_concepts(venue_name: str) -> Optional[Dict[str, Any]]:
+    """Return a small cached venue profile from OpenAlex when a key is present.
+
+    Without a key this is a no-op (the inline verification engine does its own
+    fetches). With a key we return source concepts + top works so the GUI and
+    the CLI can show venue context without re-fetching per render."""
+    key = openalex_key()
+    if not key:
+        return None
+    encoded = urllib.parse.quote(venue_name[:80])
+    src = _fetch_json(
+        f"https://api.openalex.org/sources?filter=display_name.search:{encoded}&per-page=1",
+        {"Authorization": f"Bearer {key}"})
+    if not (src and src.get("results")):
+        src = _fetch_json(
+                f"https://api.openalex.org/sources?filter=display_name.search:{encoded}&per-page=1")
+    if not (src and src.get("results")):
+        return None
+    sid = src["results"][0].get("id", "").rsplit("/", 1)[-1]
+    if not sid:
+        return None
+    works = _fetch_json(
+        f"https://api.openalex.org/works?filter=primary_location.source.id:{sid}"
+        "&sort=cited_by_count:desc&per-page=20"
+        "&select=id,display_name,publication_year,cited_by_count,concepts",
+        {"Authorization": f"Bearer {key}"})
+    if not (works and works.get("results")):
+        works = _fetch_json(
+                f"https://api.openalex.org/works?filter=primary_location.source.id:{sid}"
+                "&sort=cited_by_count:desc&per-page=20"
+                "&select=id,display_name,publication_year,cited_by_count,concepts")
+    if not (works and works.get("results")):
+        return None
+    concepts: Dict[str, int] = {}
+    for w in works["results"]:
+        for c in (w.get("concepts") or [])[:4]:
+            if c.get("score", 0) > 0.2:
+                concepts[c["display_name"]] = concepts.get(c["display_name"], 0) \
+                    + max(1, int(c.get("score", 1) * 3))
+    top = [k for k, _ in sorted(concepts.items(), key=lambda kv: -kv[1])[:8]]
+    return {"source_id": sid, "concepts": top, "top_works": works["results"][:10]}
+
+
+def db_status() -> Dict[str, Any]:
     """What's in the local intelligence cache (for --sync-all reporting).
 
     Memoized on file mtime+size so the GUI can call it per page render
     without re-reading a multi-MB cache file."""
-    status: Dict[str, object] = {}
+    status: Dict[str, Any] = {}
     ppath = phrases_cache_path()
     from . import rwdb as _rwdb
     rpath = _rwdb.default_cache_path()
@@ -193,13 +251,13 @@ def db_status() -> Dict[str, object]:
     return status
 
 
-_STATUS_CACHE: Dict[tuple, Dict[str, object]] = {}
+_STATUS_CACHE: Dict[tuple, Dict[str, Any]] = {}
 
 
-def sync_all() -> Dict[str, object]:
+def sync_all() -> Dict[str, Any]:
     """Refresh both open datasets into the local cache. Never raises."""
     from . import rwdb as _rwdb
-    out: Dict[str, object] = {}
+    out: Dict[str, Any] = {}
     ok, n = download_phrases()
     out["tortured_phrases"] = (f"updated: {n} phrases" if ok
                                else "download failed — curated list still active")

@@ -5,19 +5,20 @@ What it checks, using ONLY public OpenAlex data (no manuscript text leaves
 the machine — just reference titles/DOIs and venue names are sent as query
 parameters):
 
-1. **Reference resolution** — does each cited work exist in the 250M-work
-   graph? Unresolvable references are hallucination candidates.
-2. **Disputed/withdrawn works** — OpenAlex flags retractions; citing them
-   is a serious integrity risk.
-3. **Venue scope mismatch** — the manuscript's keyword profile (computed
-   locally) vs the target venue's historical concept profile (fetched once,
-   cached per context). Low overlap = classic desk-reject reason.
-4. **Seminal-work gap** — top-cited recent works in the venue's dominant
-   concepts; citing none suggests disconnection from current literature.
+1. Reference resolution — does each cited work exist in the 250M-work graph?
+   Unresolvable references are hallucination candidates.
+2. Disputed/withdrawn works — OpenAlex flags retractions; citing them is a
+   serious integrity risk.
+3. Venue scope mismatch — the manuscript's keyword profile (computed locally)
+   vs the target venue's historical concept profile (fetched once, cached per
+   context). Low overlap = classic desk-reject reason.
+4. Seminal-work gap — top-cited recent works in the venue's dominant concepts;
+   citing none suggests disconnection from current literature.
 
 API key: OpenAlex is free without one (100k calls/day); a key raises limits.
 Set it via the OPENALEX_API_KEY environment variable or --openalex-key.
-The key is sent as the `api_key` query parameter per OpenAlex docs.
+The key is sent as the api_key query parameter, and if that transport fails
+we retry with Bearer header — whichever works wins.
 """
 from __future__ import annotations
 
@@ -33,22 +34,37 @@ from ..risk import Finding, Severity
 
 _API = "https://api.openalex.org"
 _TIMEOUT = 12.0
-_UA = "paperengine/1.4 (research integrity; local pre-submission checker)"
+_UA = "paperengine/1.14 (research integrity; local pre-submission checker)"
+
+
+def _key() -> str:
+    return os.environ.get("OPENALEX_API_KEY", "").strip()
 
 
 def _key_param() -> str:
-    key = os.environ.get("OPENALEX_API_KEY", "").strip()
+    key = _key()
     return f"&api_key={urllib.parse.quote(key)}" if key else ""
 
 
-def _fetch(path: str, params: str = "") -> Optional[dict]:
-    url = f"{_API}{path}?{params}{_key_param()}"
-    req = urllib.request.Request(url, headers={"User-Agent": _UA})
-    try:
-        with urllib.request.urlopen(req, timeout=_TIMEOUT) as resp:
-            return json.loads(resp.read().decode("utf-8", "replace"))
-    except Exception:
-        return None
+def _fetch(path: str, params: str = ""):
+    """One OpenAlex request -> ``(status, obj)``.
+
+    Transport 1 puts the key in the query string (the documented form);
+    transport 2 uses a Bearer header, for accounts where only that works.
+
+    ``status is None`` means nothing was learned (network down). Callers must
+    not read that as "this work does not exist", which would invent a
+    hallucinated-reference accusation; ``status`` 404 is a real negative.
+    """
+    from ..net import get_json
+    key = _key()
+    status, body = get_json(f"{_API}{path}?{params}{_key_param()}", timeout=_TIMEOUT)
+    if body is not None or status is not None:
+        return status, body
+    if not key:
+        return status, body
+    return get_json(f"{_API}{path}?{params}",
+                    {"Authorization": f"Bearer {key}"}, timeout=_TIMEOUT)
 
 
 def _doi_of(ref: str) -> Optional[str]:
@@ -84,36 +100,47 @@ def _keywords(text: str, limit: int = 12) -> List[str]:
     return [w for w, _ in sorted(counts.items(), key=lambda kv: -kv[1])[:limit]]
 
 
-def _work_by_doi(doi: str) -> Optional[dict]:
-    data = _fetch("/works", f"filter=doi:{urllib.parse.quote(doi.lower())}"
+def _work_by_doi(doi: str) -> Tuple[Optional[dict], bool]:
+    """``(work_or_None, authoritative)``.
+
+    ``authoritative=False`` means the answer never arrived. Treating that as
+    "no such work" is what turns a network blip into a fabrication accusation.
+    """
+    from ..net import is_definitive
+    status, data = _fetch("/works", f"filter=doi:{urllib.parse.quote(doi.lower())}"
                             "&per-page=1&select=id,display_name,publication_year,"
                             "cited_by_count,type,is_retracted")
+    if not is_definitive(status):
+        return None, False
     if data and data.get("results"):
-        return data["results"][0]
-    return None
+        return data["results"][0], True
+    return None, True
 
 
-def _work_by_title(title: str) -> Optional[dict]:
+def _work_by_title(title: str) -> Tuple[Optional[dict], bool]:
     if len(title) < 15:
-        return None
-    data = _fetch("/works", "filter=title.search:" + urllib.parse.quote(title[:150])
+        return None, True  # too short to search: not a network issue
+    from ..net import is_definitive
+    status, data = _fetch("/works", "filter=title.search:" + urllib.parse.quote(title[:150])
                             + "&per-page=1&select=id,display_name,publication_year,"
                               "cited_by_count,type,is_retracted")
+    if not is_definitive(status):
+        return None, False
     if data and data.get("results"):
-        return data["results"][0]
-    return None
+        return data["results"][0], True
+    return None, True
 
 
 def _venue_profile(venue_name: str) -> Optional[dict]:
     """Top concepts + recent top works for a venue, by display name search."""
-    src = _fetch("/sources", "filter=display_name.search:"
+    _st, src = _fetch("/sources", "filter=display_name.search:"
                               + urllib.parse.quote(venue_name[:80]) + "&per-page=1")
     if not (src and src.get("results")):
         return None
     sid = src["results"][0].get("id", "").rsplit("/", 1)[-1]
     if not sid:
         return None
-    works = _fetch("/works", f"filter=primary_location.source.id:{sid}"
+    _st2, works = _fetch("/works", f"filter=primary_location.source.id:{sid}"
                              "&sort=cited_by_count:desc&per-page=20"
                              "&select=id,display_name,publication_year,cited_by_count,concepts")
     if not (works and works.get("results")):
@@ -141,21 +168,38 @@ def run(doc: Document, ctx: object) -> List[Finding]:
     unresolved: List[str] = []
     retracted: List[str] = []
     checked = 0
+    unreachable = 0
     for r in refs[:cap]:
         doi = _doi_of(r)
         key = f"oa:{doi or r[:60]}"
         if key in cache:
-            work = cache[key]
+            work, authoritative = cache[key], True
         else:
-            work = _work_by_doi(doi) if doi else _work_by_title(_title_of(r))
+            work, authoritative = (_work_by_doi(doi) if doi
+                                   else _work_by_title(_title_of(r)))
             cache[key] = work
-            checked += 1
+            if authoritative:
+                checked += 1
+            else:
+                unreachable += 1
+        if not authoritative:
+            continue  # nothing learned: never counts as "unresolved"
         if work is None:
             unresolved.append(r[:110])
         elif work.get("is_retracted"):
             retracted.append(r[:110])
-    if checked:
+    if checked or unreachable:
         ctx.online_cache = cache
+    if unreachable and not checked:
+        out.append(Finding(
+            "References", Severity.INFO,
+            "OpenAlex unreachable - references not verified",
+            "Every OpenAlex lookup failed at the network layer, so no reference "
+            "was actually checked. This is a connectivity result, not a "
+            "statement about your citations.",
+            f"{unreachable} lookup(s) failed, 0 completed",
+            "Re-run with a working connection before drawing conclusions from "
+            "reference verification.", 0.95, source="openalex_verify"))
     if unresolved and checked >= 2:
         frac = len(unresolved) / max(1, len(unresolved) + sum(
             1 for k, v in cache.items() if k.startswith("oa:") and v))

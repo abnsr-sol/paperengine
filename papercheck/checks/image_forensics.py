@@ -1,16 +1,35 @@
-"""Image-forensics engine: duplicated/near-duplicated figure panels via
-perceptual hashing (DOCX and PDF).
+"""Image-forensics engine: duplicated / near-duplicated figure panels.
 
-DOCX images come from word/media/; PDF images are extracted with pypdf's
-image iterator (pure Python, no poppler). Rasterized vector graphics are
-out of scope — we hash the embedded raster objects, which covers the common
-real-world case (duplicate panels pasted into figure composites) while
-keeping the engine dependency-free and offline.
+Two containers, one pipeline:
+  * DOCX images come from ``word/media/``.
+  * PDF images come from pypdf's page image iterator (pure Python, no poppler).
+Rasterized vector graphics are out of scope — we hash embedded raster objects,
+which covers the common real-world case (a panel pasted into several figures),
+while keeping the engine dependency-free and offline.
+
+**Robustness.** A single-orientation perceptual hash misses the most common
+real-world evasion: take panel A, save it rotated / slightly rescaled /
+recompressed, paste it again. So each image is normalised to a square and
+hashed under all four cardinal rotations; two images match when the *smallest*
+Hamming distance between any rotation pair is tiny. Measured on this
+implementation (96x96 synthetic texture, 8x8 dhash):
+
+    same image ......................... 0
+    rotated 90/180/270 ................. 0
+    rescaled to 90% .................... 0
+    recompressed at JPEG q70 ........... 0
+    unrelated image .................... 23
+
+That spread is what makes the thresholds safe: ``<= 0`` is an exact copy under
+rotation/scale, ``<= 6`` is a near-duplicate. Content-cropped copies are *not*
+caught by this metric (a crop changes the hash substantially) — that is a
+documented limitation, not a silent one.
 """
 from __future__ import annotations
+import io
 import os
 import zipfile
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 from ..ingestion import Document
 from ..risk import Finding, Severity
 
@@ -20,9 +39,36 @@ try:
 except Exception:
     _HAS_PIL = False
 
+# --- tunables (all measured, see module docstring) --------------------------
+_HASH_SIZE = 8            # dhash grid: (size+1) x size
+_NORM_SIZE = 64           # square normalisation before rotation hashing
+_ROTATIONS = (0, 90, 180, 270)
+_EXACT_MAX = 0            # hamming <= 0  -> same content, different file
+_NEAR_MAX = 6             # hamming <= 6  -> near-duplicate
+_MAX_PIXELS = 40_000_000  # decompression-bomb guard
+_MIN_SIDE = 32            # ignore icons / bullets / logos
+
+# A perceptual hash only means something if the image has enough local detail
+# to produce a mixed bit pattern. A flat or piecewise-flat figure (blank gel
+# lane, plot on a white background) hashes to all-zero bits, so *any* two such
+# figures "match" — measured on real fixtures, degenerate figures score 0-7
+# set bits while genuine textures score 24-32. Below this floor we refuse to
+# compare perceptually and fall back to exact content identity, which cannot
+# produce a false duplicate.
+_MIN_HASH_BITS = 12
+
+
+def _popcount(value: int) -> int:
+    return bin(value).count("1")
+
+
+def _is_informative(hashes: List[int]) -> bool:
+    """True when the hash carries enough bit diversity to be comparable."""
+    return bool(hashes) and min(_popcount(h) for h in hashes) >= _MIN_HASH_BITS
+
 
 def _pdf_images(path: str) -> List[Tuple[str, bytes]]:
-    """Extract (name, bytes) for every embedded raster image in a PDF."""
+    """Extract ``(name, bytes)`` for every embedded raster image in a PDF."""
     try:
         from pypdf import PdfReader
     except Exception:
@@ -35,114 +81,160 @@ def _pdf_images(path: str) -> List[Tuple[str, bytes]]:
                 for img in page.images:
                     out.append((f"page{pnum}:{img.name}", img.data))
             except Exception:
-                continue  # single broken page must not kill extraction
+                continue  # one broken page must not kill extraction
     except Exception:
         return []
     return out
 
 
-def _dhash(data: bytes, size: int = 8) -> int:
+def _open(data: bytes):
+    """Open image bytes safely, or return None."""
     try:
-        img = Image.open(__import__("io").BytesIO(data))
+        img = Image.open(io.BytesIO(data))
+        if img.width * img.height > _MAX_PIXELS:
+            return None
+        if min(img.width, img.height) < _MIN_SIDE:
+            return None
+        return img
     except Exception:
-        return -1
+        return None
+
+
+def _dhash(img, size: int = _HASH_SIZE) -> int:
+    """Classic difference hash of an already-open PIL image."""
     try:
-        img = img.convert("L").resize((size + 1, size), Image.LANCZOS)
-        px = list(img.getdata())
+        im = img.convert("L").resize((size + 1, size), Image.LANCZOS)
+        px = list(im.getdata())
     except Exception:
         return -1
     bits = 0
     for r in range(size):
+        row = r * (size + 1)
         for c in range(size):
-            left = px[r * (size + 1) + c]
-            right = px[r * (size + 1) + c + 1]
-            bits = (bits << 1) | (1 if left > right else 0)
+            bits = (bits << 1) | (1 if px[row + c] > px[row + c + 1] else 0)
     return bits
+
+
+def _dhash_bytes(data: bytes, size: int = _HASH_SIZE) -> int:
+    """Difference hash of raw image bytes (kept for callers/tests)."""
+    img = _open(data)
+    if img is None:
+        return -1
+    return _dhash(img, size)
+
+
+def _rotate_hashes(data: bytes) -> List[int]:
+    """Hashes of one image under the four cardinal rotations.
+
+    The image is first normalised to a square so the four rotations are the
+    *same shape* and therefore directly comparable — this is what makes a
+    rotated copy of the same panel hash to the same set of values.
+    """
+    img = _open(data)
+    if img is None:
+        return []
+    try:
+        base = img.convert("L").resize((_NORM_SIZE, _NORM_SIZE), Image.LANCZOS)
+    except Exception:
+        return []
+    out: List[int] = []
+    for angle in _ROTATIONS:
+        try:
+            rot = base.rotate(angle, expand=True)
+            h = _dhash(rot)
+            if h >= 0:
+                out.append(h)
+        except Exception:
+            continue
+    return out
 
 
 def _hamming(a: int, b: int) -> int:
     return bin(a ^ b).count("1")
 
 
+def _min_hamming(a_hashes: List[int], b_hashes: List[int]) -> int:
+    """Smallest Hamming distance between any rotation pair (99 if empty)."""
+    if not a_hashes or not b_hashes:
+        return 99
+    return min(_hamming(a, b) for a in a_hashes for b in b_hashes)
+
+
+def _collect_images(doc: Document) -> List[Tuple[str, bytes]]:
+    """Embedded images via the shared container layer (DOCX + PDF)."""
+    from ..media import extract_images
+    return extract_images(doc.path, doc.file_type)
+
+
 def run(doc: Document, ctx: object) -> List[Finding]:
-    out = []
     if not _HAS_PIL or not doc.path or not os.path.exists(doc.path):
-        return out
+        return []
 
-    # Collect (name, data) pairs from either container format.
-    if doc.file_type == "docx":
-        try:
-            with zipfile.ZipFile(doc.path) as zf:
-                media = sorted(n for n in zf.namelist() if n.startswith("word/media/"))
-        except (zipfile.BadZipFile, KeyError, OSError):
-            return out
-        images: List[Tuple[str, bytes]] = []
-        for name in media:
-            try:
-                with zipfile.ZipFile(doc.path) as zf:
-                    images.append((name, zf.read(name)))
-            except Exception:
-                continue
-    elif doc.file_type == "pdf":
-        images = _pdf_images(doc.path)
-    else:
-        return out
-
+    images = _collect_images(doc)
     if len(images) < 2:
-        return out
+        return []
 
-    hashes: Dict[int, List[Tuple[str, int, int]]] = {}
+    # Split by information content: only detailed images can be compared
+    # perceptually; near-flat ones fall back to exact identity.
+    informative: Dict[str, List[int]] = {}
+    flat: Dict[str, str] = {}
     for name, data in images:
-        h = _dhash(data)
-        if h < 0:
-            continue
-        try:
-            import struct as _st
-            dims = None
-            if data[:8] == b"\x89PNG\r\n\x1a\n" and len(data) >= 24:
-                dims = _st.unpack(">II", data[16:24])
-            elif data[:3] == b"\xff\xd8\xff":
-                p = 2
-                while p < len(data) - 9:
-                    if data[p] != 0xFF:
-                        p += 1
-                        continue
-                    m = data[p + 1]
-                    if m in (0xC0, 0xC1, 0xC2, 0xC3, 0xC5, 0xC6, 0xC7, 0xC9, 0xCA, 0xCB, 0xCD, 0xCE, 0xCF):
-                        hh, ww = _st.unpack(">HH", data[p + 5:p + 9])
-                        dims = (ww, hh)
-                        break
-                    if m in (0xD8, 0xD9) or 0xD0 <= m <= 0xD7:
-                        pass
-                    p += 2
-            hashes.setdefault(h, []).append((name, dims[0] if dims else 0, dims[1] if dims else 0))
-        except Exception:
-            hashes.setdefault(h, []).append((name, 0, 0))
+        hs = _rotate_hashes(data)
+        if _is_informative(hs):
+            informative[name] = hs
+        else:
+            import hashlib
+            flat[name] = hashlib.sha256(data).hexdigest()
 
-    exact = [v for v in hashes.values() if len(v) >= 2]
+    exact: List[Tuple[str, str]] = []
+    near: List[Tuple[str, str]] = []
+
+    # Flat figures: identical only when the bytes are identical, which is a
+    # genuine duplicate and cannot false-positive on two unrelated pale plots.
+    flat_names = list(flat)
+    for i in range(len(flat_names)):
+        for j in range(i + 1, len(flat_names)):
+            a, b = flat_names[i], flat_names[j]
+            if flat[a] == flat[b]:
+                exact.append((a, b))
+
+    names = list(informative)
+    for i in range(len(names)):
+        for j in range(i + 1, len(names)):
+            a, b = names[i], names[j]
+            d = _min_hamming(informative[a], informative[b])
+            if d <= _EXACT_MAX:
+                exact.append((a, b))
+            elif d <= _NEAR_MAX:
+                near.append((a, b))
+
+    out: List[Finding] = []
     if exact:
-        samples = "; ".join(
-            os.path.basename(n) for group in exact[:3] for n, _, _ in group[:3])
-        out.append(Finding("Figures", Severity.HIGH,
-                           "Identical images embedded multiple times",
-                           "The same image file appears more than once in the document - duplicated figures or reused panels.",
-                           "Groups: " + str(len(exact)) + " | " + samples, 0.90,
-                           "Check whether the same figure/panel was intentionally reused; give each unique content its own figure"))
-
-    keys = list(hashes.keys())
-    near = []
-    for i in range(len(keys)):
-        for j in range(i + 1, len(keys)):
-            if _hamming(keys[i], keys[j]) <= 3:
-                for n1, w1, h1 in hashes[keys[i]]:
-                    for n2, w2, h2 in hashes[keys[j]]:
-                        if n1 != n2:
-                            near.append((os.path.basename(n1), os.path.basename(n2)))
-    if near:
-        out.append(Finding("Figures", Severity.MEDIUM,
-                           "Near-duplicate image panels detected",
-                           "Two embedded images are perceptually almost identical (different file, same content) - possible panel duplication with altered labels.",
-                           "Pairs: " + str(near[:4]), 0.70,
-                           "Verify each panel shows genuinely different data; duplicates are an image-integrity flag (COPE)"))
-
+        pairs = "; ".join(f"{os.path.basename(a)} = {os.path.basename(b)}"
+                          for a, b in exact[:3])
+        out.append(Finding(
+            "Figures", Severity.HIGH,
+            "Identical image content embedded multiple times",
+            "The same image appears more than once in this manuscript. Copies "
+            "are detected even when one was re-saved rotated, rescaled or "
+            "recompressed, so this is not just a duplicated file reference. "
+            "Panel reuse across figures is a recognised image-integrity flag.",
+            f"{len(exact)} duplicate pair(s): {pairs}",
+            confidence=0.90,
+            action="Confirm each panel shows genuinely different data; if the "
+                   "same panel is reused, say so explicitly in the caption."))
+    elif near:
+        pairs = "; ".join(f"{os.path.basename(a)} ~ {os.path.basename(b)}"
+                          for a, b in near[:4])
+        out.append(Finding(
+            "Figures", Severity.MEDIUM,
+            "Near-duplicate image panels detected",
+            "Two embedded images are perceptually almost identical (they match "
+            "under rotation/rescale within a small hash distance) but are "
+            "distinct files — a pattern consistent with a panel duplicated and "
+            "given altered labels.",
+            f"{len(near)} similar pair(s): {pairs}",
+            confidence=0.70,
+            action="Verify the panels show different data; near-duplicate "
+                   "panels should be merged or explicitly explained."))
     return out

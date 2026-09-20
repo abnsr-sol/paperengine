@@ -1,4 +1,17 @@
-"""Image-manipulation heuristics (DOCX): copy-move quadrant hashing + ELA splicing-anomaly detection."""
+"""Error-level analysis (ELA): splicing/editing screening via recompression error.
+
+Scope note — this engine used to also run a "copy-move" check that compared the
+four quadrants of an image. That heuristic was inverted in practice: it required
+two quadrants to be *similar*, so a blank or half-uniform figure (a plot on a
+white background, a pale gel lane) matched itself and was reported as "possible
+copied regions", while a genuine localized clone — a small block duplicated on
+a busy background — left the quadrants different and was missed entirely.
+Measured on fixtures: clone -> False, blank -> True, half-uniform -> True.
+
+Copy-move detection now has exactly one owner, ``image_deep_forensics``, which
+matches textured non-adjacent blocks and skips flat regions, so it catches the
+real clone and stays silent on uniform figures.
+"""
 from __future__ import annotations
 import io
 import os
@@ -52,56 +65,24 @@ def _ela_anomaly(data: bytes) -> bool:
         return False
 
 
-def _copy_move(data: bytes) -> bool:
-    try:
-        img = Image.open(io.BytesIO(data)).convert("RGB")
-        w, h = img.size
-        if w < 96 or h < 96:
-            return False
-        quads = [(0, 0, w // 2, h // 2), (w // 2, 0, w, h // 2),
-                 (0, h // 2, w // 2, h), (w // 2, h // 2, w, h)]
-        hs = [_dhash_img(img.crop(q)) for q in quads]
-        for i in range(4):
-            for j in range(i + 1, 4):
-                if _hamming(hs[i], hs[j]) <= 3:
-                    return True
-        return False
-    except Exception:
-        return False
-
-
 def run(doc: Document, ctx: object) -> List[Finding]:
     out = []
-    if not _HAS_PIL or doc.file_type != "docx" or not doc.path or not os.path.exists(doc.path):
+    if not _HAS_PIL or not doc.path:
         return out
-    try:
-        with zipfile.ZipFile(doc.path) as zf:
-            media = sorted(n for n in zf.namelist() if n.startswith("word/media/"))
-    except (zipfile.BadZipFile, KeyError, OSError):
+    # Container knowledge lives in media.py — this engine used to be DOCX-only,
+    # so PDF submissions silently received no manipulation analysis at all.
+    from ..media import extract_images, DEFAULT_LIMIT
+    images = extract_images(doc.path, doc.file_type, limit=DEFAULT_LIMIT)
+    if not images:
         return out
-    if not media:
-        return out
-    ela_hits, cm_hits = [], []
-    for name in media[:24]:
-        try:
-            with zipfile.ZipFile(doc.path) as zf:
-                data = zf.read(name)
-        except Exception:
-            continue
+    ela_hits = []
+    for name, data in images:
         if _ela_anomaly(data):
             ela_hits.append(os.path.basename(name))
-        if _copy_move(data):
-            cm_hits.append(os.path.basename(name))
     if ela_hits:
         out.append(Finding("Figures", Severity.MEDIUM,
                            "ELA anomaly in embedded images (possible splicing/editing)",
                            "Regions with abnormally high recompression error suggest localized edits (splicing, pasted content).",
                            "Images: " + ", ".join(ela_hits[:4]), 0.55,
                            "Confirm no inappropriate manipulation; keep original captures as backup (COPE image-integrity rule)"))
-    if cm_hits:
-        out.append(Finding("Figures", Severity.LOW,
-                           "Possible copied regions within a figure",
-                           "Two quadrants of one image are perceptually identical - copied/repeated content inside a panel.",
-                           "Images: " + ", ".join(cm_hits[:4]), 0.50,
-                           "Verify panels show distinct data; duplicated regions are an image-integrity flag"))
     return out

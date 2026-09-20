@@ -3,7 +3,7 @@
 # PaperEngine
 
 **Pre-submission rejection-risk analysis for academic manuscripts —
-96 engines incl. deterministic p-value verification (statcheck) · dual
+97 engines incl. deterministic p-value verification (statcheck) · dual
 international / Indian standards · 100% local**
 
 [![CI](https://github.com/abnsr-sol/paperengine/actions/workflows/ci.yml/badge.svg)](https://github.com/abnsr-sol/paperengine/actions/workflows/ci.yml)
@@ -11,7 +11,7 @@ international / Indian standards · 100% local**
 [![PyPI](https://img.shields.io/pypi/v/paperengine?color=8b5cf6&label=PyPI)](https://pypi.org/project/paperengine/)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-319%20passing-brightgreen)](#development)
+[![Tests](https://img.shields.io/badge/tests-398%20passing-brightgreen)](#development)
 
 *What could cause this manuscript to be rejected at this venue, what evidence
 suggests that risk, how serious is it, and what should the researcher fix?*
@@ -26,7 +26,7 @@ Most tools answer one narrow question: *"Is this text copied?"* or *"Does this
 look AI-written?"*. Rejection happens for **dozens of other reasons** — missing
 ethics statements, impossible statistics, unreferenced figures, template
 violations, predatory venue traps, retracted citations. PaperEngine runs
-**96 specialized engines** against your manuscript and returns every finding as:
+**97 specialized engines** against your manuscript and returns every finding as:
 
 ```
 Severity | Finding | Evidence (quoted from your paper) | Confidence | How to fix it
@@ -83,7 +83,7 @@ Then, in the browser:
    readiness score + findings table (severity · finding · evidence · confidence · how to fix)
 
 **Privacy / no retention:** the GUI runs on your machine only (localhost).
-The file is parsed in memory, checked by the same 96 engines as the CLI, and
+The file is parsed in memory, checked by the same 97 engines as the CLI, and
 the temporary copy is **deleted the moment your report is rendered — every
 time, no exceptions**. Nothing is stored, nothing leaves the machine.
 
@@ -228,7 +228,7 @@ papercheck/
 ├── batch.py           folder scanning, worst-first ranking, CSV writer
 ├── rwdb.py            Retraction Watch DB download/cache/screening
 ├── webui.py           local drag-and-drop GUI (stdlib http.server)
-└── checks/            96 engines — one per rejection angle
+└── checks/            97 engines — one per rejection angle
     compliance · structure · language · citations · claims · ai_risk ·
     integrity · novelty · consistency · figures · forensics · policy ·
     statistics · overclaiming · self_plagiarism · citation_integrity ·

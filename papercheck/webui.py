@@ -369,7 +369,7 @@ def _parse_multipart(body: bytes, content_type: str):
 
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = "PaperEngine/1.4"
+    server_version = "PaperEngine/1.14"
 
     def log_message(self, fmt, *args):  # quieter logs
         pass

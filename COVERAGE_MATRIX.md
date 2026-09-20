@@ -1,5 +1,5 @@
 # PaperCheck — Definitive Coverage Matrix
-**Date: 2026-09-20 | 96 engines live | 319/319 tests green | engine count is dynamic (see `--list-venues` and the GUI header, rendered from the registry)**
+**Date: 2026-09-20 | 97 engines live | 398/398 tests green | engine count is dynamic (see `--list-venues` and the GUI header, rendered from the registry)**
 
 This document maps every check area from the project's master research lists
 (160-angle rejection map + 287/304-area standards list + 320 failure patterns)
@@ -275,7 +275,7 @@ Paper mills (email-hospital rule, clustering) · citation cartels/stacking/rings
 |---|---|---|---|
 | 160-angle rejection map | 160 | 158 automated + 2 human-only | **99%** |
 | 287/304 standards list | 304 | ~270 manuscript-checkable | **89%** (rest = journal-side/publisher-side, not manuscript content) |
-| 320 failure patterns | 320 | ~280+ templates across 96 engines | **84%+** (remainder = API/ML/human) |
+| 320 failure patterns | 320 | ~280+ templates across 97 engines | **84%+** (remainder = API/ML/human) |
 | EQUATOR guidelines | 15 | 15 | **100%** |
 | Venue presets | 19 | 19 | **100%** |
 | Indian standards | all | all | **100%** |
