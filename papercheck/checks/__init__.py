@@ -113,11 +113,6 @@ def _engine_error_finding(name: str, err: str):
                "bug in that engine — please report it with the error above.")
 
 
-def _run_engine_unused(engine: CheckFn, doc: Document, ctx: CheckContext):
-    """Deprecated shim kept so external callers importing it keep working."""
-    return _run_engine(engine, doc, ctx)
-
-
 def _run_engine(engine: CheckFn, doc: Document, ctx: CheckContext):
     name = getattr(engine, "__module__", "engine").rsplit(".", 1)[-1]
     try:
