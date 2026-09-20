@@ -13,13 +13,12 @@ Covers the three failure classes fixed together:
 from __future__ import annotations
 import io
 import os
+import random
 import tempfile
 import unittest
 import urllib.error
 import zipfile
 from unittest import mock
-
-import numpy as np
 
 from papercheck import media, net
 
@@ -44,11 +43,33 @@ def _http_error(code, retry_after=None):
     return urllib.error.HTTPError("http://x", code, "err", headers, io.BytesIO(b""))
 
 
-def _png(arr):
+def _flat(size: int, value: int):
+    """Uniform greyscale panel — the shape that makes a perceptual hash meaningless."""
     from PIL import Image
 
+    return Image.new("L", (size, size), value)
+
+
+def _texture(seed: int, size: int = 128, lo: int = 0, hi: int = 255):
+    """Deterministic high-entropy panel, built with the stdlib RNG.
+
+    Deliberately not numpy: the project ships no numpy dependency (see
+    ``statscalc.py``), so a numpy import here breaks the CI environment.
+    """
+    from PIL import Image
+
+    rnd = random.Random(seed)
+    if (lo, hi) == (0, 255):
+        data = rnd.randbytes(size * size)
+    else:
+        span = hi - lo
+        data = bytes(lo + (b * span) // 255 for b in rnd.randbytes(size * size))
+    return Image.frombytes("L", (size, size), data)
+
+
+def _png(img):
     buf = io.BytesIO()
-    Image.fromarray(np.asarray(arr, dtype=np.uint8), "L").save(buf, "PNG")
+    img.save(buf, "PNG")
     return buf.getvalue()
 
 
@@ -109,11 +130,9 @@ def _write_pdf(path, payloads):
         fh.write(bytes(out))
 
 
-def _jpeg(arr):
-    from PIL import Image
-
+def _jpeg(img):
     buf = io.BytesIO()
-    Image.fromarray(np.asarray(arr, dtype=np.uint8), "L").save(buf, "JPEG", quality=92)
+    img.save(buf, "JPEG", quality=92)
     return buf.getvalue()
 
 
@@ -188,22 +207,22 @@ class TestSharedMediaLayer(unittest.TestCase):
     def test_reads_docx_media_in_deterministic_order(self):
         with tempfile.TemporaryDirectory() as td:
             p = os.path.join(td, "a.docx")
-            _write_docx(p, [("z.png", _png(np.zeros((64, 64)))), ("a.png", _png(np.ones((64, 64))))])
+            _write_docx(p, [("z.png", _png(_flat(64, 0))), ("a.png", _png(_flat(64, 1)))])
             names = [n for n, _ in media.extract_images(p, "docx")]
             self.assertEqual(names, sorted(names))
 
     def test_reads_pdf_images(self):
         with tempfile.TemporaryDirectory() as td:
             p = os.path.join(td, "a.pdf")
-            arr = np.random.default_rng(1).integers(0, 255, (96, 96), dtype=np.uint8)
-            _write_pdf(p, [_jpeg(arr), _jpeg(arr)])
+            img = _texture(1, size=96)
+            _write_pdf(p, [_jpeg(img), _jpeg(img)])
             imgs = media.extract_images(p, "pdf")
             self.assertEqual(len(imgs), 2)
 
     def test_limit_is_applied(self):
         with tempfile.TemporaryDirectory() as td:
             p = os.path.join(td, "a.docx")
-            _write_docx(p, [(f"{i}.png", _png(np.full((64, 64), i))) for i in range(5)])
+            _write_docx(p, [(f"{i}.png", _png(_flat(64, i))) for i in range(5)])
             self.assertEqual(len(media.extract_images(p, "docx", limit=2)), 2)
 
     def test_missing_path_and_unknown_type_are_safe(self):
@@ -225,8 +244,8 @@ class TestSharedMediaLayer(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as td:
             p = os.path.join(td, "a.pdf")
-            arr = np.random.default_rng(4).integers(60, 200, (128, 128), dtype=np.uint8)
-            _write_pdf(p, [_jpeg(arr)])
+            img = _texture(4, size=128, lo=60, hi=200)
+            _write_pdf(p, [_jpeg(img)])
             doc = load_document(p)
             self.assertEqual(doc.file_type, "pdf")
             # must execute the image loop rather than bail out on file type
@@ -253,48 +272,45 @@ class TestImageFalsePositives(unittest.TestCase):
 
     def test_pale_uniform_figures_are_not_duplicates(self):
         # a plot on a white background + a pale gel lane: both hash to ~zero bits
-        diag = np.full((128, 128), 255)
-        diag[64:, :] = 200
-        pale = np.full((128, 128), 230)
+        diag = _flat(128, 255)
+        diag.paste(200, (0, 64, 128, 128))
+        pale = _flat(128, 230)
         figs = self._figures([("a.png", _png(diag)), ("b.png", _png(pale))])
         self.assertEqual(figs, [], "uniform figures must not be reported as duplicates")
 
     def test_different_textures_are_not_duplicates(self):
-        rng = np.random.default_rng(0)
         figs = self._figures([
-            ("a.png", _png(rng.integers(60, 200, (128, 128), dtype=np.uint8))),
-            ("b.png", _png(rng.integers(0, 255, (128, 128), dtype=np.uint8))),
+            ("a.png", _png(_texture(0, lo=60, hi=200))),
+            ("b.png", _png(_texture(1))),
         ])
         self.assertEqual(figs, [])
 
     def test_identical_textures_still_reported(self):
-        arr = np.random.default_rng(0).integers(60, 200, (128, 128), dtype=np.uint8)
-        figs = self._figures([("a.png", _png(arr)), ("b.png", _png(arr))])
+        img = _texture(0, lo=60, hi=200)
+        figs = self._figures([("a.png", _png(img)), ("b.png", _png(img))])
         self.assertTrue(figs, "genuine duplicate panels must still fire")
         self.assertEqual(figs[0].severity.value, "High")
 
     def test_rotated_duplicate_still_reported(self):
         from PIL import Image
 
-        arr = np.random.default_rng(0).integers(60, 200, (128, 128), dtype=np.uint8)
-        rot = Image.open(io.BytesIO(_png(arr))).rotate(90, expand=True)
+        img = _texture(0, lo=60, hi=200)
+        rot = Image.open(io.BytesIO(_png(img))).rotate(90, expand=True)
         buf = io.BytesIO()
         rot.save(buf, "PNG")
-        figs = self._figures([("a.png", _png(arr)), ("b.png", buf.getvalue())])
+        figs = self._figures([("a.png", _png(img)), ("b.png", buf.getvalue())])
         self.assertTrue(figs, "rotation-invariant matching must still work")
 
     def test_byte_identical_flat_figure_is_reported(self):
-        same = _png(np.full((128, 128), 230))
+        same = _png(_flat(128, 230))
         figs = self._figures([("a.png", same), ("b.png", same)])
         self.assertTrue(figs, "the same flat file twice is a real duplicate")
 
     def test_informative_hash_gate(self):
         from papercheck.checks.image_forensics import _is_informative, _rotate_hashes
 
-        rng = np.random.default_rng(0)
-        self.assertFalse(_is_informative(_rotate_hashes(_png(np.full((128, 128), 128)))))
-        self.assertTrue(_is_informative(
-            _rotate_hashes(_png(rng.integers(0, 255, (128, 128), dtype=np.uint8)))))
+        self.assertFalse(_is_informative(_rotate_hashes(_png(_flat(128, 128)))))
+        self.assertTrue(_is_informative(_rotate_hashes(_png(_texture(0)))))
 
     def test_inverted_quadrant_detector_is_gone(self):
         """Guard against reintroducing the heuristic that flagged flat figures."""
@@ -304,24 +320,21 @@ class TestImageFalsePositives(unittest.TestCase):
                          "the quadrant copy-move heuristic is inverted; do not reintroduce it")
 
     def test_clone_detection_owned_by_deep_forensics(self):
-        from PIL import Image
         import papercheck.checks.image_deep_forensics as DEEP
 
-        rng = np.random.default_rng(3)
-        img = rng.integers(60, 200, (128, 128), dtype=np.uint8)
-        block = rng.integers(40, 220, (32, 32), dtype=np.uint8)
-        img[16:48, 16:48] = block
-        img[80:112, 80:112] = block          # duplicated region
+        img = _texture(3, lo=60, hi=200)
+        block = _texture(9, size=32, lo=40, hi=220)
+        img.paste(block, (16, 16))
+        img.paste(block, (80, 80))           # duplicated region
         out = []
-        DEEP._clone_findings("x.png", Image.fromarray(img, "L"), out)
+        DEEP._clone_findings("x.png", img, out)
         self.assertTrue(out, "the real clone must still be detected")
 
     def test_blank_image_is_not_a_clone(self):
-        from PIL import Image
         import papercheck.checks.image_deep_forensics as DEEP
 
         out = []
-        DEEP._clone_findings("x.png", Image.fromarray(np.full((128, 128), 128, dtype=np.uint8), "L"), out)
+        DEEP._clone_findings("x.png", _flat(128, 128), out)
         self.assertEqual(out, [], "a uniform panel has no clone signature")
 
 

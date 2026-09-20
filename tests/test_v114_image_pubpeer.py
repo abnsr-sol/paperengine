@@ -8,6 +8,7 @@ from __future__ import annotations
 import io
 import json
 import os
+import random
 import tempfile
 import zipfile
 from unittest import TestCase, mock
@@ -28,23 +29,26 @@ _CT_XML = (
 )
 
 
-def _texture_png(seed: int, size: int = 96) -> bytes:
-    from PIL import Image
-    import numpy as np
+def _noise(seed: int, size: int = 96):
+    """Deterministic high-entropy greyscale panel.
 
-    arr = np.random.default_rng(seed).integers(0, 255, (size, size), dtype=np.uint8)
+    Built from the stdlib RNG rather than numpy: the project ships no numpy
+    dependency, so importing it here would fail the CI environment.
+    """
+    from PIL import Image
+
+    return Image.frombytes("L", (size, size), random.Random(seed).randbytes(size * size))
+
+
+def _texture_png(seed: int, size: int = 96) -> bytes:
     buf = io.BytesIO()
-    Image.fromarray(arr, "L").save(buf, "PNG")
+    _noise(seed, size).save(buf, "PNG")
     return buf.getvalue()
 
 
 def _texture_jpeg(seed: int, size: int = 96) -> bytes:
-    from PIL import Image
-    import numpy as np
-
-    arr = np.random.default_rng(seed).integers(0, 255, (size, size), dtype=np.uint8)
     buf = io.BytesIO()
-    Image.fromarray(arr, "L").save(buf, "JPEG", quality=92)
+    _noise(seed, size).save(buf, "JPEG", quality=92)
     return buf.getvalue()
 
 
@@ -159,10 +163,9 @@ class TestImageDuplication(TestCase):
             self.assertEqual(errors, [])
 
     def test_tiny_icons_are_ignored(self):
-        import numpy as np
         from PIL import Image
 
-        small = Image.fromarray(np.zeros((16, 16), dtype=np.uint8), "L")
+        small = Image.new("L", (16, 16), 0)
         buf = io.BytesIO()
         small.save(buf, "PNG")
         figs, _ = self._run_docx(buf.getvalue())
