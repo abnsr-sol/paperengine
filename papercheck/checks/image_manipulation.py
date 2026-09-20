@@ -15,7 +15,6 @@ real clone and stays silent on uniform figures.
 from __future__ import annotations
 import io
 import os
-import zipfile
 from typing import List
 from ..ingestion import Document
 from ..risk import Finding, Severity
@@ -25,20 +24,6 @@ try:
     _HAS_PIL = True
 except Exception:
     _HAS_PIL = False
-
-
-def _dhash_img(img, size=8):
-    img = img.convert("L").resize((size + 1, size), Image.LANCZOS)
-    px = list(img.getdata())
-    bits = 0
-    for r in range(size):
-        for c in range(size):
-            bits = (bits << 1) | (1 if px[r * (size + 1) + c] > px[r * (size + 1) + c + 1] else 0)
-    return bits
-
-
-def _hamming(a, b):
-    return bin(a ^ b).count("1")
 
 
 def _ela_anomaly(data: bytes) -> bool:

@@ -26,10 +26,11 @@ caught by this metric (a crop changes the hash substantially) — that is a
 documented limitation, not a silent one.
 """
 from __future__ import annotations
+import hashlib
 import io
 import os
-import zipfile
-from typing import Dict, List, Optional, Tuple
+from itertools import combinations
+from typing import Dict, List, Tuple
 from ..ingestion import Document
 from ..risk import Finding, Severity
 
@@ -58,33 +59,9 @@ _MIN_SIDE = 32            # ignore icons / bullets / logos
 _MIN_HASH_BITS = 12
 
 
-def _popcount(value: int) -> int:
-    return bin(value).count("1")
-
-
 def _is_informative(hashes: List[int]) -> bool:
     """True when the hash carries enough bit diversity to be comparable."""
-    return bool(hashes) and min(_popcount(h) for h in hashes) >= _MIN_HASH_BITS
-
-
-def _pdf_images(path: str) -> List[Tuple[str, bytes]]:
-    """Extract ``(name, bytes)`` for every embedded raster image in a PDF."""
-    try:
-        from pypdf import PdfReader
-    except Exception:
-        return []
-    out: List[Tuple[str, bytes]] = []
-    try:
-        reader = PdfReader(path)
-        for pnum, page in enumerate(reader.pages, 1):
-            try:
-                for img in page.images:
-                    out.append((f"page{pnum}:{img.name}", img.data))
-            except Exception:
-                continue  # one broken page must not kill extraction
-    except Exception:
-        return []
-    return out
+    return bool(hashes) and min(bin(h).count("1") for h in hashes) >= _MIN_HASH_BITS
 
 
 def _open(data: bytes):
@@ -115,14 +92,6 @@ def _dhash(img, size: int = _HASH_SIZE) -> int:
     return bits
 
 
-def _dhash_bytes(data: bytes, size: int = _HASH_SIZE) -> int:
-    """Difference hash of raw image bytes (kept for callers/tests)."""
-    img = _open(data)
-    if img is None:
-        return -1
-    return _dhash(img, size)
-
-
 def _rotate_hashes(data: bytes) -> List[int]:
     """Hashes of one image under the four cardinal rotations.
 
@@ -149,28 +118,19 @@ def _rotate_hashes(data: bytes) -> List[int]:
     return out
 
 
-def _hamming(a: int, b: int) -> int:
-    return bin(a ^ b).count("1")
-
-
 def _min_hamming(a_hashes: List[int], b_hashes: List[int]) -> int:
     """Smallest Hamming distance between any rotation pair (99 if empty)."""
     if not a_hashes or not b_hashes:
         return 99
-    return min(_hamming(a, b) for a in a_hashes for b in b_hashes)
-
-
-def _collect_images(doc: Document) -> List[Tuple[str, bytes]]:
-    """Embedded images via the shared container layer (DOCX + PDF)."""
-    from ..media import extract_images
-    return extract_images(doc.path, doc.file_type)
+    return min(bin(a ^ b).count("1") for a in a_hashes for b in b_hashes)
 
 
 def run(doc: Document, ctx: object) -> List[Finding]:
     if not _HAS_PIL or not doc.path or not os.path.exists(doc.path):
         return []
 
-    images = _collect_images(doc)
+    from ..media import extract_images
+    images = extract_images(doc.path, doc.file_type)
     if len(images) < 2:
         return []
 
@@ -183,7 +143,6 @@ def run(doc: Document, ctx: object) -> List[Finding]:
         if _is_informative(hs):
             informative[name] = hs
         else:
-            import hashlib
             flat[name] = hashlib.sha256(data).hexdigest()
 
     exact: List[Tuple[str, str]] = []
@@ -191,22 +150,13 @@ def run(doc: Document, ctx: object) -> List[Finding]:
 
     # Flat figures: identical only when the bytes are identical, which is a
     # genuine duplicate and cannot false-positive on two unrelated pale plots.
-    flat_names = list(flat)
-    for i in range(len(flat_names)):
-        for j in range(i + 1, len(flat_names)):
-            a, b = flat_names[i], flat_names[j]
-            if flat[a] == flat[b]:
-                exact.append((a, b))
-
-    names = list(informative)
-    for i in range(len(names)):
-        for j in range(i + 1, len(names)):
-            a, b = names[i], names[j]
-            d = _min_hamming(informative[a], informative[b])
-            if d <= _EXACT_MAX:
-                exact.append((a, b))
-            elif d <= _NEAR_MAX:
-                near.append((a, b))
+    exact = [(a, b) for a, b in combinations(flat, 2) if flat[a] == flat[b]]
+    for a, b in combinations(informative, 2):
+        d = _min_hamming(informative[a], informative[b])
+        if d <= _EXACT_MAX:
+            exact.append((a, b))
+        elif d <= _NEAR_MAX:
+            near.append((a, b))
 
     out: List[Finding] = []
     if exact:

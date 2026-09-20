@@ -14,7 +14,6 @@ network traffic during normal use.
 from __future__ import annotations
 import re
 import urllib.parse
-import urllib.request
 from typing import List, Optional
 from ..ingestion import Document
 from ..risk import Finding, Severity
@@ -23,24 +22,24 @@ _DOI_RE = re.compile(r"10\.\d{4,9}/[^\s,;)]+", re.IGNORECASE)
 _ARXIV_RE = re.compile(r"arxiv\.org/(?:abs/)?([0-9]+(?:\.[0-9]+)?)", re.IGNORECASE)
 _URL_RE = re.compile(r"https?://[^\s,;)]+", re.IGNORECASE)
 
+# (pattern, URL prefix, capture group) — a reference line may carry any of them.
+_RESOLVABLE = (
+    (_DOI_RE, "https://doi.org/", 0),
+    (_ARXIV_RE, "https://arxiv.org/abs/", 1),
+)
+
 
 def _candidates(ref_text: str) -> List[str]:
+    """Resolvable URLs mentioned in one reference line, order preserved."""
     out: List[str] = []
-    seen: set = set()
-    for m in _DOI_RE.finditer(ref_text):
-        doi = "https://doi.org/" + m.group(0).rstrip(".,;)")
-        if doi not in seen:
-            seen.add(doi)
-            out.append(doi)
-    for m in _ARXIV_RE.finditer(ref_text):
-        arxiv = "https://arxiv.org/abs/" + m.group(1)
-        if arxiv not in seen:
-            seen.add(arxiv)
-            out.append(arxiv)
+    for pattern, prefix, group in _RESOLVABLE:
+        for m in pattern.finditer(ref_text):
+            url = (prefix + m.group(group)).rstrip(".,;)")
+            if url not in out:
+                out.append(url)
     for m in _URL_RE.finditer(ref_text):
         url = m.group(0).rstrip(".,;)")
-        if url not in seen:
-            seen.add(url)
+        if url not in out:
             out.append(url)
     return out
 
@@ -68,21 +67,23 @@ def _pubpeer_comment_count(doi_url: str):
 def run(doc: Document, ctx: object) -> List[Finding]:
     if not ctx or not getattr(ctx, "online", False):
         return []
+    # 0 means "do not go online" (as in integrity.py), not "no limit".
     max_checks = getattr(ctx, "max_online_checks", 10)
-    if not doc.references:
+    if max_checks <= 0 or not doc.references:
         return []
     results: List[tuple] = []
     looked_up = 0
     answered = 0
     for ref in doc.references:
-        if max_checks and looked_up >= max_checks:
+        if looked_up >= max_checks:
             break
-        cands = _candidates(ref.text or "")
+        text = (ref or "").strip()
+        cands = _candidates(text)
         if not cands:
             continue
         count: Optional[int] = None
         for c in cands:
-            if max_checks and looked_up >= max_checks:
+            if looked_up >= max_checks:
                 break
             looked_up += 1
             count, checked = _pubpeer_comment_count(c)
@@ -92,20 +93,21 @@ def run(doc: Document, ctx: object) -> List[Finding]:
                 break
         if count is None:
             continue
-        results.append((ref.text or "(untitled reference)", count))
+        results.append((text or "(untitled reference)", count))
 
     if not results:
         if looked_up and not answered:
             # Disclose reduced coverage instead of looking like a clean result.
             return [Finding(
-                "References", Severity.INFO,
-                "PubPeer could not be reached - citations not screened",
-                "Every PubPeer lookup failed at the network layer, so no cited "
-                "work was actually screened for community discussion. This is "
-                "a connectivity result, not a clean bill of health.",
-                f"{looked_up} lookup(s) failed, 0 completed",
-                0.95,
-                "Re-run with a working connection to screen citations on PubPeer.",
+                category="References", severity=Severity.INFO,
+                title="PubPeer could not be reached - citations not screened",
+                detail="Every PubPeer lookup failed at the network layer, so no "
+                       "cited work was actually screened for community "
+                       "discussion. This is a connectivity result, not a clean "
+                       "bill of health.",
+                evidence=f"{looked_up} lookup(s) failed, 0 completed",
+                action="Re-run with a working connection to screen citations on PubPeer.",
+                confidence=0.95,
                 source="pubpeer_screening")]
         return []
 
@@ -117,11 +119,14 @@ def run(doc: Document, ctx: object) -> List[Finding]:
     flagged.sort(key=lambda x: -x[1])
     summary = "; ".join(f"{t} ({c})" for t, c in flagged[:6])
     return [Finding(
-        "References", Severity.LOW,
-        "References with PubPeer discussion",
-        "The following cited works have been discussed on PubPeer (a post-publication peer-review platform). Discussion does not imply misconduct, but it is a legitimate screening signal — many retracted or corrected papers were first raised there.",
-        summary + (f" — {len(flagged)} total" if len(flagged) > 6 else ""),
-        0.55,
-        "Read the discussion; decide whether the cited work is still suitable to rely on.",
+        category="References", severity=Severity.LOW,
+        title="References with PubPeer discussion",
+        detail="The following cited works have been discussed on PubPeer (a "
+               "post-publication peer-review platform). Discussion does not imply "
+               "misconduct, but it is a legitimate screening signal - many "
+               "retracted or corrected papers were first raised there.",
+        evidence=summary + (f" - {len(flagged)} total" if len(flagged) > 6 else ""),
+        action="Read the discussion; decide whether the cited work is still "
+               "suitable to rely on.",
         confidence=0.55,
         source="pubpeer_screening")]
