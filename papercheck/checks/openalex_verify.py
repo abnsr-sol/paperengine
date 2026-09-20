@@ -5,19 +5,20 @@ What it checks, using ONLY public OpenAlex data (no manuscript text leaves
 the machine — just reference titles/DOIs and venue names are sent as query
 parameters):
 
-1. **Reference resolution** — does each cited work exist in the 250M-work
-   graph? Unresolvable references are hallucination candidates.
-2. **Disputed/withdrawn works** — OpenAlex flags retractions; citing them
-   is a serious integrity risk.
-3. **Venue scope mismatch** — the manuscript's keyword profile (computed
-   locally) vs the target venue's historical concept profile (fetched once,
-   cached per context). Low overlap = classic desk-reject reason.
-4. **Seminal-work gap** — top-cited recent works in the venue's dominant
-   concepts; citing none suggests disconnection from current literature.
+1. Reference resolution — does each cited work exist in the 250M-work graph?
+   Unresolvable references are hallucination candidates.
+2. Disputed/withdrawn works — OpenAlex flags retractions; citing them is a
+   serious integrity risk.
+3. Venue scope mismatch — the manuscript's keyword profile (computed locally)
+   vs the target venue's historical concept profile (fetched once, cached per
+   context). Low overlap = classic desk-reject reason.
+4. Seminal-work gap — top-cited recent works in the venue's dominant concepts;
+   citing none suggests disconnection from current literature.
 
 API key: OpenAlex is free without one (100k calls/day); a key raises limits.
 Set it via the OPENALEX_API_KEY environment variable or --openalex-key.
-The key is sent as the `api_key` query parameter per OpenAlex docs.
+The key is sent as the api_key query parameter, and if that transport fails
+we retry with Bearer header — whichever works wins.
 """
 from __future__ import annotations
 
@@ -33,22 +34,52 @@ from ..risk import Finding, Severity
 
 _API = "https://api.openalex.org"
 _TIMEOUT = 12.0
-_UA = "paperengine/1.4 (research integrity; local pre-submission checker)"
+_UA = "paperengine/1.14 (research integrity; local pre-submission checker)"
+
+
+def _key() -> str:
+    return os.environ.get("OPENALEX_API_KEY", "").strip()
 
 
 def _key_param() -> str:
-    key = os.environ.get("OPENALEX_API_KEY", "").strip()
+    key = _key()
     return f"&api_key={urllib.parse.quote(key)}" if key else ""
 
 
 def _fetch(path: str, params: str = "") -> Optional[dict]:
+    # Attempt 1: query-parameter key (the documented OpenAlex transport).
     url = f"{_API}{path}?{params}{_key_param()}"
     req = urllib.request.Request(url, headers={"User-Agent": _UA})
     try:
         with urllib.request.urlopen(req, timeout=_TIMEOUT) as resp:
             return json.loads(resp.read().decode("utf-8", "replace"))
-    except Exception:
+    except Exception as exc:
+        _log_transport(path, "query-param", exc)
+    # Attempt 2: Bearer header — only meaningful when a key is present.
+    key = _key()
+    if not key:
         return None
+    hdr_url = f"{_API}{path}?{params}"
+    hdr_req = urllib.request.Request(hdr_url, headers={
+        "User-Agent": _UA,
+        "Authorization": f"Bearer {key}",
+    })
+    try:
+        with urllib.request.urlopen(hdr_req, timeout=_TIMEOUT) as resp:
+            return json.loads(resp.read().decode("utf-8", "replace"))
+    except Exception as exc:
+        _log_transport(path, "bearer", exc)
+    return None
+
+
+def _log_transport(path: str, mode: str, exc: BaseException) -> None:
+    import logging
+    if isinstance(exc, urllib.error.HTTPError):
+        logging.debug(
+            "openalex %s transport=%s status=%s body=%s",
+            path, mode, exc.code, exc.read()[:200])
+    else:
+        logging.debug("openalex %s transport=%s error=%s", path, mode, type(exc).__name__)
 
 
 def _doi_of(ref: str) -> Optional[str]:

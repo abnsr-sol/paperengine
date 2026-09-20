@@ -9,8 +9,20 @@ from ..ingestion import Document
 from ..risk import Finding, Severity
 
 
+def _contact() -> str:
+    """Contact address for the Crossref polite pool.
+
+    Crossref asks API clients to identify themselves so they can be reached
+    about traffic; a real address gets faster, more reliable service. Set it
+    with --mailto or PAPERCHECK_MAILTO.
+    """
+    import os
+    return os.environ.get("PAPERCHECK_MAILTO", "").strip() or "anonymous@example.org"
+
+
 def _fetch(url: str) -> dict:
-    req = urllib.request.Request(url, headers={"User-Agent": "papercheck/0.1 (research integrity; mailto:research@example.org)"})
+    ua = f"paperengine/1.14 (research integrity; mailto:{_contact()})"
+    req = urllib.request.Request(url, headers={"User-Agent": ua})
     with urllib.request.urlopen(req, timeout=12.0) as resp:
         return json.loads(resp.read().decode("utf-8", "replace"))
 

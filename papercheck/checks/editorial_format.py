@@ -49,10 +49,10 @@ def run(doc: Document, ctx: object) -> List[Finding]:
     # --- Type-3 bitmap font detection (PDF preflight) ---
     # IEEE/ACM/Elsevier camera-ready preflight rejects PDFs compiled with
     # bitmap (Type 3) fonts. Detectable by walking pypdf page resources.
-    if doc.file_type == "pdf" and doc.source_path:
+    if doc.file_type == "pdf" and doc.path:
         try:
             from pypdf import PdfReader
-            reader = PdfReader(doc.source_path)
+            reader = PdfReader(doc.path)
             type3_fonts = set()
             for page in reader.pages:
                 resources = page.get("/Resources")

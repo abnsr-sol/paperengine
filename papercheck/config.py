@@ -54,9 +54,17 @@ DEFAULTS: Dict[str, Any] = {
 
 
 def _find_config_file() -> Optional[str]:
-    """Find the configuration file in current dir or home dir."""
+    """Find the configuration file, nearest first.
+
+    Order: current directory, the PaperEngine cache dir (``PAPERCHECK_HOME``
+    or ``~/.papercheck``), then the home directory. The cache dir is where a
+    user puts machine-wide API keys so they are never committed to a
+    repository.
+    """
+    home = os.environ.get("PAPERCHECK_HOME") or os.path.join(os.path.expanduser("~"), ".papercheck")
     search_dirs = [
         os.getcwd(),
+        home,
         os.path.expanduser("~"),
     ]
     for d in search_dirs:
@@ -194,5 +202,38 @@ def should_ignore_finding(finding_title: str, config: Dict[str, Any]) -> bool:
     return False
 
 
+# env-var name for each supported api_keys entry
+_API_KEY_ENV = {
+    "openalex": "OPENALEX_API_KEY",
+    "semantic_scholar": "SEMANTIC_SCHOLAR_API_KEY",
+    "crossref_mailto": "PAPERCHECK_MAILTO",
+}
+
+
+def apply_api_keys(config: Dict[str, Any]) -> List[str]:
+    """Export ``[api_keys]`` from a loaded config into the environment.
+
+    Precedence: an already-set environment variable always wins, so a shell
+    export or a CI secret is never silently overwritten by a config file.
+    Returns the list of env-var names that were actually set, for reporting.
+    """
+    applied: List[str] = []
+    keys = config.get("api_keys") or {}
+    if not isinstance(keys, dict):
+        return applied
+    for name, value in keys.items():
+        env_name = _API_KEY_ENV.get(str(name).strip().lower())
+        if not env_name:
+            continue
+        value = str(value).strip() if value is not None else ""
+        if not value:
+            continue
+        if os.environ.get(env_name):
+            continue
+        os.environ[env_name] = value
+        applied.append(env_name)
+    return applied
+
+
 # Export for CLI integration
-__all__ = ["load_config", "should_ignore_finding", "DEFAULTS"]
+__all__ = ["load_config", "should_ignore_finding", "apply_api_keys", "DEFAULTS"]

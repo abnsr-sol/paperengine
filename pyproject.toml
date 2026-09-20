@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "paperengine"
 version = "1.13.0"
-description = "Pre-submission rejection-risk engine for academic manuscripts (96 check engines, dual international/Indian standards, CLI + local web GUI)"
+description = "Pre-submission rejection-risk engine for academic manuscripts (97 check engines, dual international/Indian standards, CLI + local web GUI)"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }

@@ -28,6 +28,17 @@ Thumbs.db
 .idea/
 .vscode/
 
+# Local config — may hold API keys. Never commit.
+papercheck.toml
+.papercheck.toml
+.papercheck.yml
+papercheck.local.toml
+*.env
+.env
+
+# Local intelligence cache (downloaded datasets)
+.papercheck/
+
 # Test/coverage artifacts
 .coverage
 htmlcov/

@@ -168,8 +168,15 @@ def main(argv: Optional[List[str]] = None) -> int:
     if not args.online and config.get("online", False):
         args.online = True
 
+    # API keys: CLI flag beats config file beats an existing environment var.
     if args.openalex_key:
         os.environ["OPENALEX_API_KEY"] = args.openalex_key
+    from .config import apply_api_keys
+    applied = apply_api_keys(config)
+    if applied:
+        print("Using API keys from config: " + ", ".join(applied), file=sys.stderr)
+    if args.mailto and "PAPERCHECK_MAILTO" not in os.environ:
+        os.environ["PAPERCHECK_MAILTO"] = args.mailto
 
     if args.gui:
         from .webui import serve
