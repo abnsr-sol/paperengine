@@ -47,39 +47,23 @@ def _key_param() -> str:
 
 
 def _fetch(path: str, params: str = "") -> Optional[dict]:
-    # Attempt 1: query-parameter key (the documented OpenAlex transport).
-    url = f"{_API}{path}?{params}{_key_param()}"
-    req = urllib.request.Request(url, headers={"User-Agent": _UA})
-    try:
-        with urllib.request.urlopen(req, timeout=_TIMEOUT) as resp:
-            return json.loads(resp.read().decode("utf-8", "replace"))
-    except Exception as exc:
-        _log_transport(path, "query-param", exc)
-    # Attempt 2: Bearer header — only meaningful when a key is present.
+    """One OpenAlex request, with retry/backoff on throttling.
+
+    Transport 1 puts the key in the query string (the documented form);
+    transport 2 uses a Bearer header. Trying both keeps an account working
+    when only one transport is accepted, and the shared net layer means a 429
+    is retried rather than being mistaken for "this work does not exist" —
+    which would have invented a hallucinated-reference finding.
+    """
+    from ..net import fetch_json
     key = _key()
+    body = fetch_json(f"{_API}{path}?{params}{_key_param()}", timeout=_TIMEOUT)
+    if body is not None:
+        return body
     if not key:
         return None
-    hdr_url = f"{_API}{path}?{params}"
-    hdr_req = urllib.request.Request(hdr_url, headers={
-        "User-Agent": _UA,
-        "Authorization": f"Bearer {key}",
-    })
-    try:
-        with urllib.request.urlopen(hdr_req, timeout=_TIMEOUT) as resp:
-            return json.loads(resp.read().decode("utf-8", "replace"))
-    except Exception as exc:
-        _log_transport(path, "bearer", exc)
-    return None
-
-
-def _log_transport(path: str, mode: str, exc: BaseException) -> None:
-    import logging
-    if isinstance(exc, urllib.error.HTTPError):
-        logging.debug(
-            "openalex %s transport=%s status=%s body=%s",
-            path, mode, exc.code, exc.read()[:200])
-    else:
-        logging.debug("openalex %s transport=%s error=%s", path, mode, type(exc).__name__)
+    return fetch_json(f"{_API}{path}?{params}",
+                      {"Authorization": f"Bearer {key}"}, timeout=_TIMEOUT)
 
 
 def _doi_of(ref: str) -> Optional[str]:

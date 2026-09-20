@@ -44,39 +44,9 @@ _FLAT_DELTA = 8          # blocks with max-min < this are "flat" and skipped
 
 
 def _media_images(path: str, file_type: str) -> List[Tuple[str, bytes]]:
-    """(name, bytes) for embedded images in DOCX or PDF."""
-    if file_type == "docx":
-        try:
-            with zipfile.ZipFile(path) as zf:
-                names = sorted(n for n in zf.namelist() if n.startswith("word/media/"))
-            out = []
-            with zipfile.ZipFile(path) as zf:
-                for n in names:
-                    try:
-                        out.append((n, zf.read(n)))
-                    except Exception:
-                        continue
-            return out
-        except (zipfile.BadZipFile, KeyError, OSError):
-            return []
-    if file_type == "pdf":
-        try:
-            from pypdf import PdfReader
-        except Exception:
-            return []
-        out: List[Tuple[str, bytes]] = []
-        try:
-            reader = PdfReader(path)
-            for pnum, page in enumerate(reader.pages, 1):
-                try:
-                    for img in page.images:
-                        out.append((f"page{pnum}:{img.name}", img.data))
-                except Exception:
-                    continue  # one broken page must not kill extraction
-        except Exception:
-            return []
-        return out
-    return []
+    """(name, bytes) for embedded images — delegated to the shared layer."""
+    from ..media import extract_images
+    return extract_images(path, file_type)
 
 
 def _error_level_grid(img: "Image.Image") -> List[List[int]]:

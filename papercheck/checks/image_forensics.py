@@ -48,6 +48,24 @@ _NEAR_MAX = 6             # hamming <= 6  -> near-duplicate
 _MAX_PIXELS = 40_000_000  # decompression-bomb guard
 _MIN_SIDE = 32            # ignore icons / bullets / logos
 
+# A perceptual hash only means something if the image has enough local detail
+# to produce a mixed bit pattern. A flat or piecewise-flat figure (blank gel
+# lane, plot on a white background) hashes to all-zero bits, so *any* two such
+# figures "match" — measured on real fixtures, degenerate figures score 0-7
+# set bits while genuine textures score 24-32. Below this floor we refuse to
+# compare perceptually and fall back to exact content identity, which cannot
+# produce a false duplicate.
+_MIN_HASH_BITS = 12
+
+
+def _popcount(value: int) -> int:
+    return bin(value).count("1")
+
+
+def _is_informative(hashes: List[int]) -> bool:
+    """True when the hash carries enough bit diversity to be comparable."""
+    return bool(hashes) and min(_popcount(h) for h in hashes) >= _MIN_HASH_BITS
+
 
 def _pdf_images(path: str) -> List[Tuple[str, bytes]]:
     """Extract ``(name, bytes)`` for every embedded raster image in a PDF."""
@@ -143,17 +161,9 @@ def _min_hamming(a_hashes: List[int], b_hashes: List[int]) -> int:
 
 
 def _collect_images(doc: Document) -> List[Tuple[str, bytes]]:
-    if doc.file_type == "docx":
-        try:
-            with zipfile.ZipFile(doc.path) as zf:
-                media = sorted(n for n in zf.namelist()
-                               if n.startswith("word/media/"))
-                return [(n, zf.read(n)) for n in media]
-        except (zipfile.BadZipFile, KeyError, OSError):
-            return []
-    if doc.file_type == "pdf":
-        return _pdf_images(doc.path)
-    return []
+    """Embedded images via the shared container layer (DOCX + PDF)."""
+    from ..media import extract_images
+    return extract_images(doc.path, doc.file_type)
 
 
 def run(doc: Document, ctx: object) -> List[Finding]:
@@ -164,21 +174,35 @@ def run(doc: Document, ctx: object) -> List[Finding]:
     if len(images) < 2:
         return []
 
-    hashed: Dict[str, List[int]] = {}
+    # Split by information content: only detailed images can be compared
+    # perceptually; near-flat ones fall back to exact identity.
+    informative: Dict[str, List[int]] = {}
+    flat: Dict[str, str] = {}
     for name, data in images:
         hs = _rotate_hashes(data)
-        if hs:
-            hashed[name] = hs
-    if len(hashed) < 2:
-        return []
+        if _is_informative(hs):
+            informative[name] = hs
+        else:
+            import hashlib
+            flat[name] = hashlib.sha256(data).hexdigest()
 
-    names = list(hashed)
     exact: List[Tuple[str, str]] = []
     near: List[Tuple[str, str]] = []
+
+    # Flat figures: identical only when the bytes are identical, which is a
+    # genuine duplicate and cannot false-positive on two unrelated pale plots.
+    flat_names = list(flat)
+    for i in range(len(flat_names)):
+        for j in range(i + 1, len(flat_names)):
+            a, b = flat_names[i], flat_names[j]
+            if flat[a] == flat[b]:
+                exact.append((a, b))
+
+    names = list(informative)
     for i in range(len(names)):
         for j in range(i + 1, len(names)):
             a, b = names[i], names[j]
-            d = _min_hamming(hashed[a], hashed[b])
+            d = _min_hamming(informative[a], informative[b])
             if d <= _EXACT_MAX:
                 exact.append((a, b))
             elif d <= _NEAR_MAX:

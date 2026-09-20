@@ -46,24 +46,20 @@ def _candidates(ref_text: str) -> List[str]:
 
 
 def _pubpeer_comment_count(doi_url: str) -> Optional[int]:
-    for url in (
-        "https://www.pubpeer.com/json/" + urllib.parse.quote(doi_url, safe=""),
-        "https://pubpeer.com/" + urllib.parse.quote(doi_url, safe=""),
-    ):
-        try:
-            headers = {
-                "User-Agent": "papercheck/1.14 (research integrity screening)",
-                "Accept": "application/json",
-            }
-            req = urllib.request.Request(url, headers=headers)
-            with urllib.request.urlopen(req, timeout=10) as resp:
-                data = resp.read()
-            if "/json/" in url:
-                import json
-                parsed = json.loads(data)
-                return parsed.get("comment_count") or parsed.get("comments") or parsed.get("count") or parsed.get("n_comments")
-        except Exception:
-            pass
+    """Comment-thread count for a DOI, or None when it cannot be determined.
+
+    PubPeer's JSON endpoint is tried first; a missing/throttled/blocked response
+    yields None so the engine stays silent rather than guessing. Uses the
+    shared HTTP layer for consistent retry/backoff behaviour.
+    """
+    from ..net import fetch_json
+    quoted = urllib.parse.quote(doi_url, safe="")
+    body = fetch_json(f"https://www.pubpeer.com/json/{quoted}", timeout=10.0)
+    if isinstance(body, dict):
+        for key in ("comment_count", "comments", "count", "n_comments"):
+            val = body.get(key)
+            if isinstance(val, int):
+                return val
     return None
 
 

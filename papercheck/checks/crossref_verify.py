@@ -21,10 +21,9 @@ def _contact() -> str:
 
 
 def _fetch(url: str) -> dict:
-    ua = f"paperengine/1.14 (research integrity; mailto:{_contact()})"
-    req = urllib.request.Request(url, headers={"User-Agent": ua})
-    with urllib.request.urlopen(req, timeout=12.0) as resp:
-        return json.loads(resp.read().decode("utf-8", "replace"))
+    """Crossref lookup via the shared HTTP layer (retry/backoff, no raise)."""
+    from ..net import fetch_json
+    return fetch_json(url, timeout=12.0) or {}
 
 
 def _claimed_year(ref: str):
