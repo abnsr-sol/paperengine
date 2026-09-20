@@ -1,5 +1,5 @@
 # PaperCheck — Definitive Coverage Matrix
-**Date: 2026-09-20 | 97 engines live | 383/383 tests green | engine count is dynamic (see `--list-venues` and the GUI header, rendered from the registry)**
+**Date: 2026-09-20 | 97 engines live | 398/398 tests green | engine count is dynamic (see `--list-venues` and the GUI header, rendered from the registry)**
 
 This document maps every check area from the project's master research lists
 (160-angle rejection map + 287/304-area standards list + 320 failure patterns)

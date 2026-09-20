@@ -45,22 +45,24 @@ def _candidates(ref_text: str) -> List[str]:
     return out
 
 
-def _pubpeer_comment_count(doi_url: str) -> Optional[int]:
-    """Comment-thread count for a DOI, or None when it cannot be determined.
+def _pubpeer_comment_count(doi_url: str):
+    """``(count_or_None, checked)`` for a DOI.
 
-    PubPeer's JSON endpoint is tried first; a missing/throttled/blocked response
-    yields None so the engine stays silent rather than guessing. Uses the
-    shared HTTP layer for consistent retry/backoff behaviour.
+    ``checked=False`` means the lookup never produced an answer (throttled,
+    blocked, or offline). Absence of a PubPeer thread and failure to ask are
+    different facts, and conflating them would hide reduced coverage.
     """
-    from ..net import fetch_json
+    from ..net import get_json, is_definitive
     quoted = urllib.parse.quote(doi_url, safe="")
-    body = fetch_json(f"https://www.pubpeer.com/json/{quoted}", timeout=10.0)
+    status, body = get_json(f"https://www.pubpeer.com/json/{quoted}", timeout=10.0)
+    if not is_definitive(status):
+        return None, False
     if isinstance(body, dict):
         for key in ("comment_count", "comments", "count", "n_comments"):
             val = body.get(key)
             if isinstance(val, int):
-                return val
-    return None
+                return val, True
+    return None, True
 
 
 def run(doc: Document, ctx: object) -> List[Finding]:
@@ -70,19 +72,22 @@ def run(doc: Document, ctx: object) -> List[Finding]:
     if not doc.references:
         return []
     results: List[tuple] = []
-    checked = 0
+    looked_up = 0
+    answered = 0
     for ref in doc.references:
-        if max_checks and checked >= max_checks:
+        if max_checks and looked_up >= max_checks:
             break
         cands = _candidates(ref.text or "")
         if not cands:
             continue
         count: Optional[int] = None
         for c in cands:
-            if max_checks and checked >= max_checks:
+            if max_checks and looked_up >= max_checks:
                 break
-            checked += 1
-            count = _pubpeer_comment_count(c)
+            looked_up += 1
+            count, checked = _pubpeer_comment_count(c)
+            if checked:
+                answered += 1
             if count is not None:
                 break
         if count is None:
@@ -90,6 +95,18 @@ def run(doc: Document, ctx: object) -> List[Finding]:
         results.append((ref.text or "(untitled reference)", count))
 
     if not results:
+        if looked_up and not answered:
+            # Disclose reduced coverage instead of looking like a clean result.
+            return [Finding(
+                "References", Severity.INFO,
+                "PubPeer could not be reached - citations not screened",
+                "Every PubPeer lookup failed at the network layer, so no cited "
+                "work was actually screened for community discussion. This is "
+                "a connectivity result, not a clean bill of health.",
+                f"{looked_up} lookup(s) failed, 0 completed",
+                0.95,
+                "Re-run with a working connection to screen citations on PubPeer.",
+                source="pubpeer_screening")]
         return []
 
     threshold = getattr(ctx, "pubpeer_threshold", 2)

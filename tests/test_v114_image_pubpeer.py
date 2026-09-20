@@ -226,7 +226,9 @@ class TestPubPeerScreening(TestCase):
 
         resp = io.BytesIO(json.dumps({"comment_count": 3}).encode())
         with mock.patch("urllib.request.urlopen", return_value=resp):
-            self.assertEqual(pp._pubpeer_comment_count("https://doi.org/10.1/x"), 3)
+            count, checked = pp._pubpeer_comment_count("https://doi.org/10.1/x")
+        self.assertEqual(count, 3)
+        self.assertTrue(checked, "an answered lookup is not an unreachable one")
 
     def test_threshold_defaults_to_two(self):
         self.assertEqual(CheckContext().pubpeer_threshold, 2)

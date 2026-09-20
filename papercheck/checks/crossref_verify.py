@@ -20,10 +20,15 @@ def _contact() -> str:
     return os.environ.get("PAPERCHECK_MAILTO", "").strip() or "anonymous@example.org"
 
 
-def _fetch(url: str) -> dict:
-    """Crossref lookup via the shared HTTP layer (retry/backoff, no raise)."""
-    from ..net import fetch_json
-    return fetch_json(url, timeout=12.0) or {}
+def _fetch(url: str):
+    """Crossref lookup. Returns ``(status, data)``.
+
+    ``status is None`` means the request never completed, which is *not*
+    evidence about the reference — see ``run`` for why that distinction
+    matters. ``status`` 404 is genuine evidence of absence.
+    """
+    from ..net import get_json
+    return get_json(url, timeout=12.0)
 
 
 def _claimed_year(ref: str):
@@ -53,47 +58,61 @@ def run(doc: Document, ctx: object) -> List[Finding]:
     cap = max(1, min(len(refs), getattr(ctx, "max_online_checks", 10)))
     mailto = getattr(ctx, "mailto", "") or ""
     checked = 0
+    unreachable = 0
     for r in refs[:cap]:
         m = re.search(r'\b10\.\d{4,9}/[-._;()/:A-Z0-9]+', r, re.IGNORECASE)
         if m:
             doi = m.group(0).rstrip(".,;)")
-            try:
-                data = _fetch("https://api.crossref.org/works/" + urllib.parse.quote(doi))
-                item = data.get("message", {})
+            status, data = _fetch("https://api.crossref.org/works/" + urllib.parse.quote(doi))
+            from ..net import is_definitive
+            if not is_definitive(status):
+                # Throttled / blocked / unreachable: we know nothing about this
+                # DOI, and saying otherwise would accuse a real paper of being
+                # fake. A 429 must never become a hallucination finding.
+                unreachable += 1
+                continue
+            if status == 404:
                 checked += 1
-                cy = _claimed_year(r)
-                ay = None
-                for k in ("published-print", "published-online", "issued"):
-                    if item.get(k, {}).get("date-parts"):
-                        ay = item[k]["date-parts"][0][0]
-                        break
-                if cy and ay and cy != ay:
-                    out.append(Finding("References", Severity.MEDIUM,
-                                       "Reference year mismatch vs Crossref (" + str(cy) + " vs " + str(ay) + ")",
-                                       "The year in your reference list differs from the Crossref record - verification flag.",
-                                       "Ref: " + r[:90], "Correct the year to " + str(ay),
-                                       0.85))
-            except Exception:
                 out.append(Finding("References", Severity.HIGH,
                                    "DOI does not resolve in Crossref",
-                                   "The DOI in this reference could not be found - a classic hallucinated/fake reference signal.",
-                                   "Ref: " + r[:90], "Verify the DOI; if the paper does not exist, remove the reference",
+                                   "Crossref answered that this DOI is not registered - a classic "
+                                   "hallucinated/fake reference signal.",
+                                   "Ref: " + r[:90],
+                                   "Verify the DOI; if the paper does not exist, remove the reference",
+                                   0.85))
+                continue
+            item = (data or {}).get("message", {}) or {}
+            checked += 1
+            cy = _claimed_year(r)
+            ay = None
+            for k in ("published-print", "published-online", "issued"):
+                if item.get(k, {}).get("date-parts"):
+                    ay = item[k]["date-parts"][0][0]
+                    break
+            if cy and ay and cy != ay:
+                out.append(Finding("References", Severity.MEDIUM,
+                                   "Reference year mismatch vs Crossref (" + str(cy) + " vs " + str(ay) + ")",
+                                   "The year in your reference list differs from the Crossref record - verification flag.",
+                                   "Ref: " + r[:90], "Correct the year to " + str(ay),
                                    0.85))
             continue
         q = urllib.parse.quote(re.sub(r'[^a-z0-9 ]', " ", r[:80]))
         url = "https://api.crossref.org/works?query.bibliographic=" + q + "&rows=1&select=title,DOI,volume,issue,page,issued"
         if mailto:
             url += "&mailto=" + urllib.parse.quote(mailto)
-        try:
-            data = _fetch(url)
-            items = (data.get("message", {}) or {}).get("items", [])
-        except Exception:
+        status, data = _fetch(url)
+        from ..net import is_definitive
+        if not is_definitive(status):
+            unreachable += 1
             continue
+        items = ((data or {}).get("message", {}) or {}).get("items", [])
         if not items:
+            checked += 1
             out.append(Finding("References", Severity.HIGH,
                                "Reference not found in Crossref (possible hallucination)",
                                "No Crossref record matched this reference's bibliographic query.",
-                               "Ref: " + r[:90], "Verify the paper exists (author, title, year); remove it if it does not",
+                               "Ref: " + r[:90],
+                               "Verify the paper exists (author, title, year); remove it if it does not",
                                0.70))
             continue
         checked += 1
@@ -110,7 +129,21 @@ def run(doc: Document, ctx: object) -> List[Finding]:
                                "The listed year is off by more than a year from the Crossref record.",
                                "Ref: " + r[:90], "Correct the year to " + str(ay),
                                0.80))
-    if checked == 0:
+    if unreachable and checked == 0:
+        # Every lookup failed at the transport layer. Report reduced coverage
+        # rather than pretending the references were checked and passed.
+        out.append(Finding("References", Severity.INFO,
+                           "Crossref unreachable - references not verified",
+                           "Every Crossref lookup failed at the network layer, so no "
+                           "reference was actually checked this run. This is a "
+                           "connectivity result, not a statement about your "
+                           "references.",
+                           f"{unreachable} lookup(s) failed, 0 completed",
+                           "Re-run with a working connection (or without --online) before "
+                           "drawing any conclusion from reference checks.",
+                           0.95,
+                           source="crossref_verify"))
+    elif checked == 0:
         out.append(Finding("References", Severity.INFO,
                            "Crossref verification skipped",
                            "No references were resolvable for online verification this run.",
