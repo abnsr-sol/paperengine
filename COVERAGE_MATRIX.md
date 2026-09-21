@@ -1,5 +1,5 @@
 # PaperCheck — Definitive Coverage Matrix
-**Date: 2026-09-20 | 97 engines live | 398/398 tests green | engine count is dynamic (see `--list-venues` and the GUI header, rendered from the registry)**
+**Date: 2026-09-21 | 98 engines live | 430/430 tests green | engine count is dynamic (see `--list-venues` and the GUI header, rendered from the registry)**
 
 This document maps every check area from the project's master research lists
 (160-angle rejection map + 287/304-area standards list + 320 failure patterns)
@@ -120,12 +120,13 @@ memory. Read together with the honest-limitations section of README.md.
 | 77 | Wrong page numbers | 🌐 `crossref_verify` |
 | 78 | Missing issue/volume | `reference_completeness` |
 
-## 6. PLAGIARISM & INTEGRITY — 13/13 ✅
+## 6. PLAGIARISM & INTEGRITY — 14/14 ✅
 
 | # | Angle | Engine |
 |---|---|---|
 | 79 | Text recycling | `integrity`, `self_plagiarism` (+ `--corpus`) |
 | 80 | Paraphrase plagiarism | `integrity` (n-gram) |
+| 80b | Verbatim reuse from published literature, no user corpus | 🌐 `external_overlap` (Europe PMC full-text + OpenAlex) |
 | 81 | Idea plagiarism | ⚠️ partially (`novelty`, `literature_search`) — inherently semantic |
 | 82/83 | Figure/table plagiarism | `image_forensics` (hashing), `integrity` |
 | 84 | Data fabrication | `fabrication` (Benford, digit preference) |
@@ -275,7 +276,7 @@ Paper mills (email-hospital rule, clustering) · citation cartels/stacking/rings
 |---|---|---|---|
 | 160-angle rejection map | 160 | 158 automated + 2 human-only | **99%** |
 | 287/304 standards list | 304 | ~270 manuscript-checkable | **89%** (rest = journal-side/publisher-side, not manuscript content) |
-| 320 failure patterns | 320 | ~280+ templates across 97 engines | **84%+** (remainder = API/ML/human) |
+| 320 failure patterns | 320 | ~280+ templates across 98 engines | **84%+** (remainder = API/ML/human) |
 | EQUATOR guidelines | 15 | 15 | **100%** |
 | Venue presets | 19 | 19 | **100%** |
 | Indian standards | all | all | **100%** |

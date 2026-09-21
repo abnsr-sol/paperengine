@@ -3,7 +3,7 @@
 # PaperEngine
 
 **Pre-submission rejection-risk analysis for academic manuscripts —
-97 engines incl. deterministic p-value verification (statcheck) · dual
+98 engines incl. deterministic p-value verification (statcheck) · dual
 international / Indian standards · 100% local**
 
 [![CI](https://github.com/abnsr-sol/paperengine/actions/workflows/ci.yml/badge.svg)](https://github.com/abnsr-sol/paperengine/actions/workflows/ci.yml)
@@ -26,7 +26,7 @@ Most tools answer one narrow question: *"Is this text copied?"* or *"Does this
 look AI-written?"*. Rejection happens for **dozens of other reasons** — missing
 ethics statements, impossible statistics, unreferenced figures, template
 violations, predatory venue traps, retracted citations. PaperEngine runs
-**97 specialized engines** against your manuscript and returns every finding as:
+**98 specialized engines** against your manuscript and returns every finding as:
 
 ```
 Severity | Finding | Evidence (quoted from your paper) | Confidence | How to fix it
@@ -83,7 +83,7 @@ Then, in the browser:
    readiness score + findings table (severity · finding · evidence · confidence · how to fix)
 
 **Privacy / no retention:** the GUI runs on your machine only (localhost).
-The file is parsed in memory, checked by the same 97 engines as the CLI, and
+The file is parsed in memory, checked by the same 98 engines as the CLI, and
 the temporary copy is **deleted the moment your report is rendered — every
 time, no exceptions**. Nothing is stored, nothing leaves the machine.
 
@@ -110,6 +110,7 @@ Common tasks:
 | Compare two revisions | `papercheck v1.docx --compare v2.docx --venue elsevier --format html --out diff.html` |
 | Batch-scan a whole folder | `papercheck --batch papers/ --venue ugc_care --format csv --out summary.csv` |
 | Crossref + OpenAlex online lookups | `papercheck paper.docx --venue springer --online --mailto you@university.edu --openalex-key YOUR_KEY` |
+| Compare against **published literature** (no corpus needed) | same `--online` flag — `external_overlap` searches Europe PMC full text and OpenAlex for your sentences |
 | Compare vs your prior papers | `papercheck paper.docx --corpus ./my_prior_papers/` |
 | List all venue presets | `papercheck --list-venues` |
 
@@ -212,6 +213,31 @@ confidence · concrete action**.
 
 ---
 
+### External overlap — comparing against published literature
+
+Every other similarity check compares your manuscript with a corpus *you*
+supply. With `--online`, `external_overlap` answers the iThenticate-style
+question instead — *does this text already exist in the published record?* —
+with no index of its own:
+
+```bash
+papercheck paper.docx --online --mailto you@university.edu
+```
+
+| Severity | What it means |
+|---|---|
+| **High** | 30+ consecutive words also occur in one published paper (quoted with its DOI) |
+| **Medium** | several distinct passages from the same published source |
+| **Low** | one distinctive sentence found verbatim in a published source |
+| **Info** | wording matches a source you already cite, or coverage was reduced (API unreachable) |
+
+It works without a reference corpus because the APIs themselves act as the
+filter: a *rare* sentence (single-digit hits) is evidence, while shared
+methods phrasing returns thousands of hits and is discarded — measured, e.g.
+*“the data were analyzed using spss version”* → **17,361** hits. Coverage is
+open-access literature (Europe PMC full text, plus OpenAlex abstracts for
+paywalled work), and it is **not** the paywalled iThenticate index.
+
 ## Architecture
 
 ```
@@ -228,7 +254,7 @@ papercheck/
 ├── batch.py           folder scanning, worst-first ranking, CSV writer
 ├── rwdb.py            Retraction Watch DB download/cache/screening
 ├── webui.py           local drag-and-drop GUI (stdlib http.server)
-└── checks/            97 engines — one per rejection angle
+└── checks/            98 engines — one per rejection angle
     compliance · structure · language · citations · claims · ai_risk ·
     integrity · novelty · consistency · figures · forensics · policy ·
     statistics · overclaiming · self_plagiarism · citation_integrity ·
