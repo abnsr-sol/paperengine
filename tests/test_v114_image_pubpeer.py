@@ -1,124 +1,22 @@
 """v1.14 wave: rotation/scale-invariant image duplication, PubPeer screening
 contract, API-key config plumbing, and the engine-registry self-check.
 
-Every fixture is built in-test with stdlib bytes (DOCX zip + minimal PDF) so the
-suite needs no binary fixtures and no network.
+Fixtures come from ``tests/_fixtures.py`` — the single owner of the synthetic
+containers, images and HTTP stubs, so no module carries a private copy.
 """
 from __future__ import annotations
-import io
-import json
 import os
-import random
 import tempfile
-import zipfile
 from unittest import TestCase, mock
 
 from papercheck.checks import ALL_ENGINES, CheckContext, run_all_engines
-from papercheck.ingestion import load_document
-
-_W_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
-_DOC_XML = (
-    f'<w:document xmlns:w="{_W_NS}"><w:body>'
-    "<w:p><w:r><w:t>Methods and results text for the check pipeline.</w:t></w:r></w:p>"
-    "</w:body></w:document>"
-)
-_CT_XML = (
-    '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
-    '<Default Extension="png" ContentType="image/png"/>'
-    '<Default Extension="jpeg" ContentType="image/jpeg"/></Types>'
-)
-
-
-def _noise(seed: int, size: int = 96):
-    """Deterministic high-entropy greyscale panel.
-
-    Built from the stdlib RNG rather than numpy: the project ships no numpy
-    dependency, so importing it here would fail the CI environment.
-    """
-    from PIL import Image
-
-    return Image.frombytes("L", (size, size), random.Random(seed).randbytes(size * size))
-
-
-def _texture_png(seed: int, size: int = 96) -> bytes:
-    buf = io.BytesIO()
-    _noise(seed, size).save(buf, "PNG")
-    return buf.getvalue()
-
-
-def _texture_jpeg(seed: int, size: int = 96) -> bytes:
-    buf = io.BytesIO()
-    _noise(seed, size).save(buf, "JPEG", quality=92)
-    return buf.getvalue()
-
-
-def _transform(data: bytes, kind: str) -> bytes:
-    from PIL import Image
-
-    img = Image.open(io.BytesIO(data))
-    if kind == "rotate90":
-        img = img.rotate(90, expand=True)
-    elif kind == "rotate270":
-        img = img.rotate(270, expand=True)
-    elif kind == "scale":
-        img = img.resize((int(img.width * 0.9), int(img.height * 0.9)), Image.LANCZOS)
-    buf = io.BytesIO()
-    img.save(buf, "PNG")
-    return buf.getvalue()
-
-
-def _write_docx(path: str, media: list) -> None:
-    with zipfile.ZipFile(path, "w") as z:
-        z.writestr("[Content_Types].xml", _CT_XML)
-        z.writestr("word/document.xml", _DOC_XML)
-        for name, data in media:
-            z.writestr(f"word/media/{name}", data)
-
-
-def _write_pdf(path: str, images: list) -> None:
-    """Minimal valid PDF with one JPEG XObject per page (stdlib only)."""
-    n = len(images)
-    page_ids = [3 + i for i in range(n)]
-    img_ids = [3 + n + i for i in range(n)]
-    cont_ids = [3 + 2 * n + i for i in range(n)]
-    objs = {
-        1: b"<< /Type /Catalog /Pages 2 0 R >>",
-        2: ("<< /Type /Pages /Kids [%s] /Count %d >>"
-            % (" ".join(f"{p} 0 R" for p in page_ids), n)).encode(),
-    }
-    for i in range(n):
-        content = b"q 200 0 0 200 0 0 cm /Im0 Do Q"
-        objs[cont_ids[i]] = (b"<< /Length %d >>\nstream\n" % len(content)
-                             + content + b"\nendstream")
-        objs[page_ids[i]] = (
-            f"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 200 200] "
-            f"/Resources << /XObject << /Im0 {img_ids[i]} 0 R >> >> "
-            f"/Contents {cont_ids[i]} 0 R >>").encode()
-        data = images[i]
-        objs[img_ids[i]] = (
-            b"<< /Type /XObject /Subtype /Image /Width 96 /Height 96 "
-            b"/ColorSpace /DeviceGray /BitsPerComponent 8 /Filter /DCTDecode "
-            b"/Length %d >>\nstream\n" % len(data)) + data + b"\nendstream"
-
-    out = bytearray(b"%PDF-1.4\n")
-    offsets = {}
-    for num in sorted(objs):
-        offsets[num] = len(out)
-        out += f"{num} 0 obj\n".encode() + objs[num] + b"\nendobj\n"
-    xref = len(out)
-    top = max(objs)
-    out += f"xref\n0 {top + 1}\n".encode() + b"0000000000 65535 f \n"
-    for num in range(1, top + 1):
-        out += f"{offsets[num]:010d} 00000 n \n".encode()
-    out += (f"trailer\n<< /Size {top + 1} /Root 1 0 R >>\n"
-            f"startxref\n{xref}\n%%EOF\n").encode()
-    with open(path, "wb") as fh:
-        fh.write(bytes(out))
+from papercheck.ingestion import Document, load_document
+from tests._fixtures import (flat, png, replay, rescaled, rotated, texture_jpeg,
+                             texture_png, write_docx, write_pdf)
 
 
 def _figure_findings(path):
-    doc = load_document(path)
-    findings, errors = run_all_engines(doc, CheckContext())
+    findings, errors = run_all_engines(load_document(path), CheckContext())
     return [f for f in findings if f.category == "Figures"], errors
 
 
@@ -126,97 +24,134 @@ class TestImageDuplication(TestCase):
     def _run_docx(self, second: bytes):
         with tempfile.TemporaryDirectory() as td:
             path = os.path.join(td, "paper.docx")
-            _write_docx(path, [("a.png", _texture_png(7)), ("b.png", second)])
+            write_docx(path, [("a.png", texture_png(7)), ("b.png", second)])
             return _figure_findings(path)
 
     def test_exact_duplicate_fires_high(self):
-        figs, errors = self._run_docx(_texture_png(7))
+        figs, errors = self._run_docx(texture_png(7))
         self.assertEqual(errors, [])
         self.assertTrue(figs, "identical images must be reported")
         self.assertEqual(figs[0].severity.value, "High")
 
     def test_rotated_duplicate_fires(self):
         # the real-world evasion the old single-orientation hash missed
-        figs, errors = self._run_docx(_transform(_texture_png(7), "rotate90"))
+        figs, errors = self._run_docx(rotated(texture_png(7), 90))
         self.assertEqual(errors, [])
         self.assertTrue(figs, "a 90-degree rotated copy must still be caught")
 
     def test_rotated_270_duplicate_fires(self):
-        figs, _ = self._run_docx(_transform(_texture_png(7), "rotate270"))
+        figs, _ = self._run_docx(rotated(texture_png(7), 270))
         self.assertTrue(figs, "a 270-degree rotated copy must still be caught")
 
     def test_rescaled_duplicate_fires(self):
-        figs, _ = self._run_docx(_transform(_texture_png(7), "scale"))
+        figs, _ = self._run_docx(rescaled(texture_png(7)))
         self.assertTrue(figs, "a rescaled copy must still be caught")
 
     def test_different_images_are_silent(self):
-        figs, errors = self._run_docx(_texture_png(99))
+        figs, errors = self._run_docx(texture_png(99))
         self.assertEqual(errors, [])
         self.assertEqual(figs, [], "unrelated panels must not be flagged")
 
     def test_single_image_is_silent(self):
         with tempfile.TemporaryDirectory() as td:
             path = os.path.join(td, "one.docx")
-            _write_docx(path, [("a.png", _texture_png(7))])
+            write_docx(path, [("a.png", texture_png(7))])
             figs, errors = _figure_findings(path)
-            self.assertEqual(figs, [])
-            self.assertEqual(errors, [])
+        self.assertEqual(figs, [])
+        self.assertEqual(errors, [])
 
     def test_tiny_icons_are_ignored(self):
-        from PIL import Image
-
-        small = Image.new("L", (16, 16), 0)
-        buf = io.BytesIO()
-        small.save(buf, "PNG")
-        figs, _ = self._run_docx(buf.getvalue())
+        figs, _ = self._run_docx(png(flat(16, 0)))
         self.assertEqual(figs, [], "16px icons are not figure panels")
 
     def test_identical_pdfs_fire(self):
         with tempfile.TemporaryDirectory() as td:
             path = os.path.join(td, "two.pdf")
-            _write_pdf(path, [_texture_jpeg(7), _texture_jpeg(7)])
+            write_pdf(path, [texture_jpeg(7), texture_jpeg(7)])
             figs, errors = _figure_findings(path)
-            self.assertEqual(errors, [])
-            self.assertTrue(figs, "duplicate embedded PDF images must fire")
+        self.assertEqual(errors, [])
+        self.assertTrue(figs, "duplicate embedded PDF images must fire")
 
     def test_different_pdfs_silent(self):
         with tempfile.TemporaryDirectory() as td:
             path = os.path.join(td, "diff.pdf")
-            _write_pdf(path, [_texture_jpeg(7), _texture_jpeg(99)])
+            write_pdf(path, [texture_jpeg(7), texture_jpeg(99)])
             figs, errors = _figure_findings(path)
-            self.assertEqual(errors, [])
-            self.assertEqual(figs, [])
+        self.assertEqual(errors, [])
+        self.assertEqual(figs, [])
 
     def test_min_hamming_separates_cleanly(self):
-        from papercheck.checks.image_forensics import _rotate_hashes, _min_hamming
+        from papercheck.checks.image_forensics import _min_hamming, _rotate_hashes
 
-        a = _rotate_hashes(_texture_png(7))
-        b = _rotate_hashes(_texture_png(7))
-        c = _rotate_hashes(_texture_png(99))
-        self.assertEqual(_min_hamming(a, b), 0)
-        self.assertGreater(_min_hamming(a, c), 6)
+        same_a = _rotate_hashes(texture_png(7))
+        same_b = _rotate_hashes(texture_png(7))
+        other = _rotate_hashes(texture_png(99))
+        self.assertEqual(_min_hamming(same_a, same_b), 0)
+        self.assertGreater(_min_hamming(same_a, other), 6)
 
 
 class TestPubPeerScreening(TestCase):
+    """The online path is this engine's whole purpose, so it is pinned here.
+
+    It used to raise ``AttributeError`` on every document with references
+    (``ref.text`` on what is in fact a plain string), so the engine never once
+    produced a finding online — and both original tests were offline, so
+    nothing caught it.
+    """
+
+    _REF = ("Smith J. A real published paper. Journal of Things. 2020. "
+            "doi:10.1234/real.2020")
+
+    def _doc(self):
+        return Document(path="x.txt", name="x.txt", file_type="txt",
+                        text="Body text.", references=[self._REF])
+
+    def _online(self, payload):
+        with mock.patch("urllib.request.urlopen", side_effect=replay(payload)):
+            return run_all_engines(self._doc(), CheckContext(online=True))
+
+    @staticmethod
+    def _pp(findings):
+        return [f for f in findings if getattr(f, "source", "") == "pubpeer_screening"]
+
     def test_offline_is_a_silent_noop(self):
         with tempfile.TemporaryDirectory() as td:
             path = os.path.join(td, "paper.docx")
-            _write_docx(path, [])
-            doc = load_document(path)
-            findings, errors = run_all_engines(doc, CheckContext(online=False))
-            self.assertEqual(errors, [])
-            self.assertEqual(
-                [f for f in findings
-                 if getattr(f, "source", None) == "pubpeer_screening"],
-                [], "no network work may happen when offline")
+            write_docx(path, [])
+            findings, errors = run_all_engines(
+                load_document(path), CheckContext(online=False))
+        self.assertEqual(errors, [])
+        self.assertEqual(self._pp(findings), [],
+                         "no network work may happen when offline")
 
     def test_engine_does_not_touch_network_when_offline(self):
         import papercheck.checks.pubpeer_screening as pp
 
-        doc = load_document(os.path.join(os.path.dirname(__file__), "..", "sample_paper.txt"))
+        doc = load_document(os.path.join(os.path.dirname(__file__), "..",
+                                         "sample_paper.txt"))
         with mock.patch("urllib.request.urlopen") as m:
             pp.run(doc, CheckContext(online=False))
             m.assert_not_called()
+
+    def test_discussed_reference_is_reported(self):
+        findings, errors = self._online({"comment_count": 5})
+        self.assertEqual(errors, [], "the online path must not crash")
+        pp = self._pp(findings)
+        self.assertEqual([f.severity.value for f in pp], ["Low"])
+        self.assertIn("10.1234/real.2020", pp[0].evidence)
+
+    def test_undiscussed_reference_is_silent(self):
+        findings, errors = self._online({"comment_count": 0})
+        self.assertEqual(errors, [])
+        self.assertEqual(self._pp(findings), [])
+
+    def test_unreachable_discloses_coverage_not_silence(self):
+        import urllib.error
+        with mock.patch("urllib.request.urlopen",
+                        side_effect=urllib.error.URLError("down")):
+            findings, errors = run_all_engines(self._doc(), CheckContext(online=True))
+        self.assertEqual(errors, [])
+        self.assertEqual([f.severity.value for f in self._pp(findings)], ["Info"])
 
     def test_candidate_extraction_finds_doi(self):
         import papercheck.checks.pubpeer_screening as pp
@@ -227,8 +162,8 @@ class TestPubPeerScreening(TestCase):
     def test_comment_count_parsed_from_json(self):
         import papercheck.checks.pubpeer_screening as pp
 
-        resp = io.BytesIO(json.dumps({"comment_count": 3}).encode())
-        with mock.patch("urllib.request.urlopen", return_value=resp):
+        with mock.patch("urllib.request.urlopen",
+                        side_effect=replay({"comment_count": 3})):
             count, checked = pp._pubpeer_comment_count("https://doi.org/10.1/x")
         self.assertEqual(count, 3)
         self.assertTrue(checked, "an answered lookup is not an unreachable one")

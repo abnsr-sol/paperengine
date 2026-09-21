@@ -13,12 +13,14 @@ They also assert online mode stays sequential (network politeness).
 import os
 import sys
 import unittest
+from unittest import mock
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from papercheck.checks import CheckContext, run_all_engines  # noqa: E402
 from papercheck.ingestion import Document  # noqa: E402
 from papercheck.venues import get_rules  # noqa: E402
+from tests._fixtures import replay  # noqa: E402
 
 
 def _doc() -> Document:
@@ -86,13 +88,17 @@ class TestParallelPipeline(unittest.TestCase):
 
     def test_online_mode_never_uses_the_pool(self):
         # With online=True the pipeline must stay sequential; _worker_count is
-        # still resolved, but the parallel branch is skipped.
+        # still resolved, but the parallel branch is skipped. The network is
+        # stubbed: this test is about scheduling, and a real request here made
+        # the whole suite wait on Crossref.
         ctx = CheckContext(venue="generic", rules=get_rules("generic"),
                            online=True, max_online_checks=0)
         old = os.environ.get("PAPERCHECK_WORKERS")
         os.environ["PAPERCHECK_WORKERS"] = "8"
         try:
-            findings, _ = run_all_engines(self.doc, ctx)
+            with mock.patch("urllib.request.urlopen", side_effect=replay(
+                    {"message": {"items": []}, "results": []})):
+                findings, _ = run_all_engines(self.doc, ctx)
         finally:
             if old is None:
                 os.environ.pop("PAPERCHECK_WORKERS", None)
