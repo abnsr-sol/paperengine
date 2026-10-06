@@ -2,7 +2,44 @@
 
 All notable changes to PaperEngine are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
-versioning follows [SemVer](https://semver.org/).## [1.13.0] — 2026-09-20
+versioning follows [SemVer](https://semver.org/).
+
+## [Unreleased]
+
+### Fixed — venue integrity (the flagship alert was unreachable)
+- **`venue_hijack` never fired its CRITICAL "known hijacked journal" alert.**
+  Every entry point passes `CheckContext(venue=describe(venue))`, so the engine
+  received a rendered *label* — `"elsevier (International -- Elsevier)"` — and
+  compared it against bare journal titles. It could never match. Confirmed on
+  the shipped v1.13.0 using a journal from the bundle's own list.
+- **The same label caused false predatory accusations.** `_normalize_title()`
+  of the label injects "international", which the generic-title indicator counts
+  as an invented-journal tell — so **19 of 24 presets were reported as predatory
+  on a completely clean paper**. Now zero.
+- **`_extract_venue_name` swallowed the rest of the sentence.** Its character
+  class `[A-Z][\w&.,'\- ]{3,60}` includes `.`, so
+  `"submitted to Journal of X. We used 42 epochs."` captured
+  `"Journal of X. We used 42 epochs"`. Now trimmed at the sentence boundary.
+- Fixes: `_clean_venue_label`, `_trim_sentence_tail`, `_resolve_venue_name`
+  (prefers the raw `rules["_name"]`), `_matches_known_publisher`. Regression
+  guard: `tests/test_venue_hijack.py` (7 tests).
+
+### Added — self-updating bundled data
+- **`scripts/refresh_data.py`** — refreshes the offline snapshots from free
+  public sources and writes them back into the package, with a
+  `papercheck/data/manifest.json` recording `last_updated` / `count` / `source`
+  per dataset. `--check` probes without writing; `--strict` fails the job on a
+  source outage; a failed fetch never overwrites existing data.
+- **Hijacked-journal coverage 20 → 412 entries (20.6x)** by pulling the
+  Retraction Watch Hijacked Journal Checker (a public Google Sheet, exported as
+  CSV) instead of a hand-maintained seed.
+- **`maintenance.yml` now commits refreshed data back.** Previously the weekly
+  job ran with `contents: read` and wrote to `/tmp`, so the refresh was
+  discarded and shipped data never updated. The workflow now has `contents:
+  write` and commits the refreshed snapshots.
+- `_check_hijacked` matches against every ISSN an entry lists, not just one.
+
+## [1.13.0] — 2026-09-20
 
 ### Added — free-resource integration wave
 

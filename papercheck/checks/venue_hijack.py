@@ -37,6 +37,34 @@ def _normalize_title(title: str) -> str:
     return re.sub(r"[^a-z0-9\s]", "", title.lower().strip())
 
 
+# venues.describe() renders a label as "NAME (Standard -- Publisher)".
+_VENUE_LABEL_SUFFIX = re.compile(r"\s*\(.*--.*\)\s*$")
+# A captured venue name must stop at the first sentence boundary.
+_SENTENCE_TAIL = re.compile(r"\.\s+")
+
+
+def _clean_venue_label(raw: str) -> str:
+    """Reduce a described venue label back to the bare journal name.
+
+    ctx.venue carries a human-readable label, e.g.
+    "elsevier (International -- Elsevier)". Matching that label against a
+    journal-title list can never succeed — and its injected words
+    ("international") also tripped the generic-title predatory indicator, so
+    legitimate presets were reported as predatory. Always match the bare name.
+    """
+    return _VENUE_LABEL_SUFFIX.sub("", (raw or "").strip()).strip()
+
+
+def _trim_sentence_tail(candidate: str) -> str:
+    """Cut a captured venue name at the first sentence boundary.
+
+    The extraction patterns capture greedily, so
+    "submitted to Journal of X. We used 42 epochs." yielded
+    "Journal of X. We used 42 epochs" — which never equals a real title.
+    """
+    return _SENTENCE_TAIL.split(candidate, 1)[0].strip(" \t\n.,;:")
+
+
 def _extract_issn(text: str) -> Optional[str]:
     """Extract ISSN-8 pattern from text."""
     m = re.search(r"\b(\d{4}-\d{3}[\dxX])\b", text)
@@ -49,7 +77,7 @@ def _extract_venue_name(doc: Document, body: str) -> Optional[str]:
     meta = doc.metadata or {}
     for key in ("journal", "publication", "title"):
         if meta.get(key):
-            return meta[key]
+            return str(meta[key]).strip()
 
     # Priority 2: explicit intent lines in text
     for pat in [
@@ -61,9 +89,28 @@ def _extract_venue_name(doc: Document, body: str) -> Optional[str]:
     ]:
         m = re.search(pat, body, re.IGNORECASE)
         if m:
-            return m.group(1).strip()
+            return _trim_sentence_tail(m.group(1))
 
     return None
+
+
+def _resolve_venue_name(ctx: object, doc: Document, body: str) -> Optional[str]:
+    """Resolve the *bare* target-venue name, never the display label.
+
+    get_rules() stores the raw name the user typed under rules["_name"], which
+    is the only faithful source when the venue is a preset key. ctx.venue is a
+    rendered label and is used only as a cleaned fallback.
+    """
+    rules = getattr(ctx, "rules", None) or {}
+    raw = rules.get("_name")
+    if raw and str(raw).strip().lower() not in ("", "generic"):
+        return _clean_venue_label(str(raw))
+    ctx_venue = getattr(ctx, "venue", None)
+    if ctx_venue and str(ctx_venue).strip().lower() != "generic":
+        cleaned = _clean_venue_label(str(ctx_venue))
+        if cleaned:
+            return cleaned
+    return _extract_venue_name(doc, body)
 
 
 def _check_hijacked(title_norm: str, issn: Optional[str], hijacked_list: List[Dict]) -> Optional[Dict]:
@@ -75,12 +122,16 @@ def _check_hijacked(title_norm: str, issn: Optional[str], hijacked_list: List[Di
     """
     for entry in hijacked_list:
         entry_title = entry.get("title_norm", "")
-        entry_issn = entry.get("issn")
         # Exact match only (both directions would be redundant since normalized)
         if title_norm and entry_title and title_norm == entry_title:
             return entry
-        if issn and entry_issn and issn == entry_issn:
-            return entry
+        if issn:
+            # Refreshed entries carry every ISSN the checker lists; the seed
+            # entries carry a single "issn".
+            candidates = entry.get("issns") or (
+                [entry["issn"]] if entry.get("issn") else [])
+            if issn in candidates:
+                return entry
     return None
 
 
@@ -91,6 +142,19 @@ def _check_publisher_issn(issn: str, publishers: Dict) -> Optional[str]:
         if prefix in info.get("issn_prefixes", []):
             return publisher
     return None
+
+
+def _matches_known_publisher(venue_name: str, publishers: Dict) -> bool:
+    """True if the venue name IS a known legitimate publisher (e.g. 'Frontiers').
+
+    Several real publishers have names built from common words that the
+    generic-title heuristic treats as invented-journal tells. Without this
+    guard, a preset like `frontiers` was reported as predatory on a clean paper.
+    """
+    norm = _normalize_title(venue_name)
+    if not norm:
+        return False
+    return any(_normalize_title(pub) == norm for pub in publishers)
 
 
 def _count_predatory_indicators(text: str, venue_name: Optional[str], publishers: Dict, indicators: List[Dict]) -> List[Dict]:
@@ -104,6 +168,8 @@ def _count_predatory_indicators(text: str, venue_name: Optional[str], publishers
             if re.search(r"@(gmail|outlook|yahoo|163|qq|hotmail|protonmail|aol)\b", low):
                 matched.append(ind)
         elif iid == "generic_title" and venue_name:
+            if _matches_known_publisher(venue_name, publishers):
+                continue
             generic_words = {"international", "journal", "advanced", "modern", "innovative",
                            "world", "global", "universal", "excel", "premier", "supreme",
                            "excellence", "frontier", "frontiers", "discovery", "insight",
@@ -136,12 +202,8 @@ def _run(doc: Document, ctx: object) -> List[Finding]:
     publishers = intel.get("legitimate_publishers", {})
     indicators = intel.get("predatory_indicators", [])
 
-    # Extract venue signals — ctx.venue is primary when specified
-    ctx_venue = getattr(ctx, "venue", None)
-    if ctx_venue and ctx_venue != "generic":
-        venue_name = ctx_venue
-    else:
-        venue_name = _extract_venue_name(doc, body)
+    # Extract venue signals — the BARE name, never the rendered label
+    venue_name = _resolve_venue_name(ctx, doc, body)
     issn = _extract_issn(body)
 
     title_norm = _normalize_title(venue_name) if venue_name else ""

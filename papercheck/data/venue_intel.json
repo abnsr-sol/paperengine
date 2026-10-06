@@ -9,206 +9,5150 @@
       "Think.Check.Submit",
       "Cabell's Predatory Reports (offline indicator subset)"
     ],
-    "note": "Run `papercheck --sync-venues` to refresh from live sources (future). For now, this is a curated offline snapshot."
+    "note": "Run `papercheck --sync-venues` to refresh from live sources (future). For now, this is a curated offline snapshot.",
+    "last_refreshed": "2026-09-20"
   },
   "hijacked_journals": [
     {
-      "title_norm": "american journal of industrial and business management",
-      "issn": "2160-5766",
-      "clone_of": "legitimate title varies — multiple hijack clones active",
+      "title": "Academy of Management Annals",
+      "title_norm": "academy of management annals",
+      "issn": "1941-6520",
+      "issns": [
+        "1941-6520",
+        "1941-6067"
+      ],
+      "clone_of": "Academy of Management Annals",
+      "hijacked_url": "https://aomannals.com/",
       "source": "Retraction Watch Hijacked Journal Checker"
     },
     {
-      "title_norm": "international journal of advanced research in engineering and technology",
-      "issn": "0976-4259",
-      "clone_of": "generic predatory title — not a legitimate journal",
-      "source": "Think.Check.Submit / Beall criteria"
+      "title": "Acervo Journal",
+      "title_norm": "acervo journal",
+      "issn": "0102-700X",
+      "issns": [
+        "0102-700X",
+        "2237-8723"
+      ],
+      "clone_of": "Acervo",
+      "hijacked_url": "https://acervojournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
     },
     {
-      "title_norm": "journal of advanced research in science and technology",
+      "title": "Acta Biomedica",
+      "title_norm": "acta biomedica",
+      "issn": "0392-4203",
+      "issns": [
+        "0392-4203",
+        "2531-6745"
+      ],
+      "clone_of": "Acta Biomedica",
+      "hijacked_url": "https://mattioli1885journal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Acta Pediátrica de México",
+      "title_norm": "acta peditrica de mxico",
+      "issn": "0186-2391",
+      "issns": [
+        "0186-2391"
+      ],
+      "clone_of": "Acta Pediátrica de México",
+      "hijacked_url": "https://actapediatricademexico.com/index.php/apm",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Acta Scientiae",
+      "title_norm": "acta scientiae",
+      "issn": "1517-4492",
+      "issns": [
+        "1517-4492",
+        "2178-7727"
+      ],
+      "clone_of": "Acta Scientiae",
+      "hijacked_url": "http://www.periodicos.ulbra.org/index.php/acta/index",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Adalya",
+      "title_norm": "adalya",
+      "issn": "1301-2746",
+      "issns": [
+        "1301-2746"
+      ],
+      "clone_of": "Adalya",
+      "hijacked_url": "http://adalyajournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Advances in Aeronautical Science and Engineering",
+      "title_norm": "advances in aeronautical science and engineering",
+      "issn": "1674-8190",
+      "issns": [
+        "1674-8190"
+      ],
+      "clone_of": "Hangkong gongcheng jinzhan/Advances in Aeronautical Science and Engineering",
+      "hijacked_url": "https://aaseresearch.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Advances in Mechanics",
+      "title_norm": "advances in mechanics",
+      "issn": "1000-0992",
+      "issns": [
+        "1000-0992"
+      ],
+      "clone_of": "Advances in Mechanics",
+      "hijacked_url": "https://www.advancesinmechanics.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Advances in Water Science",
+      "title_norm": "advances in water science",
+      "issn": "1001-6791",
+      "issns": [
+        "1001-6791"
+      ],
+      "clone_of": "Shuikexue Jinzhan/Advances in Water Science",
+      "hijacked_url": "http://www.skxjz.info/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Aegaeum Journal",
+      "title_norm": "aegaeum journal",
+      "issn": "0776-3808",
+      "issns": [
+        "0776-3808"
+      ],
+      "clone_of": "Aegaeum",
+      "hijacked_url": "http://aegaeum.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Aegaum Journal",
+      "title_norm": "aegaum journal",
+      "issn": "0776-3808",
+      "issns": [
+        "0776-3808"
+      ],
+      "clone_of": "Aegaeum",
+      "hijacked_url": "https://aegaum.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Afinidad",
+      "title_norm": "afinidad",
+      "issn": "0001-9704",
+      "issns": [
+        "0001-9704"
+      ],
+      "clone_of": "Afinidad",
+      "hijacked_url": "https://opensubmissionsystem.com/index.php/afi",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Agrociencia Journal",
+      "title_norm": "agrociencia journal",
+      "issn": "1405-3195",
+      "issns": [
+        "1405-3195"
+      ],
+      "clone_of": "Agrociencia",
+      "hijacked_url": "http://www.colopos.mx/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "AHURI Final Report Journal",
+      "title_norm": "ahuri final report journal",
+      "issn": "1834-7223",
+      "issns": [
+        "1834-7223"
+      ],
+      "clone_of": "AHURI Final Report",
+      "hijacked_url": "https://e-ahuri.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "AIUB Journal of Science and Engineering",
+      "title_norm": "aiub journal of science and engineering",
+      "issn": "1608-3679",
+      "issns": [
+        "1608-3679"
+      ],
+      "clone_of": "AIUB Journal of Science and Engineering",
+      "hijacked_url": "https://josaeban.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Ajasra",
+      "title_norm": "ajasra",
+      "issn": "2278-3741",
+      "issns": [
+        "2278-3741"
+      ],
+      "clone_of": "Ajasra",
+      "hijacked_url": "https://ajasra.in/index.php/about",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Al-Qantara",
+      "title_norm": "alqantara",
+      "issn": "1988-2955",
+      "issns": [
+        "1988-2955",
+        "0211-3589"
+      ],
+      "clone_of": "Al-Qanṭara",
+      "hijacked_url": "alqantarajournal.com",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Alochana Chakra Journal",
+      "title_norm": "alochana chakra journal",
+      "issn": "2231-3990",
+      "issns": [
+        "2231-3990"
+      ],
+      "clone_of": "Alochona Chakra",
+      "hijacked_url": "http://www.alochanachakra.in/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Alochana Journal",
+      "title_norm": "alochana journal",
+      "issn": "2231-3990",
+      "issns": [
+        "2231-3990"
+      ],
+      "clone_of": "Alochona Chakra",
+      "hijacked_url": "https://alochana.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Arzneimitteltherapie",
+      "title_norm": "arzneimitteltherapie",
+      "issn": "0723-6913",
+      "issns": [
+        "0723-6913"
+      ],
+      "clone_of": "Arzneimitteltherapie",
+      "hijacked_url": "https://arzneimitteltherapie.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "AMA, Agricultural mechanization in Asia, Africa and Latin America",
+      "title_norm": "ama agricultural mechanization in asia africa and latin america",
+      "issn": "0084-5841",
+      "issns": [
+        "0084-5841"
+      ],
+      "clone_of": "A M A. Agricultural mechanization in Asia, Africa and Latin America",
+      "hijacked_url": "https://www.shin-norinco.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "American Journal of Ophthalmology",
+      "title_norm": "american journal of ophthalmology",
+      "issn": "0002-9394",
+      "issns": [
+        "0002-9394",
+        "1879-1891"
+      ],
+      "clone_of": "American Journal of Ophthalmology",
+      "hijacked_url": "https://sciencedirects.com/science/article/pii/S1073287613618712/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "American Journal of Psychiatric Rehabilitation",
+      "title_norm": "american journal of psychiatric rehabilitation",
+      "issn": "1548-7776",
+      "issns": [
+        "1548-7776"
+      ],
+      "clone_of": "American Journal of Psychiatric Rehabilitation",
+      "hijacked_url": "https://ajprui.com/index.php/ajpr/index",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "American Journal of Public Health",
+      "title_norm": "american journal of public health",
+      "issn": "0090-0036",
+      "issns": [
+        "0090-0036",
+        "1541-0048"
+      ],
+      "clone_of": "American Journal of Public Health",
+      "hijacked_url": "https://ajph.aphapublications.international/10.2105/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Annals of Forest Research",
+      "title_norm": "annals of forest research",
+      "issn": "1844-8135",
+      "issns": [
+        "1844-8135",
+        "2065-2445"
+      ],
+      "clone_of": "Annals of Forest Research",
+      "hijacked_url": "https://e-afr.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Annals of the Romanian Society for Cell Biology",
+      "title_norm": "annals of the romanian society for cell biology",
+      "issn": "1583-6258",
+      "issns": [
+        "1583-6258"
+      ],
+      "clone_of": "Annals of the Romanian Society for Cell Biology",
+      "hijacked_url": "http://annalsofrscb.ro/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Applied Finance Letters",
+      "title_norm": "applied finance letters",
+      "issn": "2253-5799",
+      "issns": [
+        "2253-5799",
+        "2253-5802"
+      ],
+      "clone_of": "Applied Finance Letters",
+      "hijacked_url": "https://www.a-fl-insight.com/about",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Archeo Sciences Journal",
+      "title_norm": "archeo sciences journal",
       "issn": null,
-      "clone_of": "generic predatory title",
-      "source": "Think.Check.Submit"
-    },
-    {
-      "title_norm": "international journal of sciences",
-      "issn": "2305-3925",
-      "clone_of": "generic predatory title with fake impact factor claims",
-      "source": "Retraction Watch"
-    },
-    {
-      "title_norm": "journal of cardiovascular disease and research",
-      "issn": "0975-9557",
-      "clone_of": "Medknow/Wolters Kluwer journal — hijacked by predatory publisher",
+      "issns": [],
+      "clone_of": "ArcheoSciences",
+      "hijacked_url": "https://archeosciences.org/",
       "source": "Retraction Watch Hijacked Journal Checker"
     },
     {
-      "title_norm": "oncology letters",
-      "issn": "1792-1074",
-      "clone_of": "Legitimate Spandidos Publications journal — cloned sites active 2023-2025",
+      "title": "Archipel",
+      "title_norm": "archipel",
+      "issn": "0044-8613",
+      "issns": [
+        "0044-8613"
+      ],
+      "clone_of": "Archipel",
+      "hijacked_url": "https://archipeljournal.com/",
       "source": "Retraction Watch Hijacked Journal Checker"
     },
     {
-      "title_norm": "journal of cellular biochemistry",
-      "issn": "1097-4644",
-      "clone_of": "Legitimate Wiley journal — cloned sites harvesting APCs",
+      "title": "Arctic journal",
+      "title_norm": "arctic journal",
+      "issn": "0004-0843",
+      "issns": [
+        "0004-0843"
+      ],
+      "clone_of": "Arctic",
+      "hijacked_url": "https://arcticjournal.org/",
       "source": "Retraction Watch Hijacked Journal Checker"
     },
     {
-      "title_norm": "archives of medical research",
-      "issn": "0188-4409",
-      "clone_of": "Legitimate Elsevier journal — hijacked clone active 2024",
+      "title": "Asia Life Sciences",
+      "title_norm": "asia life sciences",
+      "issn": "0117-3375",
+      "issns": [
+        "0117-3375"
+      ],
+      "clone_of": "Asia life sciences",
+      "hijacked_url": "https://www.academicspub.com/",
       "source": "Retraction Watch Hijacked Journal Checker"
     },
     {
-      "title_norm": "journal of clinical investigation",
-      "issn": "0021-9738",
-      "clone_of": "Legitimate ASH/jci.org journal — cloned sites 2023-2024",
+      "title": "Atomic Spectroscopy",
+      "title_norm": "atomic spectroscopy",
+      "issn": "0195-5373",
+      "issns": [
+        "0195-5373",
+        "2708-521X"
+      ],
+      "clone_of": "Atomic Spectroscopy",
+      "hijacked_url": "http://atomicspectroscoopyjournal.com/index.php/at-spectrosc",
       "source": "Retraction Watch Hijacked Journal Checker"
     },
     {
-      "title_norm": "medical journal of australia",
-      "issn": "0025-729X",
-      "clone_of": "Legitimate Wiley/MJA journal — multiple impostor sites",
+      "title": "Atrio",
+      "title_norm": "atrio",
+      "issn": "0214-8293",
+      "issns": [
+        "0214-8293",
+        "2659-5230"
+      ],
+      "clone_of": "Atrio",
+      "hijacked_url": "https://atriojournal.com/",
       "source": "Retraction Watch Hijacked Journal Checker"
     },
     {
-      "title_norm": "acta medica iranica",
-      "issn": "0044-6025",
-      "clone_of": "Legitimate Iranian medical journal — hijacked clone active",
+      "title": "Aut Aut Research Journal",
+      "title_norm": "aut aut research journal",
+      "issn": "0005-0601",
+      "issns": [
+        "0005-0601"
+      ],
+      "clone_of": "Aut Aut",
+      "hijacked_url": "http://autrj.com/",
       "source": "Retraction Watch Hijacked Journal Checker"
     },
     {
-      "title_norm": "turkish journal of emergency medicine",
-      "issn": "2452-2405",
-      "clone_of": "Legitimate EMJ Turkey — cloned site active 2024",
+      "title": "Azania",
+      "title_norm": "azania",
+      "issn": "0067-270X",
+      "issns": [
+        "0067-270X"
+      ],
+      "clone_of": "Azania",
+      "hijacked_url": "azaniajournal.com",
       "source": "Retraction Watch Hijacked Journal Checker"
     },
     {
-      "title_norm": "journal of pharmaceutical research international",
-      "issn": "2231-2919",
-      "clone_of": "Predatory title — not indexed in legitimate databases",
-      "source": "Beall criteria / Think.Check.Submit"
+      "title": "Azerbaijan medical journal",
+      "title_norm": "azerbaijan medical journal",
+      "issn": "0005-2523",
+      "issns": [
+        "0005-2523"
+      ],
+      "clone_of": "Azerbaijan medical journal",
+      "hijacked_url": "https://www.azerbaijanmedicaljournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
     },
     {
-      "title_norm": "international journal of current research and review",
-      "issn": "0975-5241",
-      "clone_of": "Predatory publisher — low editorial standards",
-      "source": "Beall criteria"
+      "title": "Baltic Journal of Law and Politics",
+      "title_norm": "baltic journal of law and politics",
+      "issn": "2029-0454",
+      "issns": [
+        "2029-0454"
+      ],
+      "clone_of": "Baltic Journal of Law & Politics",
+      "hijacked_url": "https://versita.com/bjp/",
+      "source": "Retraction Watch Hijacked Journal Checker"
     },
     {
-      "title_norm": "international journal of innovative research in science engineering and technology",
-      "issn": "2347-2935",
-      "clone_of": "Generic predatory title — no legitimate indexing",
-      "source": "Think.Check.Submit"
+      "title": "Baltica Journal",
+      "title_norm": "baltica journal",
+      "issn": "0067-3064",
+      "issns": [
+        "0067-3064"
+      ],
+      "clone_of": "Baltica",
+      "hijacked_url": "https://balticajournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
     },
     {
-      "title_norm": "journal of emerging technologies and innovative research",
-      "issn": "2348-8190",
-      "clone_of": "Predatory publisher — guaranteed acceptance language",
-      "source": "Beall criteria"
+      "title": "Bangladesh Journal of Pharmacology",
+      "title_norm": "bangladesh journal of pharmacology",
+      "issn": "1991-0088",
+      "issns": [
+        "1991-0088"
+      ],
+      "clone_of": "Bangladesh Journal of Pharmacology",
+      "hijacked_url": "https://www.bdjpharmacol.com/index.php/BJP",
+      "source": "Retraction Watch Hijacked Journal Checker"
     },
     {
-      "title_norm": "international research journal of engineering and technology",
-      "issn": "2395-0056",
-      "clone_of": "Predatory publisher — spam email solicitations",
-      "source": "Think.Check.Submit"
+      "title": "Beijing Ligong Daxue Xuebao/Transaction of Beijing Institute of Technology",
+      "title_norm": "beijing ligong daxue xuebaotransaction of beijing institute of technology",
+      "issn": "1001-0645",
+      "issns": [
+        "1001-0645"
+      ],
+      "clone_of": "Beijing Ligong Daxue Xuebao/Transaction of Beijing Institute of Technology",
+      "hijacked_url": "https://www.beijing-institute-of-technology.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
     },
     {
-      "title_norm": "international journal of science and research",
-      "issn": "2319-7064",
-      "clone_of": "Predatory publisher — low-quality open access",
-      "source": "Beall criteria"
+      "title": "Biogecko",
+      "title_norm": "biogecko",
+      "issn": "2230-5807",
+      "issns": [
+        "2230-5807"
+      ],
+      "clone_of": "Biogecko",
+      "hijacked_url": "www.biogecko.co.nz/",
+      "source": "Retraction Watch Hijacked Journal Checker"
     },
     {
-      "title_norm": "journal of advanced research in mechanical engineering and technology",
+      "title": "Biomaterials Translational",
+      "title_norm": "biomaterials translational",
+      "issn": "2096-112X",
+      "issns": [
+        "2096-112X"
+      ],
+      "clone_of": "Biomaterials Translational",
+      "hijacked_url": "https://biomaterialstranslational.com/index.php/JGHR",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Bionatura",
+      "title_norm": "bionatura",
+      "issn": "1390-9347",
+      "issns": [
+        "1390-9347",
+        "1390-9355"
+      ],
+      "clone_of": "Bionatura",
+      "hijacked_url": "https://revistabionatura.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Blumea",
+      "title_norm": "blumea",
+      "issn": "0006-5196",
+      "issns": [
+        "0006-5196"
+      ],
+      "clone_of": "Blumea",
+      "hijacked_url": "https://www.nhn.leidenunivnl.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Boletin de Literatura Oral",
+      "title_norm": "boletin de literatura oral",
+      "issn": "2173-0695",
+      "issns": [
+        "2173-0695"
+      ],
+      "clone_of": "Boletin de Literatura Oral",
+      "hijacked_url": "https://www.boletindeliteraturaoral.com/index.php/bdlo",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "BOREAL ENVIRONMENT RESEARCH",
+      "title_norm": "boreal environment research",
+      "issn": "1239-6095",
+      "issns": [
+        "1239-6095"
+      ],
+      "clone_of": "Boreal environment research",
+      "hijacked_url": "https://borenv.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Bradleya",
+      "title_norm": "bradleya",
+      "issn": "0265-086X",
+      "issns": [
+        "0265-086X"
+      ],
+      "clone_of": "Bradleya",
+      "hijacked_url": "https://societybcss.org/product-category/bradleya/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "British Journal of Psychotherapy",
+      "title_norm": "british journal of psychotherapy",
       "issn": null,
-      "clone_of": "Generic predatory title — no legitimate indexing",
-      "source": "Think.Check.Submit"
+      "issns": [],
+      "clone_of": "British Journal of Psychotherapy",
+      "hijacked_url": "http://www.artesianbooks.co.uk/index.php/bjop",
+      "source": "Retraction Watch Hijacked Journal Checker"
     },
     {
-      "title_norm": "international journal of engineering research and technology",
-      "issn": "2278-0181",
-      "clone_of": "Predatory publisher — high volume, low quality",
-      "source": "Beall criteria"
+      "title": "Bulletin For Technology And History",
+      "title_norm": "bulletin for technology and history",
+      "issn": "0391-6715",
+      "issns": [
+        "0391-6715"
+      ],
+      "clone_of": "Bollettino Storico - Bibliografico Subalpino",
+      "hijacked_url": "https://bthnl.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Bulletin Monumental Journal",
+      "title_norm": "bulletin monumental journal",
+      "issn": "0007-473X",
+      "issns": [
+        "0007-473X"
+      ],
+      "clone_of": "Bulletin Monumental",
+      "hijacked_url": "http://bulletinmonumental.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Bulletin of Mathematical Sciences",
+      "title_norm": "bulletin of mathematical sciences",
+      "issn": "0007-4497",
+      "issns": [
+        "0007-4497"
+      ],
+      "clone_of": "Bulletin des Sciences Mathématiques",
+      "hijacked_url": "https://btmsjournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Bulletin of National Institute of Health Sciences",
+      "title_norm": "bulletin of national institute of health sciences",
+      "issn": "1343-4292",
+      "issns": [
+        "1343-4292"
+      ],
+      "clone_of": "Bulletin of National Institute of Health Sciences",
+      "hijacked_url": "https://www.healthsciencesbulletin.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Business, Management and Economics Engineering",
+      "title_norm": "business management and economics engineering",
+      "issn": "2669-2481",
+      "issns": [
+        "2669-2481",
+        "2669-249X"
+      ],
+      "clone_of": "Business, Management and Economics Engineering",
+      "hijacked_url": "https://businessmanagementeconomicsengineering.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "CAHIERS DES SCIENCES NATURELLES",
+      "title_norm": "cahiers des sciences naturelles",
+      "issn": "1420-4223",
+      "issns": [
+        "1420-4223"
+      ],
+      "clone_of": "Les cahiers de sciences naturelles",
+      "hijacked_url": "http://revistas-academicas.com/cahiers/index.html",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Cahiers Magellanes-NS",
+      "title_norm": "cahiers magellanesns",
+      "issn": "1624-1940",
+      "issns": [
+        "1624-1940"
+      ],
+      "clone_of": "Cahiers Magellanes-NS",
+      "hijacked_url": "https://magellanes.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "CATTLE PRACTICE",
+      "title_norm": "cattle practice",
+      "issn": "0969-1251",
+      "issns": [
+        "0969-1251"
+      ],
+      "clone_of": "Cattle practice",
+      "hijacked_url": "https://cattlepractice.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Central European Management Journal",
+      "title_norm": "central european management journal",
+      "issn": "2336-2693",
+      "issns": [
+        "2336-2693",
+        "2336-4890"
+      ],
+      "clone_of": "Central European Management Journal",
+      "hijacked_url": "https://journals.kozminski.cems-j.com/index.php/pl_cemj/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Change Management",
+      "title_norm": "change management",
+      "issn": "2327-9176",
+      "issns": [
+        "2327-9176"
+      ],
+      "clone_of": "Change Management",
+      "hijacked_url": "https://cm-cgrn.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Chelonian Conservation and Biology",
+      "title_norm": "chelonian conservation and biology",
+      "issn": "1071-8443",
+      "issns": [
+        "1071-8443"
+      ],
+      "clone_of": "Chelonian Conservation and Biology",
+      "hijacked_url": "http://acgpublishing.com/index.php/ccab/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Chemija",
+      "title_norm": "chemija",
+      "issn": "2424-4538",
+      "issns": [
+        "2424-4538",
+        "0235-7216"
+      ],
+      "clone_of": "Chemija",
+      "hijacked_url": "https://opensubmissionsystem.com/index.php/chemija/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "China Biotechnology",
+      "title_norm": "china biotechnology",
+      "issn": "1671-8135",
+      "issns": [
+        "1671-8135"
+      ],
+      "clone_of": "China Biotechnology",
+      "hijacked_url": "https://www.china-biotechnology.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "China Petroleum Processing and Petrochemical Technology",
+      "title_norm": "china petroleum processing and petrochemical technology",
+      "issn": "1008-6234",
+      "issns": [
+        "1008-6234"
+      ],
+      "clone_of": "China Petroleum Processing and Petrochemical Technology",
+      "hijacked_url": "https://zgsyjgysyhgjs.cn/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Chinese Journal of Evidence-Based Medicine",
+      "title_norm": "chinese journal of evidencebased medicine",
+      "issn": "1672-2531",
+      "issns": [
+        "1672-2531"
+      ],
+      "clone_of": "Chinese Journal of Evidence-Based Medicine",
+      "hijacked_url": "https://www.cjebm.net/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Chinese Journal of Medical Genetics",
+      "title_norm": "chinese journal of medical genetics",
+      "issn": "1003-9406",
+      "issns": [
+        "1003-9406"
+      ],
+      "clone_of": "Chinese Journal of Medical Genetics",
+      "hijacked_url": "http://zhyxycx.life/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Chinese Journal of Medical History / Zhong Hua Yi Shi Za Zhi",
+      "title_norm": "chinese journal of medical history  zhong hua yi shi za zhi",
+      "issn": "0255-7053",
+      "issns": [
+        "0255-7053"
+      ],
+      "clone_of": "Chinese Journal of Medical History / Zhong Hua Yi Shi Za Zhi",
+      "hijacked_url": "https://www.zhyszzperiodicals-cn.net/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Chinese Medical Ethics",
+      "title_norm": "chinese medical ethics",
+      "issn": "1001-8565",
+      "issns": [
+        "1001-8565"
+      ],
+      "clone_of": "Chinese Medical Ethics",
+      "hijacked_url": "https://www.chinesemedicalethics.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Ciência e Técnica Vitivinícola",
+      "title_norm": "cincia e tcnica vitivincola",
+      "issn": "2416-3953",
+      "issns": [
+        "2416-3953"
+      ],
+      "clone_of": "Ciência e técnica vitivinícola (Journal of viticulture and enology)",
+      "hijacked_url": "http://ciencia-e-tecnica.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Cikitusi Journal for Multidisciplinary Research",
+      "title_norm": "cikitusi journal for multidisciplinary research",
+      "issn": "0975-6876",
+      "issns": [
+        "0975-6876"
+      ],
+      "clone_of": "Cikitusi",
+      "hijacked_url": "http://www.cikitusi.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Cineforum",
+      "title_norm": "cineforum",
+      "issn": "0009-7039",
+      "issns": [
+        "0009-7039"
+      ],
+      "clone_of": "Cineforum",
+      "hijacked_url": "https://revistadecineforum.com/index.php/cf",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Cithara Journal",
+      "title_norm": "cithara journal",
+      "issn": "0009-7527",
+      "issns": [
+        "0009-7527"
+      ],
+      "clone_of": "Cithara",
+      "hijacked_url": "http://citharajournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Cithara",
+      "title_norm": "cithara",
+      "issn": "0009-7527",
+      "issns": [
+        "0009-7527"
+      ],
+      "clone_of": "Cithara",
+      "hijacked_url": "https://cithara-essays.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Clinical Medicine of China",
+      "title_norm": "clinical medicine of china",
+      "issn": "1008-6315",
+      "issns": [
+        "1008-6315"
+      ],
+      "clone_of": "Clinical Medicine of China",
+      "hijacked_url": "https://www.clinicalmedicineofchina.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Clinical Psychology Review",
+      "title_norm": "clinical psychology review",
+      "issn": "0272-7358",
+      "issns": [
+        "0272-7358",
+        "1873-7811"
+      ],
+      "clone_of": "Clinical Psychology Review",
+      "hijacked_url": "https://sciencedirects.com/article/239493.7831/trbasaehaUOSms.php",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Communication and Management Journal",
+      "title_norm": "communication and management journal",
+      "issn": "2269-7195",
+      "issns": [
+        "2269-7195"
+      ],
+      "clone_of": "Communication and Management",
+      "hijacked_url": "https://cmjjournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Community Practitioner",
+      "title_norm": "community practitioner",
+      "issn": "1462-2815",
+      "issns": [
+        "1462-2815"
+      ],
+      "clone_of": "Community Practitioner",
+      "hijacked_url": "https://commprac.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Compliance Engineering Journal",
+      "title_norm": "compliance engineering journal",
+      "issn": "0898-3577",
+      "issns": [
+        "0898-3577"
+      ],
+      "clone_of": "Compliance Engineering",
+      "hijacked_url": "http://ijceng.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Computer Engineering and Applications",
+      "title_norm": "computer engineering and applications",
+      "issn": "1002-8331",
+      "issns": [
+        "1002-8331"
+      ],
+      "clone_of": "Computer Engineering and Applications",
+      "hijacked_url": "https://journalcea.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Computer Engineering Journal",
+      "title_norm": "computer engineering journal",
+      "issn": "1000-3428",
+      "issns": [
+        "1000-3428"
+      ],
+      "clone_of": "Computer Engineering Journal",
+      "hijacked_url": "https://computerengineering.eu/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Computer Integrated Manufacturing Systems",
+      "title_norm": "computer integrated manufacturing systems",
+      "issn": "1006-5911",
+      "issns": [
+        "1006-5911"
+      ],
+      "clone_of": "Jisuanji Jicheng Zhizao Xitong/Computer Integrated Manufacturing Systems",
+      "hijacked_url": "http://cims-journal.com/index.php/CN",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Computer Research and Development",
+      "title_norm": "computer research and development",
+      "issn": "1000-1239",
+      "issns": [
+        "1000-1239"
+      ],
+      "clone_of": "Jisuanji Yanjiu yu Fazhan/Computer Research and Development",
+      "hijacked_url": "https://journalcrd.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Connected Health",
+      "title_norm": "connected health",
+      "issn": null,
+      "issns": [],
+      "clone_of": "Connected Health",
+      "hijacked_url": "https://www.connectedhealthusa.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Consultant",
+      "title_norm": "consultant",
+      "issn": "0010-7069",
+      "issns": [
+        "0010-7069"
+      ],
+      "clone_of": "Consultant",
+      "hijacked_url": "https://www.consultant-00107069.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Control and decision/Kongzhi yu Juece",
+      "title_norm": "control and decisionkongzhi yu juece",
+      "issn": "1001-0920",
+      "issns": [
+        "1001-0920"
+      ],
+      "clone_of": "Control and decision/Kongzhi yu Juece",
+      "hijacked_url": "https://www.kzyjc.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Converter",
+      "title_norm": "converter",
+      "issn": "0010-8189",
+      "issns": [
+        "0010-8189"
+      ],
+      "clone_of": "Converter",
+      "hijacked_url": "http://www.converter-magazine.info/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Corrosion and Protection",
+      "title_norm": "corrosion and protection",
+      "issn": "1005-748X",
+      "issns": [
+        "1005-748X"
+      ],
+      "clone_of": "Corrosion and Protection",
+      "hijacked_url": "https://www.fsyfh.cn/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Corrosion management",
+      "title_norm": "corrosion management",
+      "issn": "1355-5243",
+      "issns": [
+        "1355-5243"
+      ],
+      "clone_of": "Corrosion management",
+      "hijacked_url": "https://icorr.org.uk/index.php/icorr",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Dalian Haishi Daxue Xuebao/Journal of Dalian Maritime University",
+      "title_norm": "dalian haishi daxue xuebaojournal of dalian maritime university",
+      "issn": "1006-7736",
+      "issns": [
+        "1006-7736"
+      ],
+      "clone_of": "Dalian Haishi Daxue Xuebao/Journal of Dalian Maritime University",
+      "hijacked_url": "https://www.dalian-maritime-university.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Dandao Xuebao/Journal of Ballistics",
+      "title_norm": "dandao xuebaojournal of ballistics",
+      "issn": "1004-499X",
+      "issns": [
+        "1004-499X"
+      ],
+      "clone_of": "Dandao Xuebao/Journal of Ballistics",
+      "hijacked_url": "https://ballisticsjournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Degres",
+      "title_norm": "degres",
+      "issn": "0376-8163",
+      "issns": [
+        "0376-8163"
+      ],
+      "clone_of": "Degrés",
+      "hijacked_url": "degres.pw",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Degres Journal",
+      "title_norm": "degres journal",
+      "issn": "0376-8163",
+      "issns": [
+        "0376-8163"
+      ],
+      "clone_of": "Degrés",
+      "hijacked_url": "https://degresjournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Design Engineering",
+      "title_norm": "design engineering",
+      "issn": null,
+      "issns": [],
+      "clone_of": "Design Engineering",
+      "hijacked_url": "http://thedesignengineering.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Diagnosis",
+      "title_norm": "diagnosis",
+      "issn": "2194-8011",
+      "issns": [
+        "2194-8011",
+        "2194-802X"
+      ],
+      "clone_of": "Diagnosis",
+      "hijacked_url": "https://diagnosisj.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Dianzi Yu Xinxi Xuebao/Journal of Electronics and Information Technology",
+      "title_norm": "dianzi yu xinxi xuebaojournal of electronics and information technology",
+      "issn": "1009-5896",
+      "issns": [
+        "1009-5896"
+      ],
+      "clone_of": "Dianzi Yu Xinxi Xuebao/Journal of Electronics and Information Technology",
+      "hijacked_url": "https://www.dyxxjeit-10095896.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Dickensian",
+      "title_norm": "dickensian",
+      "issn": "0012-2440",
+      "issns": [
+        "0012-2440"
+      ],
+      "clone_of": "Dickensian",
+      "hijacked_url": "http://dickensian.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Dizhen Dizhi",
+      "title_norm": "dizhen dizhi",
+      "issn": "0253-4967",
+      "issns": [
+        "0253-4967"
+      ],
+      "clone_of": "Dizhen Dizhi",
+      "hijacked_url": "https://dizhiguojia.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Dogo Rangsang Research Journal (D.R S. Research Journal)",
+      "title_norm": "dogo rangsang research journal dr s research journal",
+      "issn": "2347-7180",
+      "issns": [
+        "2347-7180"
+      ],
+      "clone_of": "Dogo Rangsang Research Journal",
+      "hijacked_url": "http://www.drsrjournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Doriana",
+      "title_norm": "doriana",
+      "issn": "0417-9927",
+      "issns": [
+        "0417-9927"
+      ],
+      "clone_of": "Doriana",
+      "hijacked_url": "http://revistas-academicas.com/doriana/index.html",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Drewno Journal",
+      "title_norm": "drewno journal",
+      "issn": "1644-3985",
+      "issns": [
+        "1644-3985"
+      ],
+      "clone_of": "Drewno",
+      "hijacked_url": "https://drewnojournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Drugs and Clinic",
+      "title_norm": "drugs and clinic",
+      "issn": "1674-5515",
+      "issns": [
+        "1674-5515"
+      ],
+      "clone_of": "Xiandai yaowu yu linchuang",
+      "hijacked_url": "https://www.drugsnclinic.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "EDUCACIONXX1",
+      "title_norm": "educacionxx1",
+      "issn": "1139-613X",
+      "issns": [
+        "1139-613X"
+      ],
+      "clone_of": "Educacion XX1",
+      "hijacked_url": "https://educacionxx1.net/index.php/edu/about",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Educational Technology Research and Development",
+      "title_norm": "educational technology research and development",
+      "issn": "1042-1629",
+      "issns": [
+        "1042-1629",
+        "1556-6501"
+      ],
+      "clone_of": "Educational Technology Research and Development",
+      "hijacked_url": "https://link.springer.uk.com/articles/10.3201/s41603-022-87020-9/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Electric Machines and Control Application",
+      "title_norm": "electric machines and control application",
+      "issn": "1673-6540",
+      "issns": [
+        "1673-6540"
+      ],
+      "clone_of": "Electric Machines and Control Application",
+      "hijacked_url": "https://emcaj.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Entomologist's Gazette",
+      "title_norm": "entomologists gazette",
+      "issn": "0013-8894",
+      "issns": [
+        "0013-8894"
+      ],
+      "clone_of": "Entomologist's Gazette",
+      "hijacked_url": "https://gempublishing.co.uk/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Evolution and Human Behavior",
+      "title_norm": "evolution and human behavior",
+      "issn": null,
+      "issns": [],
+      "clone_of": "Evolution and Human Behavior",
+      "hijacked_url": "https://sciencedirects.com/science/article/pii/wpilmepaca.php",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Fa yi xue za zhi",
+      "title_norm": "fa yi xue za zhi",
+      "issn": "1004-5619",
+      "issns": [
+        "1004-5619"
+      ],
+      "clone_of": "Fa yi xue za zhi/ Journal of Forensic Medicine",
+      "hijacked_url": "https://www.fayixuezazhi.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Fiddlehead",
+      "title_norm": "fiddlehead",
+      "issn": "0015-0630",
+      "issns": [
+        "0015-0630"
+      ],
+      "clone_of": "The Fiddlehead",
+      "hijacked_url": "https://fiddlehead.fyi/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Forensic Science and Technology",
+      "title_norm": "forensic science and technology",
+      "issn": "1008-3650",
+      "issns": [
+        "1008-3650"
+      ],
+      "clone_of": "Forensic Science and Technology",
+      "hijacked_url": "https://www.forensicsciencetechnology.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Forum for Linguistic Studies",
+      "title_norm": "forum for linguistic studies",
+      "issn": "2705-0610",
+      "issns": [
+        "2705-0610",
+        "2705-0602"
+      ],
+      "clone_of": "Forum for Linguistic Studies",
+      "hijacked_url": "https://acad-pubs.com/index.php/fls",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Foundry Journal / Zhuzao",
+      "title_norm": "foundry journal  zhuzao",
+      "issn": "1001-4977",
+      "issns": [
+        "1001-4977"
+      ],
+      "clone_of": "Zhuzao/Foundry",
+      "hijacked_url": "https://foundryjournal.net/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "FOURRAGES Journal",
+      "title_norm": "fourrages journal",
+      "issn": "0429-2766",
+      "issns": [
+        "0429-2766"
+      ],
+      "clone_of": "Fourrages (Versailles)",
+      "hijacked_url": "afpf-asso.com",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Frontiers in Life Science",
+      "title_norm": "frontiers in life science",
+      "issn": "2155-3769",
+      "issns": [
+        "2155-3769",
+        "2155-3777"
+      ],
+      "clone_of": "Frontiers in life science (now All life)",
+      "hijacked_url": "www.hfsp-journal.org",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Fuel",
+      "title_norm": "fuel",
+      "issn": "0016-2361",
+      "issns": [
+        "0016-2361",
+        "1873-7153"
+      ],
+      "clone_of": "Fuel",
+      "hijacked_url": "https://sciencedirects.com/article/239493.7831/spipr.php",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Fuzzy Systems and Soft Computing",
+      "title_norm": "fuzzy systems and soft computing",
+      "issn": "1819-4362",
+      "issns": [
+        "1819-4362"
+      ],
+      "clone_of": "Fuzzy Systems and Soft Computing",
+      "hijacked_url": "https://www.fuzzy-tversu.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "G & O (Gedrag & Organisatie)",
+      "title_norm": "g  o gedrag  organisatie",
+      "issn": "0921-5077",
+      "issns": [
+        "0921-5077"
+      ],
+      "clone_of": "Gedrag en Organisatie",
+      "hijacked_url": "http://lemma-tijdschriften.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "General Medicine",
+      "title_norm": "general medicine",
+      "issn": "1311-1817",
+      "issns": [
+        "1311-1817"
+      ],
+      "clone_of": "General Medicine/Обща Медицина",
+      "hijacked_url": "https://www.general-medicine.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Geoscience Journal",
+      "title_norm": "geoscience journal",
+      "issn": "1000-8527",
+      "issns": [
+        "1000-8527"
+      ],
+      "clone_of": "Geoscience",
+      "hijacked_url": "https://geoscience.ac/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "GEO SCIENCE JOURNAL",
+      "title_norm": "geo science journal",
+      "issn": "1000-8527",
+      "issns": [
+        "1000-8527"
+      ],
+      "clone_of": "Geoscience",
+      "hijacked_url": "https://geosciencejournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "GIS Business",
+      "title_norm": "gis business",
+      "issn": "1430-3663",
+      "issns": [
+        "1430-3663"
+      ],
+      "clone_of": "gis.Business (ex GeoBit 1430-3663)",
+      "hijacked_url": "https://gisbusiness.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "GIS Science Journal",
+      "title_norm": "gis science journal",
+      "issn": "1869-9391",
+      "issns": [
+        "1869-9391"
+      ],
+      "clone_of": "GIS.Science",
+      "hijacked_url": "http://www.gisscience.net/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Gongcheng Kexue Xuebao",
+      "title_norm": "gongcheng kexue xuebao",
+      "issn": "2095-9389",
+      "issns": [
+        "2095-9389"
+      ],
+      "clone_of": "Gongcheng Kexue Xuebao/Chinese Journal of Engineering",
+      "hijacked_url": "https://kexuexuebao.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Gongcheng Kexue Yu Jishu/Advanced Engineering Science",
+      "title_norm": "gongcheng kexue yu jishuadvanced engineering science",
+      "issn": "2096-3246",
+      "issns": [
+        "2096-3246"
+      ],
+      "clone_of": "Gongcheng kexue yu jishu / Advanced engineering sciences",
+      "hijacked_url": "http://www.gkyj-aes-20963246.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "GORTERIA",
+      "title_norm": "gorteria",
+      "issn": "0017-2294",
+      "issns": [
+        "0017-2294"
+      ],
+      "clone_of": "Gorteria",
+      "hijacked_url": "http://www.gorteria.nationaalherbarium.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Gorteria Journal",
+      "title_norm": "gorteria journal",
+      "issn": "0017-2294",
+      "issns": [
+        "0017-2294"
+      ],
+      "clone_of": "Gorteria",
+      "hijacked_url": "https://gorteria.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Goya journal",
+      "title_norm": "goya journal",
+      "issn": "0017-2715",
+      "issns": [
+        "0017-2715"
+      ],
+      "clone_of": "Goya",
+      "hijacked_url": "https://goyajournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Gradiva",
+      "title_norm": "gradiva",
+      "issn": "0363-8057",
+      "issns": [
+        "0363-8057"
+      ],
+      "clone_of": "Gradiva",
+      "hijacked_url": "https://gradiva.it/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Gradiva Review Journal",
+      "title_norm": "gradiva review journal",
+      "issn": "0363-8057",
+      "issns": [
+        "0363-8057"
+      ],
+      "clone_of": "Gradiva",
+      "hijacked_url": "http://gradivareview.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "GRANJA JOURNAL",
+      "title_norm": "granja journal",
+      "issn": "1390-8596",
+      "issns": [
+        "1390-8596"
+      ],
+      "clone_of": "Granja",
+      "hijacked_url": "https://lagranja.pro/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Harbin Gongye Daxue Xuebao/Journal of Harbin Institute of Technology",
+      "title_norm": "harbin gongye daxue xuebaojournal of harbin institute of technology",
+      "issn": "0367-6234",
+      "issns": [
+        "0367-6234"
+      ],
+      "clone_of": "Harbin Gongye Daxue Xuebao/Journal of Harbin Institute of Technology",
+      "hijacked_url": "http://hebgydxxb.periodicales.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "High Technology Letters",
+      "title_norm": "high technology letters",
+      "issn": "1006-6748",
+      "issns": [
+        "1006-6748"
+      ],
+      "clone_of": "High Technology Letters",
+      "hijacked_url": "http://www.gjstx-e.cn/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Hong Kong Journal of Social Sciences",
+      "title_norm": "hong kong journal of social sciences",
+      "issn": "1021-3619",
+      "issns": [
+        "1021-3619"
+      ],
+      "clone_of": "Hong Kong journal of Social Sciences",
+      "hijacked_url": "hkjoss.com",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Hunan Daxue Xuebao/Journal of Hunan University Natural Sciences",
+      "title_norm": "hunan daxue xuebaojournal of hunan university natural sciences",
+      "issn": "1674-2974",
+      "issns": [
+        "1674-2974"
+      ],
+      "clone_of": "Hunan Daxue Xuebao/Journal of Hunan University Natural Sciences",
+      "hijacked_url": "https://hunandaxuexuebao.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Ibérica",
+      "title_norm": "ibrica",
+      "issn": "1139-7241",
+      "issns": [
+        "1139-7241"
+      ],
+      "clone_of": "Ibérica",
+      "hijacked_url": "https://opensubmissionsystem.com/index.php/IB/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Indiana",
+      "title_norm": "indiana",
+      "issn": "0341-8642",
+      "issns": [
+        "0341-8642",
+        "2365-2225"
+      ],
+      "clone_of": "Indiana",
+      "hijacked_url": "https://indianajournal.fyi/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Indica",
+      "title_norm": "indica",
+      "issn": "0019-686X",
+      "issns": [
+        "0019-686X"
+      ],
+      "clone_of": "Indica",
+      "hijacked_url": "https://indicajournal.net/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Infokara Research",
+      "title_norm": "infokara research",
+      "issn": "1021-9056",
+      "issns": [
+        "1021-9056"
+      ],
+      "clone_of": "Infokara",
+      "hijacked_url": "http://www.infokara.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Informatica",
+      "title_norm": "informatica",
+      "issn": "0868-4952",
+      "issns": [
+        "0868-4952"
+      ],
+      "clone_of": "Informatica",
+      "hijacked_url": "http://informaticajournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Innovations",
+      "title_norm": "innovations",
+      "issn": "1267-4982",
+      "issns": [
+        "1267-4982",
+        "1965-0256"
+      ],
+      "clone_of": "Innovations",
+      "hijacked_url": "https://journal-innovations.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Interciencia Journal",
+      "title_norm": "interciencia journal",
+      "issn": "0378-1844",
+      "issns": [
+        "0378-1844"
+      ],
+      "clone_of": "Interciencia",
+      "hijacked_url": "https://intercienciajournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "International Development Planning Review",
+      "title_norm": "international development planning review",
+      "issn": "1474-6743",
+      "issns": [
+        "1474-6743",
+        "1478-3401"
+      ],
+      "clone_of": "International Development Planning Review",
+      "hijacked_url": "https://idpr.org.uk/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "International Education Journal",
+      "title_norm": "international education journal",
+      "issn": "1443-1475",
+      "issns": [
+        "1443-1475"
+      ],
+      "clone_of": "International Education Journal: Comparative Perspectives",
+      "hijacked_url": "http://ijdri.com/iej/home-2/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "International Journal for Research Technology & Seminar",
+      "title_norm": "international journal for research technology  seminar",
+      "issn": "2347-6117",
+      "issns": [
+        "2347-6117"
+      ],
+      "clone_of": "International journal for research technology and seminar",
+      "hijacked_url": "https://ijrtspublications.org/about-journal.php",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "International Journal of Advanced Science and Technology",
+      "title_norm": "international journal of advanced science and technology",
+      "issn": "2005-4238",
+      "issns": [
+        "2005-4238",
+        "2207-6360"
+      ],
+      "clone_of": "The authentic journal “International Journal of Advanced Science and Technology” was not identified. But the domain http://sersc.org/journals/index.php/ijast is very likely to be a hijacker\n  \n  This means that in tracing the source for a potential hijacking journal, the information is clear that the hijacked journal is mimicking another journal, but it is unclear if the mimicked journal (i.e., journal listed in the Original Journal column) is indeed the original source or is itself a hijacked journal from yet another undetermined original source.",
+      "hijacked_url": "http://sersc.org/journals/index.php/ijast",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "International Journal of Biology and Biomedical Engineering",
+      "title_norm": "international journal of biology and biomedical engineering",
+      "issn": "1998-4510",
+      "issns": [
+        "1998-4510"
+      ],
+      "clone_of": "International journal of biology and biomedical engineering",
+      "hijacked_url": "http://ijdri.com/ijbbe/home/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "International Journal of Central Banking",
+      "title_norm": "international journal of central banking",
+      "issn": "1815-4654",
+      "issns": [
+        "1815-4654"
+      ],
+      "clone_of": "International Journal of Central Banking",
+      "hijacked_url": "https://ijocb.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "International Journal of Control and Automation",
+      "title_norm": "international journal of control and automation",
+      "issn": "2005-4297",
+      "issns": [
+        "2005-4297"
+      ],
+      "clone_of": "The authentic journal “International Journal of Control and Automation” was not identified. But the domain http://sersc.org/journals/index.php/ijca is very likely to be a hijacker. ISSN portal indicates sersc.org as a website of a journal. But the indexed content in Web of Science doesn't correspond to the published papers on the website \n  \n  This means that in tracing the source for a potential hijacking journal, the information is clear that the hijacked journal is mimicking another journal, but it is unclear if the mimicked journal (i.e., journal listed in the Original Journal column) is indeed the original source or is itself a hijacked journal from yet another undetermined original source.",
+      "hijacked_url": "http://sersc.org/journals/index.php/ijca",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "International Journal of Disaster Recovery and Business Continuity",
+      "title_norm": "international journal of disaster recovery and business continuity",
+      "issn": "2005-4289",
+      "issns": [
+        "2005-4289",
+        "2207-8363"
+      ],
+      "clone_of": "The authentic journal “International Journal of Disaster Recovery and Business Continuity” was not identified. But the domain sersc.org/journals/index.php/IJDRBC/ is very likely to be a hijacker. ISSN portal indicates sersc.org as a website of a journal with ISSN 2207-8363. According to ISSN Portal this ISSN 2207-8363 is not linked to ISSN 2005-4289. The indexed content in Web of Science doesn't correspond to the published papers on the website http://sersc.org/journals/index.php/IJDRBC/\n  \n  This means that in tracing the source for a potential hijacking journal, the information is clear that the hijacked journal is mimicking another journal, but it is unclear if the mimicked journal (i.e., journal listed in the Original Journal column) is indeed the original source or is itself a hijacked journal from yet another undetermined original source.",
+      "hijacked_url": "http://sersc.org/journals/index.php/IJDRBC/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "International Journal of Information and Computing Science",
+      "title_norm": "international journal of information and computing science",
+      "issn": "0972-1347",
+      "issns": [
+        "0972-1347"
+      ],
+      "clone_of": "International Journal of Information and Computing Science",
+      "hijacked_url": "http://ijics.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "International Journal of Innovation Studies",
+      "title_norm": "international journal of innovation studies",
+      "issn": "2096-2487",
+      "issns": [
+        "2096-2487"
+      ],
+      "clone_of": "International journal of innovation studies",
+      "hijacked_url": "https://ijistudies.com/index.php/ijis",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "International Journal of Innovative Research & Studies",
+      "title_norm": "international journal of innovative research  studies",
+      "issn": "2319-9725",
+      "issns": [
+        "2319-9725"
+      ],
+      "clone_of": "International Journal of Innovative Research and Studies",
+      "hijacked_url": "http://ijirs.in/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "International Journal of Interdisciplinary Environmental Studies",
+      "title_norm": "international journal of interdisciplinary environmental studies",
+      "issn": "2329-1621",
+      "issns": [
+        "2329-1621"
+      ],
+      "clone_of": "International Journal of Interdisciplinary Environmental Studies",
+      "hijacked_url": "https://ijiesjournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "International journal of gender, science and technology",
+      "title_norm": "international journal of gender science and technology",
+      "issn": "2040-0748",
+      "issns": [
+        "2040-0748"
+      ],
+      "clone_of": "International journal of gender, science and technology",
+      "hijacked_url": "https://ijgst.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "International Journal of Latin-American Religions",
+      "title_norm": "international journal of latinamerican religions",
+      "issn": "2509-9965",
+      "issns": [
+        "2509-9965"
+      ],
+      "clone_of": "International Journal of Latin-American Religions",
+      "hijacked_url": "https://springer.nyc/articles/10.1007/s41603-022-86954-7/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "International Journal of Management, Technology and Engineering",
+      "title_norm": "international journal of management technology and engineering",
+      "issn": "2249-7455",
+      "issns": [
+        "2249-7455"
+      ],
+      "clone_of": "International Journal of Advances in Management Technology and Engineering Sciences",
+      "hijacked_url": "http://www.ijamtes.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "International Journal of Medical Science",
+      "title_norm": "international journal of medical science",
+      "issn": "1449-1907",
+      "issns": [
+        "1449-1907"
+      ],
+      "clone_of": "International Journal of Medical Sciences",
+      "hijacked_url": "https://medsci.in/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "International Journal of Multicultural Education",
+      "title_norm": "international journal of multicultural education",
+      "issn": null,
+      "issns": [],
+      "clone_of": "International Journal of Multicultural Education",
+      "hijacked_url": "https://ijmejournal.org/ijme/index.php/ijme/index.html",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "International Journal of Research",
+      "title_norm": "international journal of research",
+      "issn": "2236-6124",
+      "issns": [
+        "2236-6124"
+      ],
+      "clone_of": "International Journal of Research",
+      "hijacked_url": "http://ijrpublisher.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "International Journal of Scientific Research and Review",
+      "title_norm": "international journal of scientific research and review",
+      "issn": "2279-543X",
+      "issns": [
+        "2279-543X"
+      ],
+      "clone_of": "Les Cahiers de Chiasmi International (2279-543X), International Journal of Scientific Research and Reviews (2279-0543)",
+      "hijacked_url": "http://www.dynamicpublisher.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "International Journal of Special Education",
+      "title_norm": "international journal of special education",
+      "issn": "0827-3383",
+      "issns": [
+        "0827-3383"
+      ],
+      "clone_of": "International Journal of Special Education",
+      "hijacked_url": "https://www.internationaljournalofspecialeducation.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "International Medical Journal",
+      "title_norm": "international medical journal",
+      "issn": "1341-2051",
+      "issns": [
+        "1341-2051"
+      ],
+      "clone_of": "International Medical Journal",
+      "hijacked_url": "https://www.seronijihou.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "International Neurourology Journal",
+      "title_norm": "international neurourology journal",
+      "issn": "2093-4777",
+      "issns": [
+        "2093-4777",
+        "2093-6931"
+      ],
+      "clone_of": "International Neurourology Journal",
+      "hijacked_url": "http://einj.net/index.php/INJ",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Interventional pulmonology",
+      "title_norm": "interventional pulmonology",
+      "issn": null,
+      "issns": [],
+      "clone_of": "Interventional pulmonology",
+      "hijacked_url": "https://www.intervpulmonolmiddlet.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Investigative Ophthalmology&Visual Science",
+      "title_norm": "investigative ophthalmologyvisual science",
+      "issn": "0146-0404",
+      "issns": [
+        "0146-0404",
+        "1552-5783"
+      ],
+      "clone_of": "Investigative Ophthalmology&Visual Science",
+      "hijacked_url": "https://iovs.arvojournals.com/article.aspx.articleid=3104905/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Istoriya",
+      "title_norm": "istoriya",
+      "issn": "2079-8784",
+      "issns": [
+        "2079-8784"
+      ],
+      "clone_of": "Istoriya",
+      "hijacked_url": "https://istoriya.ac/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Istorijski Časopis",
+      "title_norm": "istorijski asopis",
+      "issn": "0350-0802",
+      "issns": [
+        "0350-0802"
+      ],
+      "clone_of": "Istorijski časopis",
+      "hijacked_url": "https://istorijskicasopis.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Ion Exchange and Adsorption",
+      "title_norm": "ion exchange and adsorption",
+      "issn": "1001-5493",
+      "issns": [
+        "1001-5493"
+      ],
+      "clone_of": "Lizi Jiaohuan Yu Xifu/Ion Exchange and Adsorption",
+      "hijacked_url": "https://www.lzjhyxf.cn/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "JAC: A Journal of Composition Theory",
+      "title_norm": "jac a journal of composition theory",
+      "issn": "0731-6755",
+      "issns": [
+        "0731-6755"
+      ],
+      "clone_of": "Journal of Composition Theory",
+      "hijacked_url": "http://www.jctjournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "JAMA Ophthalmology",
+      "title_norm": "jama ophthalmology",
+      "issn": "2168-6165",
+      "issns": [
+        "2168-6165",
+        "2168-6173"
+      ],
+      "clone_of": "JAMA Ophthalmology",
+      "hijacked_url": "https://jamanetwork.international/journals/jamaophthalmology/fullarticle/97106/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Jianzhu Jiegou Xuebao/Journal of Building Structures",
+      "title_norm": "jianzhu jiegou xuebaojournal of building structures",
+      "issn": "1000-6869",
+      "issns": [
+        "1000-6869"
+      ],
+      "clone_of": "Jianzhu Jiegou Xuebao/Journal of Building Structures",
+      "hijacked_url": "https://www.jjx-jbs-10006869.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Jilin Daxue Xuebao (Gongxueban)/Journal of Jilin University (Engineering and Technology Edition)",
+      "title_norm": "jilin daxue xuebao gongxuebanjournal of jilin university engineering and technology edition",
+      "issn": "1671-5497",
+      "issns": [
+        "1671-5497"
+      ],
+      "clone_of": "Journal of Jilin University(Engineering and Technology Edition)",
+      "hijacked_url": "https://jilindaxuexuebao.com",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "JJM",
+      "title_norm": "jjm",
+      "issn": null,
+      "issns": [],
+      "clone_of": "Jundishapur Journal of Microbiology",
+      "hijacked_url": "https://www.jjmicrobiol.com/index.php/jjm",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Jökull journal",
+      "title_norm": "jkull journal",
+      "issn": "0449-0576",
+      "issns": [
+        "0449-0576"
+      ],
+      "clone_of": "Jökull",
+      "hijacked_url": "http://www.jokulljournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Academic Leadership",
+      "title_norm": "journal of academic leadership",
+      "issn": "1533-7812",
+      "issns": [
+        "1533-7812"
+      ],
+      "clone_of": "Academic Leadership",
+      "hijacked_url": "https://www.academicleadership.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal for Advanced Research in Applied Sciences",
+      "title_norm": "journal for advanced research in applied sciences",
+      "issn": "2394-8442",
+      "issns": [
+        "2394-8442"
+      ],
+      "clone_of": "Journal for Advanced Research in Applied Sciences",
+      "hijacked_url": "http://iaetsdjaras.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal For Basic Sciences/Fangzhi Gaoxiao Jichukexue Xuebao",
+      "title_norm": "journal for basic sciencesfangzhi gaoxiao jichukexue xuebao",
+      "issn": "1006-8341",
+      "issns": [
+        "1006-8341"
+      ],
+      "clone_of": "Basic Sciences Journal of Textile Universities/Fangzhi Gaoxiao Jichukexue Xuebao",
+      "hijacked_url": "https://fzgxjckxxb.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Academic Ethics",
+      "title_norm": "journal of academic ethics",
+      "issn": "1570-1727",
+      "issns": [
+        "1570-1727",
+        "1572-8544"
+      ],
+      "clone_of": "Journal of Academic Ethics",
+      "hijacked_url": "https://jae.revistas-csic.com/index.php/Jorunal",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Advances in Science and Technology of Water Resources",
+      "title_norm": "journal of advances in science and technology of water resources",
+      "issn": "1006-7647",
+      "issns": [
+        "1006-7647"
+      ],
+      "clone_of": "Advances in Science and Technology of Water Resources",
+      "hijacked_url": "https://japcs.net/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Aeronautical Materials",
+      "title_norm": "journal of aeronautical materials",
+      "issn": "1005-5053",
+      "issns": [
+        "1005-5053"
+      ],
+      "clone_of": "Hangkong Cailiao Xuebao/Journal of Aeronautical Materials",
+      "hijacked_url": "https://www.hkclxb.cn/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Applied Science and Computations",
+      "title_norm": "journal of applied science and computations",
+      "issn": "1076-5131",
+      "issns": [
+        "1076-5131"
+      ],
+      "clone_of": "Journal of Applied Science & Computations",
+      "hijacked_url": "http://j-asc.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Beijing University of Posts And Telecommunications",
+      "title_norm": "journal of beijing university of posts and telecommunications",
+      "issn": "1007-5321",
+      "issns": [
+        "1007-5321"
+      ],
+      "clone_of": "Beijing Youdian Daxue xuebao",
+      "hijacked_url": "https://journalbupt.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Biomedical Engineering",
+      "title_norm": "journal of biomedical engineering",
+      "issn": "1001-5515",
+      "issns": [
+        "1001-5515"
+      ],
+      "clone_of": "Shengwu Yixue Gongchengxue Zazhi/Journal of Biomedical Engineering",
+      "hijacked_url": "http://www.swyxgcx.cn/index.php/jbme",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Chemical Health Risks",
+      "title_norm": "journal of chemical health risks",
+      "issn": "2251-6719",
+      "issns": [
+        "2251-6719"
+      ],
+      "clone_of": "Journal of Chemical Health Risks",
+      "hijacked_url": "https://jchr.org",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Chengdu University of Technology (Science and Technology Edition)",
+      "title_norm": "journal of chengdu university of technology science and technology edition",
+      "issn": "1671-9727",
+      "issns": [
+        "1671-9727"
+      ],
+      "clone_of": "Journal of Chengdu University of Technology (Science and Technology Edition)",
+      "hijacked_url": "http://cdujournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of clinical otorhinolaryngology, head, and neck surgery",
+      "title_norm": "journal of clinical otorhinolaryngology head and neck surgery",
+      "issn": "1001-1781",
+      "issns": [
+        "1001-1781"
+      ],
+      "clone_of": "Journal of clinical otorhinolaryngology, head, and neck surgery (Lin chuang er bi yan hou tou jing wai ke za zhi)",
+      "hijacked_url": "www.lcebyhkzz.cn",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Communications",
+      "title_norm": "journal of communications",
+      "issn": "1000-436X",
+      "issns": [
+        "1000-436X"
+      ],
+      "clone_of": "Tongxin Xuebao/Journal on Communications",
+      "hijacked_url": "https://jocs.review/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Computational Information Systems",
+      "title_norm": "journal of computational information systems",
+      "issn": "1553-9105",
+      "issns": [
+        "1553-9105"
+      ],
+      "clone_of": "Journal of Computational Information Systems",
+      "hijacked_url": "http://jofcis.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Computer Science",
+      "title_norm": "journal of computer science",
+      "issn": "1549-3636",
+      "issns": [
+        "1549-3636"
+      ],
+      "clone_of": "Journal of Computer Science",
+      "hijacked_url": "https://computersciencejournal.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Cyber Security",
+      "title_norm": "journal of cyber security",
+      "issn": "2096-1146",
+      "issns": [
+        "2096-1146"
+      ],
+      "clone_of": "Journal of Cyber Security",
+      "hijacked_url": "https://journalcybersecurity.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Dalian University of Technology",
+      "title_norm": "journal of dalian university of technology",
+      "issn": "1000-8608",
+      "issns": [
+        "1000-8608"
+      ],
+      "clone_of": "Dalian Ligong Daxue xuebao/Journal of Dalian University of Technology",
+      "hijacked_url": "https://jdut.net",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Data Acquisition and Processing",
+      "title_norm": "journal of data acquisition and processing",
+      "issn": "1004-9037",
+      "issns": [
+        "1004-9037"
+      ],
+      "clone_of": "Journal of Data Acquisition and Processing/Shu Ju Cai Ji Yu Chu Li",
+      "hijacked_url": "http://www.sjcjycl.cn/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Digital Economy",
+      "title_norm": "journal of digital economy",
+      "issn": "2773-0670",
+      "issns": [
+        "2773-0670"
+      ],
+      "clone_of": "Journal of Digital Economy",
+      "hijacked_url": "https://journalofdigitaleconomy.com/index.php/JDE",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Dynamics and Control",
+      "title_norm": "journal of dynamics and control",
+      "issn": "1672-6553",
+      "issns": [
+        "1672-6553"
+      ],
+      "clone_of": "Journal of Dynamics and Control",
+      "hijacked_url": "https://jodac.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of East China University of Science and Technology",
+      "title_norm": "journal of east china university of science and technology",
+      "issn": "1006-3080",
+      "issns": [
+        "1006-3080"
+      ],
+      "clone_of": "Huadong Ligong Daxue Xuebao /Journal of East China University of Science and Technology",
+      "hijacked_url": "http://hdlgdxxb.info/index.php/JE_CUST",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Electrical Engineering",
+      "title_norm": "journal of electrical engineering",
+      "issn": "2095-9524",
+      "issns": [
+        "2095-9524"
+      ],
+      "clone_of": "Journal of Electrical Engineering",
+      "hijacked_url": "https://publisherjee.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Electronics and Information Technology",
+      "title_norm": "journal of electronics and information technology",
+      "issn": "1009-5896",
+      "issns": [
+        "1009-5896"
+      ],
+      "clone_of": "Dianzi Yu Xinxi Xuebao/Journal of Electronics and Information Technology",
+      "hijacked_url": "https://journaleit.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Engineering and Technology Management",
+      "title_norm": "journal of engineering and technology management",
+      "issn": "0923-4748",
+      "issns": [
+        "0923-4748"
+      ],
+      "clone_of": "Journal of Engineering and Technology Management",
+      "hijacked_url": "https://jet-m.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Engineering Sciences",
+      "title_norm": "journal of engineering sciences",
+      "issn": "0377-9254",
+      "issns": [
+        "0377-9254"
+      ],
+      "clone_of": "Journal of engineering sciences",
+      "hijacked_url": "https://jespublication.com/index.php",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Engineering Technology",
+      "title_norm": "journal of engineering technology",
+      "issn": null,
+      "issns": [],
+      "clone_of": "Journal of Engineering Technology",
+      "hijacked_url": "www.joetsite.com",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Engineering, Computing and Architecture",
+      "title_norm": "journal of engineering computing and architecture",
+      "issn": "1934-7197",
+      "issns": [
+        "1934-7197"
+      ],
+      "clone_of": "The Journal of Engineering, Computing and Architecture",
+      "hijacked_url": "http://www.journaleca.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Functional Materials",
+      "title_norm": "journal of functional materials",
+      "issn": "1001-9731",
+      "issns": [
+        "1001-9731"
+      ],
+      "clone_of": "Journal of functional materials/ Gongneng cailiao",
+      "hijacked_url": "https://journaloffunctionalmaterials.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Harbin Engineering University",
+      "title_norm": "journal of harbin engineering university",
+      "issn": "1006-7043",
+      "issns": [
+        "1006-7043"
+      ],
+      "clone_of": "Harbin Gongcheng Daxue Xuebao/Journal of Harbin Engineering University",
+      "hijacked_url": "https://harbinengineeringjournal.com/index.php/journal",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Huazhong University of Science and Technology",
+      "title_norm": "journal of huazhong university of science and technology",
+      "issn": "1671-4512",
+      "issns": [
+        "1671-4512"
+      ],
+      "clone_of": "Huazhong Keji Daxue Xuebao/ Journal of Huazhong University of Science and Technology",
+      "hijacked_url": "http://hxstxxjns.asia/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Hunan University Natural Sciences",
+      "title_norm": "journal of hunan university natural sciences",
+      "issn": "1674-2974",
+      "issns": [
+        "1674-2974"
+      ],
+      "clone_of": "Hunan Daxue Xuebao/Journal of Hunan University Natural Sciences",
+      "hijacked_url": "http://jonuns.com",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Information and Computational Science",
+      "title_norm": "journal of information and computational science",
+      "issn": "1548-7741",
+      "issns": [
+        "1548-7741"
+      ],
+      "clone_of": "Journal of Information and Computational Science",
+      "hijacked_url": "http://www.joics.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Informetrics",
+      "title_norm": "journal of informetrics",
+      "issn": "1875-5879",
+      "issns": [
+        "1875-5879"
+      ],
+      "clone_of": "Journal of Informetrics",
+      "hijacked_url": "https://journalinformetrics.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Interdisciplinary Cycle Research",
+      "title_norm": "journal of interdisciplinary cycle research",
+      "issn": "0022-1945",
+      "issns": [
+        "0022-1945"
+      ],
+      "clone_of": "Journal of Interdisciplinary Cycle Research (till 1993)",
+      "hijacked_url": "http://www.jicrjournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of International Management",
+      "title_norm": "journal of international management",
+      "issn": "1075-4253",
+      "issns": [
+        "1075-4253"
+      ],
+      "clone_of": "Journal of International Management",
+      "hijacked_url": "https://imjournal.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Korean Academy of Psychiatric and Mental Health Nursing",
+      "title_norm": "journal of korean academy of psychiatric and mental health nursing",
+      "issn": "1225-8482",
+      "issns": [
+        "1225-8482",
+        "2288-4653"
+      ],
+      "clone_of": "Journal of Korean Academy of Psychiatric and Mental Health Nursing",
+      "hijacked_url": "https://mhnursing.or.kr/index.php/JKPMHN",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Molecular Science",
+      "title_norm": "journal of molecular science",
+      "issn": "1000-9035",
+      "issns": [
+        "1000-9035"
+      ],
+      "clone_of": "Journal of Molecular Science/Fenzi Kexue xuebao",
+      "hijacked_url": "https://www.jmolecularsci.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Natural Remedies",
+      "title_norm": "journal of natural remedies",
+      "issn": "2320-3358",
+      "issns": [
+        "2320-3358"
+      ],
+      "clone_of": "Journal of Natural Remedies",
+      "hijacked_url": "https://jnronline.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of New Zealand studies",
+      "title_norm": "journal of new zealand studies",
+      "issn": "2324-3740",
+      "issns": [
+        "2324-3740"
+      ],
+      "clone_of": "Journal of New Zealand Studies",
+      "hijacked_url": "journalofnewzealandstudies.com",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Northeastern University",
+      "title_norm": "journal of northeastern university",
+      "issn": "1005-3026",
+      "issns": [
+        "1005-3026"
+      ],
+      "clone_of": "Journal of Northeastern University",
+      "hijacked_url": "http://dbdxxb.cn/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Optoelectronics Laser",
+      "title_norm": "journal of optoelectronics laser",
+      "issn": "1005-0086",
+      "issns": [
+        "1005-0086"
+      ],
+      "clone_of": "Guangdianzi Jiguang/Journal of Optoelectronics Laser",
+      "hijacked_url": "http://www.gdzjg.org/index.php/JOL, www.gdzjg.cn",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Pharmaceutical Analysis",
+      "title_norm": "journal of pharmaceutical analysis",
+      "issn": "2095-1779",
+      "issns": [
+        "2095-1779"
+      ],
+      "clone_of": "Journal of Pharmaceutical Analysis",
+      "hijacked_url": "https://journalofpharmaceuticalanalysis.com/index.php/jpa/index",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Philanthropy and Marketing",
+      "title_norm": "journal of philanthropy and marketing",
+      "issn": "2691-1361",
+      "issns": [
+        "2691-1361"
+      ],
+      "clone_of": "Journal of Philanthropy and Marketing",
+      "hijacked_url": "https://journalofphilanthropyandmarketing.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Productivity Management",
+      "title_norm": "journal of productivity management",
+      "issn": "1868-8519",
+      "issns": [
+        "1868-8519"
+      ],
+      "clone_of": "Productivity Management",
+      "hijacked_url": "https://journalpm.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Primary Health Care",
+      "title_norm": "journal of primary health care",
+      "issn": "1172-6156",
+      "issns": [
+        "1172-6156"
+      ],
+      "clone_of": "Journal of Primary Health Care",
+      "hijacked_url": "https://jophc.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Rare Cardiovascular Diseases",
+      "title_norm": "journal of rare cardiovascular diseases",
+      "issn": "2300-5505",
+      "issns": [
+        "2300-5505"
+      ],
+      "clone_of": "Journal of Rare Cardiovascular Diseases",
+      "hijacked_url": "https://jrcdonline.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Research Administration",
+      "title_norm": "journal of research administration",
+      "issn": "1539-1590",
+      "issns": [
+        "1539-1590",
+        "2573-7104"
+      ],
+      "clone_of": "Journal of Research Administration",
+      "hijacked_url": "https://journalra.org/index.php/jra/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Research on the Lepidoptera",
+      "title_norm": "journal of research on the lepidoptera",
+      "issn": "0022-4324",
+      "issns": [
+        "0022-4324",
+        "2156-5457"
+      ],
+      "clone_of": "Journal of Research on the Lepidoptera",
+      "hijacked_url": "https://lepidopteraresearchfoundation.org/ (re-registration of the original domain)",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "JOURNAL OF RESOURCE MANAGEMENT AND TECHNOLOGY",
+      "title_norm": "journal of resource management and technology",
+      "issn": "0745-6999",
+      "issns": [
+        "0745-6999"
+      ],
+      "clone_of": "The Journal of resource management and technology.",
+      "hijacked_url": "https://jrmat.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Psychology (English)",
+      "title_norm": "journal of psychology english",
+      "issn": "2190-8370",
+      "issns": [
+        "2190-8370",
+        "2151-2604"
+      ],
+      "clone_of": "Zeitschrift für Psychologie",
+      "hijacked_url": "https://journalofpsychologyenglish.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Scientific Computing",
+      "title_norm": "journal of scientific computing",
+      "issn": "1524-2560",
+      "issns": [
+        "1524-2560"
+      ],
+      "clone_of": "Scientific Computing",
+      "hijacked_url": "http://jscglobal.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Shanghai Jiaotong University",
+      "title_norm": "journal of shanghai jiaotong university",
+      "issn": "1007-1172",
+      "issns": [
+        "1007-1172"
+      ],
+      "clone_of": "Journal of Shanghai Jiaotong University",
+      "hijacked_url": "https://shjtdxxb-e.cn/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Shanghai Ocean University",
+      "title_norm": "journal of shanghai ocean university",
+      "issn": "1674-5566",
+      "issns": [
+        "1674-5566"
+      ],
+      "clone_of": "Journal of Shanghai Ocean University",
+      "hijacked_url": "https://journalsou.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Southwest Jiaotong University",
+      "title_norm": "journal of southwest jiaotong university",
+      "issn": "0258-2724",
+      "issns": [
+        "0258-2724"
+      ],
+      "clone_of": "Xinan Jiaotong Daxue Xuebao/Journal of Southwest Jiaotong University",
+      "hijacked_url": "http://jsju.org/index.php/journal/index",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Systems Engineering and Electronics",
+      "title_norm": "journal of systems engineering and electronics",
+      "issn": "1671-1793",
+      "issns": [
+        "1671-1793"
+      ],
+      "clone_of": "Journal of Systems Engineering and Electronics",
+      "hijacked_url": "https://jseepublisher.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Taiyuan University of Technology",
+      "title_norm": "journal of taiyuan university of technology",
+      "issn": "1007-9432",
+      "issns": [
+        "1007-9432"
+      ],
+      "clone_of": "Journal of Taiyuan University of Technology/Taiyuan Ligong Daxue xuebao",
+      "hijacked_url": "https://jtutechnology.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Talent Development and Excellence",
+      "title_norm": "journal of talent development and excellence",
+      "issn": null,
+      "issns": [],
+      "clone_of": "Talent Development and Excellence",
+      "hijacked_url": "http://iratde.com",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Technology",
+      "title_norm": "journal of technology",
+      "issn": "1012-3407",
+      "issns": [
+        "1012-3407"
+      ],
+      "clone_of": "Jìshùxué Kān/ Journal of Technology",
+      "hijacked_url": "https://technologyjournal.net/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of the Austrian Society of Agricultural Economics",
+      "title_norm": "journal of the austrian society of agricultural economics",
+      "issn": "1815-8129",
+      "issns": [
+        "1815-8129",
+        "1815-1027"
+      ],
+      "clone_of": "Journal of the Austrian Society of Agricultural Economics / Jahrbuch der Österreichischen Gesellschaft für Agrarökonomie",
+      "hijacked_url": "https://www.sagepublisher.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of the IEST",
+      "title_norm": "journal of the iest",
+      "issn": "1098-4321",
+      "issns": [
+        "1098-4321"
+      ],
+      "clone_of": "Journal of the IEST",
+      "hijacked_url": "https://iestjournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Transportation Systems Engineering & Information",
+      "title_norm": "journal of transportation systems engineering  information",
+      "issn": "1009-6744",
+      "issns": [
+        "1009-6744"
+      ],
+      "clone_of": "Transportation Systems Engineering & Information/Jiaotong yunshu xitong gongcheng yu xinxi.",
+      "hijacked_url": "https://jtseit.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Transportation Systems Engineering and Information Technology/Jiaotong Yunshu Xitong Gongcheng Yu Xinxi",
+      "title_norm": "journal of transportation systems engineering and information technologyjiaotong yunshu xitong gongcheng yu xinxi",
+      "issn": "1009-6744",
+      "issns": [
+        "1009-6744"
+      ],
+      "clone_of": "Transportation Systems Engineering & Information/Jiaotong yunshu xitong gongcheng yu xinxi.",
+      "hijacked_url": "https://www.jtseit-10096744.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of University of Shanghai for Science and Technology",
+      "title_norm": "journal of university of shanghai for science and technology",
+      "issn": "1007-6735",
+      "issns": [
+        "1007-6735"
+      ],
+      "clone_of": "Shanghai Ligong Daxue Xuebao/Journal of University of Shanghai for Science and Technology",
+      "hijacked_url": "https://jusst.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Vibration Engineering",
+      "title_norm": "journal of vibration engineering",
+      "issn": "1004-4523",
+      "issns": [
+        "1004-4523"
+      ],
+      "clone_of": "Zhendong Gongcheng Xuebao/Journal of Vibration Engineering",
+      "hijacked_url": "https://jove.science/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Xi'an University of Architecture & Technology",
+      "title_norm": "journal of xian university of architecture  technology",
+      "issn": "1006-7930",
+      "issns": [
+        "1006-7930"
+      ],
+      "clone_of": "Xi'an Jianzhu Ke-Ji Daxue xuebao/Journal of Xi'an University of Architecture & Technology",
+      "hijacked_url": "http://www.xajzkjdx.cn/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Xi’an Shiyou University, Natural Science Edition",
+      "title_norm": "journal of xian shiyou university natural science edition",
+      "issn": "1673-064X",
+      "issns": [
+        "1673-064X"
+      ],
+      "clone_of": "Xi'an Shiyou Daxue Xuebao (Ziran Kexue Ban)/Journal of Xi'an Shiyou University, Natural Sciences Edition",
+      "hijacked_url": "https://www.xisdxjxsu.asia/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Xidian University",
+      "title_norm": "journal of xidian university",
+      "issn": "1001-2400",
+      "issns": [
+        "1001-2400"
+      ],
+      "clone_of": "Xi'an Dianzi Keji Daxue xuebao/Journal of Xidian University",
+      "hijacked_url": "http://xadzkjdx.cn/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "JSU Science and Engineering",
+      "title_norm": "jsu science and engineering",
+      "issn": "1000-2618",
+      "issns": [
+        "1000-2618"
+      ],
+      "clone_of": "Journal of Shenzhen University Science and Engineering/Shenzhen Daxue xuebao. Ligong ban",
+      "hijacked_url": "https://jsuscienceandengineering.net/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "JZU Natural Science Edition",
+      "title_norm": "jzu natural science edition",
+      "issn": "1671-6841",
+      "issns": [
+        "1671-6841"
+      ],
+      "clone_of": "Journal of Zhengzhou University - Natural Science",
+      "hijacked_url": "https://naturalscience.fyi/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Journal of Zhengzhou University-Natural Science Edition",
+      "title_norm": "journal of zhengzhou universitynatural science edition",
+      "issn": "1671-6841",
+      "issns": [
+        "1671-6841"
+      ],
+      "clone_of": "Journal of Zhengzhou University - Natural Science",
+      "hijacked_url": "https://naturalscience.pro/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Haut",
+      "title_norm": "haut",
+      "issn": "0938-2216",
+      "issns": [
+        "0938-2216"
+      ],
+      "clone_of": "Haut",
+      "hijacked_url": "https://hautpeerreview.top/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Kepes",
+      "title_norm": "kepes",
+      "issn": "1794-7111",
+      "issns": [
+        "1794-7111"
+      ],
+      "clone_of": "Kepes",
+      "hijacked_url": "https://scholopress.com/kepes-journal",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Kesmas Jurnal Kesehatan Masyarakat Nasional",
+      "title_norm": "kesmas jurnal kesehatan masyarakat nasional",
+      "issn": "1907-7505",
+      "issns": [
+        "1907-7505"
+      ],
+      "clone_of": "Kesmas: Jurnal Kesehatan Masyarakat Nasional",
+      "hijacked_url": "https://revistakesmas.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Kexue Tongbao/Chinese Science Bulletin",
+      "title_norm": "kexue tongbaochinese science bulletin",
+      "issn": "0023-074X",
+      "issns": [
+        "0023-074X",
+        "2095-9419"
+      ],
+      "clone_of": "Kexue Tongbao/Chinese Science Bulletin",
+      "hijacked_url": "https://www.kexuetongbao-csb.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Korean Journal of Physiology & Pharmacology",
+      "title_norm": "korean journal of physiology  pharmacology",
+      "issn": "1226-4512",
+      "issns": [
+        "1226-4512",
+        "2093-3827"
+      ],
+      "clone_of": "Korean Journal of Physiology & Pharmacology",
+      "hijacked_url": "http://kjppor.com/index.php/kjpp/index",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Kronika journal",
+      "title_norm": "kronika journal",
+      "issn": "0023-4923",
+      "issns": [
+        "0023-4923"
+      ],
+      "clone_of": "Kronika",
+      "hijacked_url": "https://kronika.ac/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Lampyrid journal",
+      "title_norm": "lampyrid journal",
+      "issn": "2041-4900",
+      "issns": [
+        "2041-4900"
+      ],
+      "clone_of": "Lampyrid",
+      "hijacked_url": "www.lampyridjournal.com",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Language Sciences",
+      "title_norm": "language sciences",
+      "issn": "0388-0001",
+      "issns": [
+        "0388-0001"
+      ],
+      "clone_of": "Language Sciences",
+      "hijacked_url": "https://sciencedirects.com/science/article/pii/tpatpussimcl.php",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "La Prensa Medica Argentina",
+      "title_norm": "la prensa medica argentina",
+      "issn": "0032-745X",
+      "issns": [
+        "0032-745X"
+      ],
+      "clone_of": "Prensa Medica Argentina",
+      "hijacked_url": "https://www.scitechnol.com/la-prensa-medica.php",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Latin American Journal of Pharmacy",
+      "title_norm": "latin american journal of pharmacy",
+      "issn": "0326-2383",
+      "issns": [
+        "0326-2383"
+      ],
+      "clone_of": "Latin American Journal of Pharmacy",
+      "hijacked_url": "http://actafarmbonaerense.com.ar/index.php/latamjpharm",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Lejana Journal",
+      "title_norm": "lejana journal",
+      "issn": "2061-6678",
+      "issns": [
+        "2061-6678"
+      ],
+      "clone_of": "Lejana",
+      "hijacked_url": "https://lejana.ac/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "LEVANT Journal",
+      "title_norm": "levant journal",
+      "issn": "1756-3801",
+      "issns": [
+        "1756-3801"
+      ],
+      "clone_of": "Levant",
+      "hijacked_url": "https://levantjournal.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Liberte",
+      "title_norm": "liberte",
+      "issn": "0024-2020",
+      "issns": [
+        "0024-2020"
+      ],
+      "clone_of": "Liberte",
+      "hijacked_url": "https://liberteresearch.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Linguistica Antverpiensia",
+      "title_norm": "linguistica antverpiensia",
+      "issn": null,
+      "issns": [],
+      "clone_of": "Linguistica Antverpiensia, Linguistica Antverpiensia, New Series",
+      "hijacked_url": "https://www.hivt.be/linguistica",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Linguistica Antverpiensia, New Series – Themes in Translation Studies",
+      "title_norm": "linguistica antverpiensia new series  themes in translation studies",
+      "issn": null,
+      "issns": [],
+      "clone_of": "Linguistica Antverpiensia, New Series – Themes in Translation Studies",
+      "hijacked_url": "http://upa-editions.com/index.php/LANS-TTS/issue/view/22",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Lino journal",
+      "title_norm": "lino journal",
+      "issn": "0211-2574",
+      "issns": [
+        "0211-2574"
+      ],
+      "clone_of": "Lino",
+      "hijacked_url": "http://linojournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Lotus International Journal",
+      "title_norm": "lotus international journal",
+      "issn": "1124-9064",
+      "issns": [
+        "1124-9064"
+      ],
+      "clone_of": "Lotus International",
+      "hijacked_url": "https://lotusinternational.ac/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Machine Intelligence Research",
+      "title_norm": "machine intelligence research",
+      "issn": "2153-182X",
+      "issns": [
+        "2153-182X",
+        "2153-1838"
+      ],
+      "clone_of": "Machine Intelligence Research",
+      "hijacked_url": "https://machineintelligenceresearch.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Maydica",
+      "title_norm": "maydica",
+      "issn": "0025-6153",
+      "issns": [
+        "0025-6153"
+      ],
+      "clone_of": "Maydica",
+      "hijacked_url": "https://maydica.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Medical Journal of Wuhan University",
+      "title_norm": "medical journal of wuhan university",
+      "issn": "1671-8852",
+      "issns": [
+        "1671-8852"
+      ],
+      "clone_of": "Medical Journal of Wuhan University",
+      "hijacked_url": "https://www.wuhanuniversityjournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Medicina Katastrof",
+      "title_norm": "medicina katastrof",
+      "issn": "2070-1004",
+      "issns": [
+        "2070-1004",
+        "2686-7966"
+      ],
+      "clone_of": "Medicina katastrof",
+      "hijacked_url": "https://www.medicina-katastrof.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "METSZET JOURNAL",
+      "title_norm": "metszet journal",
+      "issn": "2061-2710",
+      "issns": [
+        "2061-2710"
+      ],
+      "clone_of": "Metszet",
+      "hijacked_url": "https://metszetjournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Mitteilungen Klosterneuburg",
+      "title_norm": "mitteilungen klosterneuburg",
+      "issn": "0007-5922",
+      "issns": [
+        "0007-5922"
+      ],
+      "clone_of": "Mitteilungen Klosterneuburg",
+      "hijacked_url": "http://www.mitt-klosterneuburg.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Moenia",
+      "title_norm": "moenia",
+      "issn": "1137-2346",
+      "issns": [
+        "1137-2346"
+      ],
+      "clone_of": "Moenia",
+      "hijacked_url": "https://moenia.net/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Mukt Shabd Journal",
+      "title_norm": "mukt shabd journal",
+      "issn": "2347-3150",
+      "issns": [
+        "2347-3150"
+      ],
+      "clone_of": "Mukt Shabd",
+      "hijacked_url": "http://shabdbooks.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Multicultural Education",
+      "title_norm": "multicultural education",
+      "issn": "1016-1844",
+      "issns": [
+        "1016-1844",
+        "1068-3844"
+      ],
+      "clone_of": "Multicultural Education",
+      "hijacked_url": "ijdri.com/me",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Musik in Bayern",
+      "title_norm": "musik in bayern",
+      "issn": "0937-583X",
+      "issns": [
+        "0937-583X"
+      ],
+      "clone_of": "Musik in Bayern",
+      "hijacked_url": "https://www.musikinbayern.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Nanobiotechnology Reports",
+      "title_norm": "nanobiotechnology reports",
+      "issn": "2635-1676",
+      "issns": [
+        "2635-1676",
+        "2635-1684"
+      ],
+      "clone_of": "Nanobiotechnology Reports",
+      "hijacked_url": "http://nanobiotechnologyreports.org/index.html",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Natura",
+      "title_norm": "natura",
+      "issn": "0028-0631",
+      "issns": [
+        "0028-0631"
+      ],
+      "clone_of": "Natura",
+      "hijacked_url": "http://revistas-academicas.com/natura/index.html",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "NATURAL HISTORY",
+      "title_norm": "natural history",
+      "issn": "0028-0712",
+      "issns": [
+        "0028-0712"
+      ],
+      "clone_of": "Natural history",
+      "hijacked_url": "http://naturalhistory-mag.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "New Armenian medical journal",
+      "title_norm": "new armenian medical journal",
+      "issn": "1829-0825",
+      "issns": [
+        "1829-0825"
+      ],
+      "clone_of": "New Armenian Medical Journal",
+      "hijacked_url": "https://www.newarmenianmedicaljournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "New York Journal of Mathematics",
+      "title_norm": "new york journal of mathematics",
+      "issn": "1076-9803",
+      "issns": [
+        "1076-9803"
+      ],
+      "clone_of": "New York Journal of Mathematics",
+      "hijacked_url": "https://opensubmissionsystem.com/index.php/nyjm/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Neuropsychopharmacologia Hungarica",
+      "title_norm": "neuropsychopharmacologia hungarica",
+      "issn": "1419-8711",
+      "issns": [
+        "1419-8711"
+      ],
+      "clone_of": "Neuropsychopharmacologia Hungarica",
+      "hijacked_url": "https://neuropsychopharmacologiahungarica.com/index.php/NPPH",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Novyi Mir Research Journal",
+      "title_norm": "novyi mir research journal",
+      "issn": "0130-7673",
+      "issns": [
+        "0130-7673"
+      ],
+      "clone_of": "Novyi Mir",
+      "hijacked_url": "https://www.novyimir.net/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "OD PUBLISHER JOURNAL (Organization Development Journal)",
+      "title_norm": "od publisher journal organization development journal",
+      "issn": "0889-6402",
+      "issns": [
+        "0889-6402"
+      ],
+      "clone_of": "Organization development journal",
+      "hijacked_url": "https://odpublisher.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Oeconomia",
+      "title_norm": "oeconomia",
+      "issn": "2269-8450",
+      "issns": [
+        "2269-8450"
+      ],
+      "clone_of": "Oeconomia",
+      "hijacked_url": "https://oeconomiajournal.com/index.php/view",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Oeconomia Copernicana",
+      "title_norm": "oeconomia copernicana",
+      "issn": "2083-1277",
+      "issns": [
+        "2083-1277"
+      ],
+      "clone_of": "Oeconomia Copernicana",
+      "hijacked_url": "https://oeconomiacopernicana.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Oeil Research Journal",
+      "title_norm": "oeil research journal",
+      "issn": "0029-862X",
+      "issns": [
+        "0029-862X"
+      ],
+      "clone_of": "Oeil",
+      "hijacked_url": "https://oeilresearch.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Onomazein",
+      "title_norm": "onomazein",
+      "issn": "0718-5758",
+      "issns": [
+        "0718-5758"
+      ],
+      "clone_of": "Onomazein",
+      "hijacked_url": "http://www.onomazein.com/index.php/onom/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Open Nano Research Journal",
+      "title_norm": "open nano research journal",
+      "issn": "2352-9520",
+      "issns": [
+        "2352-9520"
+      ],
+      "clone_of": "OpenNano",
+      "hijacked_url": "https://opennano.life/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Ophthalmology",
+      "title_norm": "ophthalmology",
+      "issn": "0161-6420",
+      "issns": [
+        "0161-6420",
+        "1549-4713"
+      ],
+      "clone_of": "Ophthalmology",
+      "hijacked_url": "https://sciencedirects.com/article/239493.7831/coBAbNakKCuPHRfSpa6-21-y.php",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Optical Technique Journal",
+      "title_norm": "optical technique journal",
+      "issn": "1002-1582",
+      "issns": [
+        "1002-1582"
+      ],
+      "clone_of": "Guangxue Jishu/Optical Technique",
+      "hijacked_url": "https://opticaltechnique.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Oriental Studies",
+      "title_norm": "oriental studies",
+      "issn": "2619-0990",
+      "issns": [
+        "2619-0990"
+      ],
+      "clone_of": "Oriental Studies",
+      "hijacked_url": "https://orientalstudies.ac/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Origini",
+      "title_norm": "origini",
+      "issn": "0474-6805",
+      "issns": [
+        "0474-6805"
+      ],
+      "clone_of": "Origini",
+      "hijacked_url": "https://originijournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Paideuma Journal of Research",
+      "title_norm": "paideuma journal of research",
+      "issn": "0090-5674",
+      "issns": [
+        "0090-5674"
+      ],
+      "clone_of": "Paideuma",
+      "hijacked_url": "http://paideumajournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Pakistan Heart Journal",
+      "title_norm": "pakistan heart journal",
+      "issn": "0048-2706",
+      "issns": [
+        "0048-2706",
+        "2227-9199"
+      ],
+      "clone_of": "Pakistan Heart Journal",
+      "hijacked_url": "https://pkheartjournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Parishodh Journal",
+      "title_norm": "parishodh journal",
+      "issn": "2347-6648",
+      "issns": [
+        "2347-6648"
+      ],
+      "clone_of": "Parishodh",
+      "hijacked_url": "http://www.parishodhpu.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "PalArch's Journal of Archaeology of Egypt/ Egyptology",
+      "title_norm": "palarchs journal of archaeology of egypt egyptology",
+      "issn": "1567-214X",
+      "issns": [
+        "1567-214X"
+      ],
+      "clone_of": "PalArch's Journal of Archaeology of Egypt/Egyptology",
+      "hijacked_url": "https://archives.palarch.nl/index.php/jae",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "PalArch’s Journal of Vertebrate Palaeontology",
+      "title_norm": "palarchs journal of vertebrate palaeontology",
+      "issn": null,
+      "issns": [],
+      "clone_of": "PalArch's journal of vertebrate palaeontology",
+      "hijacked_url": "https://archives.palarch.nl/index.php/jvp",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Pensee",
+      "title_norm": "pensee",
+      "issn": "0031-4773",
+      "issns": [
+        "0031-4773"
+      ],
+      "clone_of": "La Pensée",
+      "hijacked_url": "https://penseeresearch.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Periodico di Mineralogia",
+      "title_norm": "periodico di mineralogia",
+      "issn": "0369-8963",
+      "issns": [
+        "0369-8963"
+      ],
+      "clone_of": "Periodico di Mineralogia",
+      "hijacked_url": "https://periodicodimineralogia.it/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "PEUCE JOURNAL",
+      "title_norm": "peuce journal",
+      "issn": "0258-8102",
+      "issns": [
+        "0258-8102"
+      ],
+      "clone_of": "Peuce",
+      "hijacked_url": "https://peucejournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Philip Roth Studies",
+      "title_norm": "philip roth studies",
+      "issn": "1547-3929",
+      "issns": [
+        "1547-3929"
+      ],
+      "clone_of": "Philip Roth Studies",
+      "hijacked_url": "https://philiprothstudies.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Philosophical readings",
+      "title_norm": "philosophical readings",
+      "issn": "2036-4989",
+      "issns": [
+        "2036-4989"
+      ],
+      "clone_of": "Philosophical readings",
+      "hijacked_url": "https://philosophicalreadings.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Plasma Science and Technology",
+      "title_norm": "plasma science and technology",
+      "issn": "1009-0630",
+      "issns": [
+        "1009-0630"
+      ],
+      "clone_of": "Plasma Science and Technology",
+      "hijacked_url": "https://dlztkxyjs-e.cn/index.php/pst/index",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Polish Polar Research",
+      "title_norm": "polish polar research",
+      "issn": "0138-0338",
+      "issns": [
+        "0138-0338"
+      ],
+      "clone_of": "Polish Polar Research",
+      "hijacked_url": "https://www.polishpolar.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Polski Merkuriusz Lekarski",
+      "title_norm": "polski merkuriusz lekarski",
+      "issn": "1426-9686",
+      "issns": [
+        "1426-9686"
+      ],
+      "clone_of": "Polski Merkuriusz Lekarski",
+      "hijacked_url": "https://polmerklek.pl/index.php/PML",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Ponte journal",
+      "title_norm": "ponte journal",
+      "issn": "0032-423X",
+      "issns": [
+        "0032-423X",
+        "2694-4839"
+      ],
+      "clone_of": "Il Ponte",
+      "hijacked_url": "www.pontejournal.net",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Ponte",
+      "title_norm": "ponte",
+      "issn": "0032-423X",
+      "issns": [
+        "0032-423X"
+      ],
+      "clone_of": "Il Ponte",
+      "hijacked_url": "www.pontejournal.online",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Positif review",
+      "title_norm": "positif review",
+      "issn": "0048-4911",
+      "issns": [
+        "0048-4911"
+      ],
+      "clone_of": "Positif",
+      "hijacked_url": "http://positifreview.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Power System Protection and Control",
+      "title_norm": "power system protection and control",
+      "issn": "1674-3415",
+      "issns": [
+        "1674-3415"
+      ],
+      "clone_of": "Dianli Xitong Baohu yu Kongzhi/Power System Protection and Control",
+      "hijacked_url": "https://pspac.info/index.php/dlbh/about",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Power System Technology",
+      "title_norm": "power system technology",
+      "issn": "1000-3673",
+      "issns": [
+        "1000-3673"
+      ],
+      "clone_of": "Dianwang Jishu/Power System Technology",
+      "hijacked_url": "https://powertechjournal.com/index.php/journal",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Pramana Research Journal",
+      "title_norm": "pramana research journal",
+      "issn": "2249-2976",
+      "issns": [
+        "2249-2976"
+      ],
+      "clone_of": "Parmana Research Journal",
+      "hijacked_url": "https://www.pramanaresearch.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Praxis Science and Technology Journal",
+      "title_norm": "praxis science and technology journal",
+      "issn": "0369-8394",
+      "issns": [
+        "0369-8394"
+      ],
+      "clone_of": "Praxis",
+      "hijacked_url": "http://praxisonline.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Preslia journal",
+      "title_norm": "preslia journal",
+      "issn": "0032-7786",
+      "issns": [
+        "0032-7786"
+      ],
+      "clone_of": "Preslia",
+      "hijacked_url": "https://presliajournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Proceedings of the National Academy of Sciences",
+      "title_norm": "proceedings of the national academy of sciences",
+      "issn": null,
+      "issns": [],
+      "clone_of": "Proceedings of the National Academy of Sciences of the United States of America",
+      "hijacked_url": "https://www.pnas.co.uk/index.php/pnas",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Proteus Journal",
+      "title_norm": "proteus journal",
+      "issn": "0889-6348",
+      "issns": [
+        "0889-6348"
+      ],
+      "clone_of": "Proteus",
+      "hijacked_url": "http://proteusresearch.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Psychology and Education",
+      "title_norm": "psychology and education",
+      "issn": "1553-6939",
+      "issns": [
+        "1553-6939"
+      ],
+      "clone_of": "Psychology and Education",
+      "hijacked_url": "http://psychologyandeducation.net/pae/index.php/pae",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Publishing & Printing Journal",
+      "title_norm": "publishing  printing journal",
+      "issn": "1007-1938",
+      "issns": [
+        "1007-1938"
+      ],
+      "clone_of": "Publishing and printing",
+      "hijacked_url": "https://ppjournal.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Quaderns",
+      "title_norm": "quaderns",
+      "issn": "1138-5790",
+      "issns": [
+        "1138-5790"
+      ],
+      "clone_of": "Quaderns",
+      "hijacked_url": "https://quaderns.net/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Qualitative Research",
+      "title_norm": "qualitative research",
+      "issn": "1468-7941",
+      "issns": [
+        "1468-7941"
+      ],
+      "clone_of": "Qualitative Research",
+      "hijacked_url": "https://qualitativeresearchjournal.com/index.php/view",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Research",
+      "title_norm": "research",
+      "issn": "2639-5274",
+      "issns": [
+        "2639-5274"
+      ],
+      "clone_of": "Research",
+      "hijacked_url": "https://researchsci.net/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Research Journal of Chemistry and Environment",
+      "title_norm": "research journal of chemistry and environment",
+      "issn": "0972-0626",
+      "issns": [
+        "0972-0626"
+      ],
+      "clone_of": "Research Journal of Chemistry and Environment",
+      "hijacked_url": "https://www.worldsresearchassociation.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Resources and Environment in the Yangtze Basin",
+      "title_norm": "resources and environment in the yangtze basin",
+      "issn": "1004-8227",
+      "issns": [
+        "1004-8227"
+      ],
+      "clone_of": "Resources and Environment in the Yangtze Basin",
+      "hijacked_url": "https://www.clzyhreyv-10048227.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Revista de Educación",
+      "title_norm": "revista de educacin",
+      "issn": "0034-8082",
+      "issns": [
+        "0034-8082"
+      ],
+      "clone_of": "Revista de educación",
+      "hijacked_url": "https://revistaeducacion.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Revista Kasmera",
+      "title_norm": "revista kasmera",
+      "issn": "0075-5222",
+      "issns": [
+        "0075-5222"
+      ],
+      "clone_of": "Kasmera",
+      "hijacked_url": "www.kasmerajournal.com",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Rivista Italiana di Filosofia Analitica Junior",
+      "title_norm": "rivista italiana di filosofia analitica junior",
+      "issn": "2037-4445",
+      "issns": [
+        "2037-4445"
+      ],
+      "clone_of": "Rivista Italiana di Filosofia Analitica Junior",
+      "hijacked_url": "https://rifanalitica.it/index.php/journal",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Rock and Soil Mechanics",
+      "title_norm": "rock and soil mechanics",
+      "issn": "1000-7598",
+      "issns": [
+        "1000-7598"
+      ],
+      "clone_of": "Yantu Lixue/Rock and Soil Mechanics",
+      "hijacked_url": "http://rockandsoilmechanics.com/index.shtml",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "RUNDSCHAU",
+      "title_norm": "rundschau",
+      "issn": "0012-0413",
+      "issns": [
+        "0012-0413"
+      ],
+      "clone_of": "Deutsche Lebensmittel-Rundschau (DLR)",
+      "hijacked_url": "https://dlr-journal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Russian Law Journal",
+      "title_norm": "russian law journal",
+      "issn": "2309-8678",
+      "issns": [
+        "2309-8678",
+        "2312-3605"
+      ],
+      "clone_of": "Russian Law Journal",
+      "hijacked_url": "https://russianlawjournal.org/index.php/journal",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Salud, Ciencia Y Tecnologia",
+      "title_norm": "salud ciencia y tecnologia",
+      "issn": "2796-9711",
+      "issns": [
+        "2796-9711"
+      ],
+      "clone_of": "Salud, Ciencia Y Tecnologia",
+      "hijacked_url": "https://www.salud-ciencia-ytecnologia.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Sammelan Patrika",
+      "title_norm": "sammelan patrika",
+      "issn": "2278-1773",
+      "issns": [
+        "2278-1773"
+      ],
+      "clone_of": "Sammelan patrika",
+      "hijacked_url": "https://sammelanpatrika.in/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Sapporo Medical Journal",
+      "title_norm": "sapporo medical journal",
+      "issn": "0036-472X",
+      "issns": [
+        "0036-472X"
+      ],
+      "clone_of": "Sapporo Medical Journal",
+      "hijacked_url": "https://www.maejournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Scandia",
+      "title_norm": "scandia",
+      "issn": "0036-5483",
+      "issns": [
+        "0036-5483"
+      ],
+      "clone_of": "Scandia",
+      "hijacked_url": "http://scandia.lub.lu-se.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Scandinavian Journal of Information Systems",
+      "title_norm": "scandinavian journal of information systems",
+      "issn": "0905-0167",
+      "issns": [
+        "0905-0167",
+        "1901-0990"
+      ],
+      "clone_of": "Scandinavian Journal of Information Systems",
+      "hijacked_url": "http://sjisscandinavian-iris.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Science and Engineering Journal",
+      "title_norm": "science and engineering journal",
+      "issn": "0103-944X",
+      "issns": [
+        "0103-944X"
+      ],
+      "clone_of": "Ciência & Engenharia/Science and Engineering Journal",
+      "hijacked_url": "https://saejournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Science, Technology and Development Multidisciplinary Journal",
+      "title_norm": "science technology and development multidisciplinary journal",
+      "issn": "0950-0707",
+      "issns": [
+        "0950-0707"
+      ],
+      "clone_of": "Science, Technology& Development",
+      "hijacked_url": "http://journalstd.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Sciences of Conservation and Archaeology",
+      "title_norm": "sciences of conservation and archaeology",
+      "issn": "1005-1538",
+      "issns": [
+        "1005-1538"
+      ],
+      "clone_of": "Sciences of Conservation and Archaeology",
+      "hijacked_url": "https://sci-arch.org/index.php/wwbhen",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Scientific Culture",
+      "title_norm": "scientific culture",
+      "issn": "2407-9529",
+      "issns": [
+        "2407-9529"
+      ],
+      "clone_of": "Scientific Culture",
+      "hijacked_url": "https://sci-cult.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Scope",
+      "title_norm": "scope",
+      "issn": "1177-5653",
+      "issns": [
+        "1177-5653",
+        "1177-5661"
+      ],
+      "clone_of": "Scope. Art",
+      "hijacked_url": "https://scope-journal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Semiconductor Optoelectronics",
+      "title_norm": "semiconductor optoelectronics",
+      "issn": "1001-5868",
+      "issns": [
+        "1001-5868"
+      ],
+      "clone_of": "Bandaoti Guangdian/Semiconductor Optoelectronics",
+      "hijacked_url": "https://www.bdtgd.cn/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Seybold Report",
+      "title_norm": "seybold report",
+      "issn": "1533-9211",
+      "issns": [
+        "1533-9211"
+      ],
+      "clone_of": "Seybold Report",
+      "hijacked_url": "https://seyboldjournal.com",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Shenyang Jianzhu Daxue Xuebao (Ziran Kexue Ban)/Journal of Shenyang Jianzhu University (Natural Science)",
+      "title_norm": "shenyang jianzhu daxue xuebao ziran kexue banjournal of shenyang jianzhu university natural science",
+      "issn": "1671-2021",
+      "issns": [
+        "1671-2021"
+      ],
+      "clone_of": "Shenyang Jianzhu Daxue Xuebao (Ziran Kexue Ban)/Journal of Shenyang Jianzhu University (Natural Science)",
+      "hijacked_url": "https://www.syjzgcxyxbperiodicals.net/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Sibirskiy Psikhologicheskiy Zhurnal",
+      "title_norm": "sibirskiy psikhologicheskiy zhurnal",
+      "issn": "1726-7080",
+      "issns": [
+        "1726-7080",
+        "2411-0809"
+      ],
+      "clone_of": "Sibirskij psihologičeskij žurnal",
+      "hijacked_url": "https://www.sibirskiy-psikhologicheskiy.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Skin Research",
+      "title_norm": "skin research",
+      "issn": "1347-1813",
+      "issns": [
+        "1347-1813",
+        "1883-9614"
+      ],
+      "clone_of": "Hifu no kagaku",
+      "hijacked_url": "https://skinresearch-journal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Social Evolution and History",
+      "title_norm": "social evolution and history",
+      "issn": "1681-4363",
+      "issns": [
+        "1681-4363"
+      ],
+      "clone_of": "Social Evolution and History",
+      "hijacked_url": "https://socialevolutionhistory.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Socio Economic Challenges",
+      "title_norm": "socio economic challenges",
+      "issn": "2520-6214",
+      "issns": [
+        "2520-6214",
+        "2520-6621"
+      ],
+      "clone_of": "SocioEconomic Challenges",
+      "hijacked_url": "https://socioeconomicchallenges.com/index.php/SEC",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Sotsiologicheskiy Zhurnal",
+      "title_norm": "sotsiologicheskiy zhurnal",
+      "issn": "1562-2495",
+      "issns": [
+        "1562-2495",
+        "1684-1581"
+      ],
+      "clone_of": "Sotsiologicheskiy Zhurnal",
+      "hijacked_url": "https://www.sotsiologicheskiyzhurnal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Solid State Technology",
+      "title_norm": "solid state technology",
+      "issn": "0038-111X",
+      "issns": [
+        "0038-111X"
+      ],
+      "clone_of": "Solid State Technology",
+      "hijacked_url": "https://www.solidstatetechnology.us/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Solovyov Studies ISPU Journal",
+      "title_norm": "solovyov studies ispu journal",
+      "issn": "2076-9210",
+      "issns": [
+        "2076-9210"
+      ],
+      "clone_of": "Solovʹevskie issledovaniya",
+      "hijacked_url": "https://solovyov-studiesispu.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Solovyov Studies ISPU",
+      "title_norm": "solovyov studies ispu",
+      "issn": "2076-9210",
+      "issns": [
+        "2076-9210"
+      ],
+      "clone_of": "Solovʹevskie issledovaniya",
+      "hijacked_url": "https://solovyov-studiesispu.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Specialusis Ugdymas",
+      "title_norm": "specialusis ugdymas",
+      "issn": "1392-5369",
+      "issns": [
+        "1392-5369"
+      ],
+      "clone_of": "Specialusis ugdymas / Special education",
+      "hijacked_url": "www.sumc.lt",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Staps journal",
+      "title_norm": "staps journal",
+      "issn": "0247-106X",
+      "issns": [
+        "0247-106X",
+        "1782-1568"
+      ],
+      "clone_of": "Staps",
+      "hijacked_url": "https://stapsjournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Steps journal/Shagi",
+      "title_norm": "steps journalshagi",
+      "issn": "2412-9410",
+      "issns": [
+        "2412-9410"
+      ],
+      "clone_of": "Steps/Шаги",
+      "hijacked_url": "https://shagisteps.science/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Strad research",
+      "title_norm": "strad research",
+      "issn": "0039-2049",
+      "issns": [
+        "0039-2049"
+      ],
+      "clone_of": "The Strad",
+      "hijacked_url": "http://stradresearch.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Studi Medievali",
+      "title_norm": "studi medievali",
+      "issn": "0391-8467",
+      "issns": [
+        "0391-8467"
+      ],
+      "clone_of": "Studi medievali",
+      "hijacked_url": "https://studimedievali.net/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Studia Rosenthaliana (Journal for The Study of Research)",
+      "title_norm": "studia rosenthaliana journal for the study of research",
+      "issn": "1781-7838",
+      "issns": [
+        "1781-7838"
+      ],
+      "clone_of": "Studia Rosenthaliana",
+      "hijacked_url": "http://www.jsrpublication.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Studies in Science of Science",
+      "title_norm": "studies in science of science",
+      "issn": "1003-2053",
+      "issns": [
+        "1003-2053"
+      ],
+      "clone_of": "Studies in Science of Science",
+      "hijacked_url": "https://sciencejournal.re/index.php/studies-in-science-of-science",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "STUDIES IN SYMBOLIC INTERACTION",
+      "title_norm": "studies in symbolic interaction",
+      "issn": "0163-2396",
+      "issns": [
+        "0163-2396"
+      ],
+      "clone_of": "Studies in symbolic interaction",
+      "hijacked_url": "http://www.studies-in-symbolicinteraction.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Suraj Punj Journal for Multidisciplinary Research",
+      "title_norm": "suraj punj journal for multidisciplinary research",
+      "issn": "2394-2886",
+      "issns": [
+        "2394-2886"
+      ],
+      "clone_of": "Suraj Punj Journal",
+      "hijacked_url": "http://www.spjmr.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Sylwan",
+      "title_norm": "sylwan",
+      "issn": "0039-7660",
+      "issns": [
+        "0039-7660"
+      ],
+      "clone_of": "Sylwan",
+      "hijacked_url": "http://sylwan.ibles.org",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Tagliche Praxis",
+      "title_norm": "tagliche praxis",
+      "issn": "0494-464X",
+      "issns": [
+        "0494-464X"
+      ],
+      "clone_of": "Tagliche Praxis",
+      "hijacked_url": "https://www.taglichepraxis.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Tangence",
+      "title_norm": "tangence",
+      "issn": "1710-0305",
+      "issns": [
+        "1710-0305",
+        "1189-4563"
+      ],
+      "clone_of": "Tangence",
+      "hijacked_url": "https://revuetangence.com/index.php/journal",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Tanz",
+      "title_norm": "tanz",
+      "issn": "1869-7720",
+      "issns": [
+        "1869-7720"
+      ],
+      "clone_of": "Tanz",
+      "hijacked_url": "https://tanzj.net/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Tec Empresarial",
+      "title_norm": "tec empresarial",
+      "issn": "1659-2395",
+      "issns": [
+        "1659-2395",
+        "1659-3359"
+      ],
+      "clone_of": "TEC Empresarial",
+      "hijacked_url": "https://revistas.tecac.cr/index.php/tec_empresarial/index.html",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Technische Sicherheit",
+      "title_norm": "technische sicherheit",
+      "issn": "2191-0073",
+      "issns": [
+        "2191-0073",
+        "1434-9728",
+        "1436-4948"
+      ],
+      "clone_of": "Technische Sicherheit",
+      "hijacked_url": "https://technikwissen.eu/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Tecnologia y Ciencias del Agua",
+      "title_norm": "tecnologia y ciencias del agua",
+      "issn": "0187-8336",
+      "issns": [
+        "0187-8336",
+        "2007-2422"
+      ],
+      "clone_of": "Tecnologia y Ciencias del Agua",
+      "hijacked_url": "https://revistatyca-mx.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Technology Reports of Kansai University",
+      "title_norm": "technology reports of kansai university",
+      "issn": "0453-2198",
+      "issns": [
+        "0453-2198"
+      ],
+      "clone_of": "Technology Reports of Kansai University",
+      "hijacked_url": "https://www.kansaiuniversityreports.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Teikyo Medical Journal",
+      "title_norm": "teikyo medical journal",
+      "issn": "0387-5547",
+      "issns": [
+        "0387-5547"
+      ],
+      "clone_of": "Teikyo Medical Journal",
+      "hijacked_url": "https://www.teikyomedicaljournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Telematique",
+      "title_norm": "telematique",
+      "issn": "1856-4194",
+      "issns": [
+        "1856-4194"
+      ],
+      "clone_of": "Telematique",
+      "hijacked_url": "www.provinciajournal.com",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Test Engineering & Management",
+      "title_norm": "test engineering  management",
+      "issn": "0193-4120",
+      "issns": [
+        "0193-4120"
+      ],
+      "clone_of": "Test Engineering and Management",
+      "hijacked_url": "https://testmagzine.biz/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "The International Journal of Analytical and Experimental Modal Analysis",
+      "title_norm": "the international journal of analytical and experimental modal analysis",
+      "issn": "0886-9367",
+      "issns": [
+        "0886-9367"
+      ],
+      "clone_of": "The International Journal of Analytical and Experimental Modal Analysis",
+      "hijacked_url": "http://www.ijaema.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "The International Journal of Interdisciplinary Organizational Studies",
+      "title_norm": "the international journal of interdisciplinary organizational studies",
+      "issn": "2324-7657",
+      "issns": [
+        "2324-7657"
+      ],
+      "clone_of": "The International Journal of Interdisciplinary Organizational Studies",
+      "hijacked_url": "https://cgscholar-organizationalstudies.org/current-issue.html",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "The International Journal of Learner Diversity and Identities",
+      "title_norm": "the international journal of learner diversity and identities",
+      "issn": "2327-2627",
+      "issns": [
+        "2327-2627"
+      ],
+      "clone_of": "The International Journal of Learner Diversity and Identities",
+      "hijacked_url": "https://ijldi-cgrn.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "The International Journal of Science, Mathematics and Technology Learning",
+      "title_norm": "the international journal of science mathematics and technology learning",
+      "issn": "2327-915X",
+      "issns": [
+        "2327-915X"
+      ],
+      "clone_of": "The International Journal of Science, Mathematics and Technology Learning",
+      "hijacked_url": "https://ijsmtl-cgrn.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "The International Journal of Technologies in Learning",
+      "title_norm": "the international journal of technologies in learning",
+      "issn": "2327-2686",
+      "issns": [
+        "2327-2686"
+      ],
+      "clone_of": "The International Journal of Technologies in Learning",
+      "hijacked_url": "http://ijtl-cgrn.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "The International Journal of Technology, Knowledge, and Society",
+      "title_norm": "the international journal of technology knowledge and society",
+      "issn": "1832-3669",
+      "issns": [
+        "1832-3669",
+        "2835-0391"
+      ],
+      "clone_of": "The International Journal of Technology, Knowledge, and Society",
+      "hijacked_url": "https://ijotkas.org/index.php/ijotkas",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "The Journal Of ZEPHYRUS",
+      "title_norm": "the journal of zephyrus",
+      "issn": "0514-7336",
+      "issns": [
+        "0514-7336"
+      ],
+      "clone_of": "Zephyrus",
+      "hijacked_url": "https://zephyrusjournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "The Scientist",
+      "title_norm": "the scientist",
+      "issn": "0890-3670",
+      "issns": [
+        "0890-3670"
+      ],
+      "clone_of": "The Scientist",
+      "hijacked_url": "https://scientist-labx.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "The Surgeon",
+      "title_norm": "the surgeon",
+      "issn": "2405-5840",
+      "issns": [
+        "2405-5840",
+        "1479-666X"
+      ],
+      "clone_of": "The Surgeon",
+      "hijacked_url": "https://sciencedirects.com/science/article/pii/ispafsvhrabsarcss.php",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Theory and Event",
+      "title_norm": "theory and event",
+      "issn": "2572-6633",
+      "issns": [
+        "2572-6633"
+      ],
+      "clone_of": "Theory & Event",
+      "hijacked_url": "https://theoryandevent.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Tianjin Daxue Xuebao (Ziran Kexue yu Gongcheng Jishu Ban)/ Journal of Tianjin University Science and Technology",
+      "title_norm": "tianjin daxue xuebao ziran kexue yu gongcheng jishu ban journal of tianjin university science and technology",
+      "issn": "0493-2137",
+      "issns": [
+        "0493-2137"
+      ],
+      "clone_of": "Tianjin Daxue Xuebao (Ziran Kexue yu Gongcheng Jishu Ban)/Journal of Tianjin University Science and Technology",
+      "hijacked_url": "https://tianjindaxuexuebao.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Tiedao Xuebao/Journal of the China Railway Society",
+      "title_norm": "tiedao xuebaojournal of the china railway society",
+      "issn": "1001-8360",
+      "issns": [
+        "1001-8360"
+      ],
+      "clone_of": "Tiedao xuebao/Journal of the China Railway Society",
+      "hijacked_url": "https://www.tiedaoxuebao-jcrs.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Tierarztilich Praxis",
+      "title_norm": "tierarztilich praxis",
+      "issn": "0303-6286",
+      "issns": [
+        "0303-6286"
+      ],
+      "clone_of": "Tierärztliche Praxis",
+      "hijacked_url": "http://tierarztliche.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Tobacco Science & Technology",
+      "title_norm": "tobacco science  technology",
+      "issn": "1002-0961",
+      "issns": [
+        "1002-0961"
+      ],
+      "clone_of": "Tobacco Science and Technology",
+      "hijacked_url": "https://www.tobstcn.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Transylvanian Review",
+      "title_norm": "transylvanian review",
+      "issn": null,
+      "issns": [],
+      "clone_of": "Transylvanian Review",
+      "hijacked_url": "http://transylvanianreviewjournal.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Tuijin Jishu/Journal of Propulsion Technology",
+      "title_norm": "tuijin jishujournal of propulsion technology",
+      "issn": "1001-4055",
+      "issns": [
+        "1001-4055"
+      ],
+      "clone_of": "Tuijin Jishu/Journal of Propulsion Technology",
+      "hijacked_url": "https://www.propulsiontechjournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Turkish Journal of Computer and Mathematics Education (TURCOMAT)",
+      "title_norm": "turkish journal of computer and mathematics education turcomat",
+      "issn": "1309-4653",
+      "issns": [
+        "1309-4653"
+      ],
+      "clone_of": "Turkish Journal of Computer and Mathematics Education",
+      "hijacked_url": "https://turcomat.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Turkish Journal of Field Crops",
+      "title_norm": "turkish journal of field crops",
+      "issn": null,
+      "issns": [],
+      "clone_of": "Turkish Journal of Field Crops",
+      "hijacked_url": "http://tarlabitkileridernegi.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Turkish Journal of Psychology",
+      "title_norm": "turkish journal of psychology",
+      "issn": "1300-4433",
+      "issns": [
+        "1300-4433"
+      ],
+      "clone_of": "Turk Psikoloji Dergisi | Turkish Journal of Psychology",
+      "hijacked_url": "http://www.turkpsikolojidergisi.org",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Turkish Journal of Physiotherapy and Rehabilitation",
+      "title_norm": "turkish journal of physiotherapy and rehabilitation",
+      "issn": "2651-4451",
+      "issns": [
+        "2651-4451",
+        "2651-446X"
+      ],
+      "clone_of": "Turkish Journal of Physiotherapy and Rehabilitation",
+      "hijacked_url": "https://turkjphysiotherrehabil.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "UNITEX",
+      "title_norm": "unitex",
+      "issn": "1043-7932",
+      "issns": [
+        "1043-7932"
+      ],
+      "clone_of": "UNITEX newsletter",
+      "hijacked_url": "https://unitexjournal.net/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Universal Review",
+      "title_norm": "universal review",
+      "issn": "2277-2723",
+      "issns": [
+        "2277-2723"
+      ],
+      "clone_of": "Universal Review",
+      "hijacked_url": "http://universalreview.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Utilitas Mathematica",
+      "title_norm": "utilitas mathematica",
+      "issn": "0315-3681",
+      "issns": [
+        "0315-3681"
+      ],
+      "clone_of": "Utilitas Mathematica",
+      "hijacked_url": "https://utilitasmathematica.com/index.php/Index",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "VDI-Z Integrierte Produktion Journal",
+      "title_norm": "vdiz integrierte produktion journal",
+      "issn": "0042-1766",
+      "issns": [
+        "0042-1766"
+      ],
+      "clone_of": "VDI-Z",
+      "hijacked_url": "https://vzipjournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Vegueta",
+      "title_norm": "vegueta",
+      "issn": "1133-598X",
+      "issns": [
+        "1133-598X",
+        "2341-1112"
+      ],
+      "clone_of": "Vegueta",
+      "hijacked_url": "https://vegueta.org/index.html",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Veredas",
+      "title_norm": "veredas",
+      "issn": "0874-5102",
+      "issns": [
+        "0874-5102"
+      ],
+      "clone_of": "Veredas",
+      "hijacked_url": "https://veredasjournal.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Vigyan Prakash Journal",
+      "title_norm": "vigyan prakash journal",
+      "issn": "1549-523X",
+      "issns": [
+        "1549-523X"
+      ],
+      "clone_of": "Vijñana prakash (Vigyan prakash)",
+      "hijacked_url": "http://lokvigyanparishad.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Vytapeni, Vetrani, Instalace",
+      "title_norm": "vytapeni vetrani instalace",
+      "issn": "1210-1389",
+      "issns": [
+        "1210-1389"
+      ],
+      "clone_of": "Vytapeni, Vetrani, Instalace/Journal of Heating, ventilation, sanitation",
+      "hijacked_url": "https://vvijournal.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Waffen- und Kostumkunde Journal",
+      "title_norm": "waffen und kostumkunde journal",
+      "issn": "0042-9945",
+      "issns": [
+        "0042-9945"
+      ],
+      "clone_of": "Waffen- und Kostümkunde",
+      "hijacked_url": "https://www.druckhaus-hofmann.de/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Waiguo Yuyan yu Wenhua",
+      "title_norm": "waiguo yuyan yu wenhua",
+      "issn": "2096-4366",
+      "issns": [
+        "2096-4366"
+      ],
+      "clone_of": "Waiguo yuyan yu wenhua/Foreign languages and cultures",
+      "hijacked_url": "https://www.waiguoyuyanyuwenhua.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Walia",
+      "title_norm": "walia",
+      "issn": "1026-3861",
+      "issns": [
+        "1026-3861"
+      ],
+      "clone_of": "Walia",
+      "hijacked_url": "https://waliaj.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Web of Scientist: International Scientific Research Journal",
+      "title_norm": "web of scientist international scientific research journal",
+      "issn": "2776-0979",
+      "issns": [
+        "2776-0979"
+      ],
+      "clone_of": "Web of Scientist: International Scientific Research Journal",
+      "hijacked_url": "https://wos.academiascience.org/index.php/wos",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Women's health issues",
+      "title_norm": "womens health issues",
+      "issn": "1049-3867",
+      "issns": [
+        "1049-3867",
+        "1878-4321"
+      ],
+      "clone_of": "Women's health issues",
+      "hijacked_url": "https://sciencedirects.com/article/239493.7831/ewhamtiritgmt.php",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "World Journal of Surgery",
+      "title_norm": "world journal of surgery",
+      "issn": "0364-2313",
+      "issns": [
+        "0364-2313"
+      ],
+      "clone_of": "World Journal of Surgery",
+      "hijacked_url": "https://worldsurgery.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Wuhan Ligong Daxue Xuebao (Jiaotong Kexue Yu Gongcheng Ban)/Journal of Wuhan University of Technology (Transportation Science and Engineering)",
+      "title_norm": "wuhan ligong daxue xuebao jiaotong kexue yu gongcheng banjournal of wuhan university of technology transportation science and engineering",
+      "issn": "2095-3844",
+      "issns": [
+        "2095-3844"
+      ],
+      "clone_of": "Wuhan Ligong Daxue xuebao. Jiaotong kexue yu gongcheng ban/Journal of Wuhan University of Technology",
+      "hijacked_url": "https://www.wuhanuniversityoftechnology.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Wulfenia journal",
+      "title_norm": "wulfenia journal",
+      "issn": "1561-882X",
+      "issns": [
+        "1561-882X"
+      ],
+      "clone_of": "Wulfenia",
+      "hijacked_url": "https://www.multidisciplinarywulfenia.org/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Wutan Huatan Jisuan Jishu",
+      "title_norm": "wutan huatan jisuan jishu",
+      "issn": "1001-1749",
+      "issns": [
+        "1001-1749"
+      ],
+      "clone_of": "Wu-tan hua-tan jisuan jishu",
+      "hijacked_url": "http://www.wthtjsjs.cn/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Xi'an Shiyou Daxue Xuebao (Ziran Kexue Ban)/Journal of Xi'an Shiyou University, Natural Sciences Edition",
+      "title_norm": "xian shiyou daxue xuebao ziran kexue banjournal of xian shiyou university natural sciences edition",
+      "issn": "1673-064X",
+      "issns": [
+        "1673-064X"
+      ],
+      "clone_of": "Xi'an Shiyou Daxue Xuebao (Ziran Kexue Ban)/Journal of Xi'an Shiyou University, Natural Sciences Edition",
+      "hijacked_url": "https://xianshiyoudaxuexuebao.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Xiyou Jinshu Cailiao Yu Gongcheng/Rare Metal Materials and Engineering",
+      "title_norm": "xiyou jinshu cailiao yu gongchengrare metal materials and engineering",
+      "issn": "1002-185X",
+      "issns": [
+        "1002-185X"
+      ],
+      "clone_of": "Xiyou Jinshu Cailiao Yu Gongcheng/Rare Metal Materials and Engineering",
+      "hijacked_url": "http://rmmep.org/index.php/rmme",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Yantu Gongcheng Xuebao/Chinese Journal of Geotechnical Engineering",
+      "title_norm": "yantu gongcheng xuebaochinese journal of geotechnical engineering",
+      "issn": null,
+      "issns": [],
+      "clone_of": "Yantu Gongcheng Xuebao/Chinese Journal of Geotechnical Engineering",
+      "hijacked_url": "ytgcxb.periodicales.com",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Ymer",
+      "title_norm": "ymer",
+      "issn": "0044-0477",
+      "issns": [
+        "0044-0477"
+      ],
+      "clone_of": "Ymer",
+      "hijacked_url": "https://ymerdigital.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Yaoxue Xuebao",
+      "title_norm": "yaoxue xuebao",
+      "issn": "0513-4870",
+      "issns": [
+        "0513-4870"
+      ],
+      "clone_of": "Yaoxue xuebao (Acta Pharmaceutica Sinica)",
+      "hijacked_url": "https://www.yaoxuexuebao-05134870.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Zeichen Journal",
+      "title_norm": "zeichen journal",
+      "issn": "0932-4747",
+      "issns": [
+        "0932-4747"
+      ],
+      "clone_of": "Zeichen",
+      "hijacked_url": "http://www.ezeichen.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Zhenkong Kexue yu Jishu Xuebao/Journal of Vacuum Science and Technology",
+      "title_norm": "zhenkong kexue yu jishu xuebaojournal of vacuum science and technology",
+      "issn": "0253-9748",
+      "issns": [
+        "0253-9748",
+        "1672-7126"
+      ],
+      "clone_of": "Zhenkong Kexue yu Jishu Xuebao/Journal of Vacuum Science and Technology",
+      "hijacked_url": "https://www.journalofvacuumscienceandtechnology.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Zhonghua er bi yan hou tou jing wai ke za zhi / Chinese journal of otorhinolaryngology head and neck surgery",
+      "title_norm": "zhonghua er bi yan hou tou jing wai ke za zhi  chinese journal of otorhinolaryngology head and neck surgery",
+      "issn": "1673-0860",
+      "issns": [
+        "1673-0860"
+      ],
+      "clone_of": "Zhonghua er-bi-yanhou-tou-jing waike zazhi / Chinese Journal of Otorhinolaryngology Head and Neck Surgery",
+      "hijacked_url": "https://www.dev1.zhebyhk-periodicals-cn.net/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Zhongguo Dianji Gongcheng Xuebao/Proceedings of the Chinese Society of Electrical Engineering",
+      "title_norm": "zhongguo dianji gongcheng xuebaoproceedings of the chinese society of electrical engineering",
+      "issn": "0258-8013",
+      "issns": [
+        "0258-8013"
+      ],
+      "clone_of": "Zhongguo Dianji Gongcheng Xuebao/Proceedings of the Chinese Society of Electrical Engineering",
+      "hijacked_url": "https://www.zdgx-pcsee-02588013.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Zhongguo Kuangye Daxue Xuebao/Journal of China University of Mining and Technology",
+      "title_norm": "zhongguo kuangye daxue xuebaojournal of china university of mining and technology",
+      "issn": "1000-1964",
+      "issns": [
+        "1000-1964"
+      ],
+      "clone_of": "Zhongguo Kuangye Daxue Xuebao/Journal of China University of Mining and Technology",
+      "hijacked_url": "https://zkdx.ch/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Zhongguo Shiyou Daxue Xuebao (Ziran Kexue Ban)/Journal of China University of Petroleum (Edition of Natural Science",
+      "title_norm": "zhongguo shiyou daxue xuebao ziran kexue banjournal of china university of petroleum edition of natural science",
+      "issn": "1673-5005",
+      "issns": [
+        "1673-5005"
+      ],
+      "clone_of": "Zhongguo Shiyou Daxue Xuebao (Ziran Kexue Ban)/Journal of China University of Petroleum (Edition of Natural Science)",
+      "hijacked_url": "https://www.journalofchinauniversityofpetroleum.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Zhongguo yi liao qi xie za zhi = Chinese journal of medical instrumentation",
+      "title_norm": "zhongguo yi liao qi xie za zhi  chinese journal of medical instrumentation",
+      "issn": "1671-7104",
+      "issns": [
+        "1671-7104"
+      ],
+      "clone_of": "Zhongguo yi liao qi xie za zhi /Chinese journal of medical instrumentation",
+      "hijacked_url": "https://www.zgylqxzz-periodicals-cn.net/",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    },
+    {
+      "title": "Zhongshan Daxue Xuebao/Acta Scientiarum Natralium Universitatis Sunyatseni/Asnus",
+      "title_norm": "zhongshan daxue xuebaoacta scientiarum natralium universitatis sunyatseniasnus",
+      "issn": "2097-0137",
+      "issns": [
+        "2097-0137"
+      ],
+      "clone_of": "Zhongshan Daxue Xuebao/Acta Scientiarum Natralium Universitatis Sunyatseni",
+      "hijacked_url": "https://www.zdx-asnus-20970137.com/",
+      "source": "Retraction Watch Hijacked Journal Checker"
     }
   ],
   "legitimate_publishers": {
     "Elsevier": {
-      "domains": ["elsevier.com", "sciencedirect.com", "cell.com", "thelancet.com", "elsevierjournals.com"],
-      "issn_prefixes": ["0016", "0021", "0022", "0092", "0140", "0168", "0169", "0301", "0306", "0309", "0378", "0415", "0735", "0959", "1053", "1359", "1386", "1471", "1568", "1873", "2213", "2214", "2352", "2452", "2468"]
+      "domains": [
+        "elsevier.com",
+        "sciencedirect.com",
+        "cell.com",
+        "thelancet.com",
+        "elsevierjournals.com"
+      ],
+      "issn_prefixes": [
+        "0016",
+        "0021",
+        "0022",
+        "0092",
+        "0140",
+        "0168",
+        "0169",
+        "0301",
+        "0306",
+        "0309",
+        "0378",
+        "0415",
+        "0735",
+        "0959",
+        "1053",
+        "1359",
+        "1386",
+        "1471",
+        "1568",
+        "1873",
+        "2213",
+        "2214",
+        "2352",
+        "2452",
+        "2468"
+      ]
     },
     "Springer Nature": {
-      "domains": ["springer.com", "nature.com", "link.springer.com", "biomedcentral.com", "mpg.de"],
-      "issn_prefixes": ["0007", "0028", "0340", "0941", "0942", "0944", "0946", "0949", "0950", "0957", "0958", "0959", "1064", "1432", "1433", "1435", "1436", "1437", "1438", "1439", "1440", "1467", "1468", "1469", "1471", "1476", "1521", "1522", "1525", "1545", "1546", "1555", "1568", "1573", "1582", "1617", "1661"]
+      "domains": [
+        "springer.com",
+        "nature.com",
+        "link.springer.com",
+        "biomedcentral.com",
+        "mpg.de"
+      ],
+      "issn_prefixes": [
+        "0007",
+        "0028",
+        "0340",
+        "0941",
+        "0942",
+        "0944",
+        "0946",
+        "0949",
+        "0950",
+        "0957",
+        "0958",
+        "0959",
+        "1064",
+        "1432",
+        "1433",
+        "1435",
+        "1436",
+        "1437",
+        "1438",
+        "1439",
+        "1440",
+        "1467",
+        "1468",
+        "1469",
+        "1471",
+        "1476",
+        "1521",
+        "1522",
+        "1525",
+        "1545",
+        "1546",
+        "1555",
+        "1568",
+        "1573",
+        "1582",
+        "1617",
+        "1661"
+      ]
     },
     "IEEE": {
-      "domains": ["ieee.org", "ieeexplore.ieee.org"],
-      "issn_prefixes": ["0018", "0096", "0278", "0364", "0885", "1041", "1051", "1058", "1063", "1070", "1089", "1210", "1520", "1536", "1542", "1545", "1551", "1553", "1556", "1557", "1558", "1937", "1939", "1941", "1943", "1944", "2162", "2168", "2169", "2326", "2331", "2373", "2374"]
+      "domains": [
+        "ieee.org",
+        "ieeexplore.ieee.org"
+      ],
+      "issn_prefixes": [
+        "0018",
+        "0096",
+        "0278",
+        "0364",
+        "0885",
+        "1041",
+        "1051",
+        "1058",
+        "1063",
+        "1070",
+        "1089",
+        "1210",
+        "1520",
+        "1536",
+        "1542",
+        "1545",
+        "1551",
+        "1553",
+        "1556",
+        "1557",
+        "1558",
+        "1937",
+        "1939",
+        "1941",
+        "1943",
+        "1944",
+        "2162",
+        "2168",
+        "2169",
+        "2326",
+        "2331",
+        "2373",
+        "2374"
+      ]
     },
     "ACM": {
-      "domains": ["acm.org", "dl.acm.org"],
-      "issn_prefixes": ["0001", "0098", "0164", "0360", "0362", "0730", "1049", "1094", "1530", "1535", "1542", "1550", "1551", "1557", "1558", "1559", "1573", "2374", "2375"]
+      "domains": [
+        "acm.org",
+        "dl.acm.org"
+      ],
+      "issn_prefixes": [
+        "0001",
+        "0098",
+        "0164",
+        "0360",
+        "0362",
+        "0730",
+        "1049",
+        "1094",
+        "1530",
+        "1535",
+        "1542",
+        "1550",
+        "1551",
+        "1557",
+        "1558",
+        "1559",
+        "1573",
+        "2374",
+        "2375"
+      ]
     },
     "Wiley": {
-      "domains": ["wiley.com", "onlinelibrary.wiley.com", "journals.lww.com"],
-      "issn_prefixes": ["0022", "0023", "0028", "0366", "0887", "1097", "1098", "1520", "1521", "1554", "1555"]
+      "domains": [
+        "wiley.com",
+        "onlinelibrary.wiley.com",
+        "journals.lww.com"
+      ],
+      "issn_prefixes": [
+        "0022",
+        "0023",
+        "0028",
+        "0366",
+        "0887",
+        "1097",
+        "1098",
+        "1520",
+        "1521",
+        "1554",
+        "1555"
+      ]
     },
     "SAGE": {
-      "domains": ["sagepub.com", "journals.sagepub.com"],
-      "issn_prefixes": ["0002", "0027", "0266", "0300", "0306", "0716", "0959", "1049", "1065", "1077", "1078", "1176", "1473", "1552"]
+      "domains": [
+        "sagepub.com",
+        "journals.sagepub.com"
+      ],
+      "issn_prefixes": [
+        "0002",
+        "0027",
+        "0266",
+        "0300",
+        "0306",
+        "0716",
+        "0959",
+        "1049",
+        "1065",
+        "1077",
+        "1078",
+        "1176",
+        "1473",
+        "1552"
+      ]
     },
     "Taylor & Francis": {
-      "domains": ["tandfonline.com", "taylorandfrancis.com"],
-      "issn_prefixes": ["0014", "0048", "0141", "0143", "0144", "0162", "0163", "0165", "0169", "0267", "0276", "0306", "0308", "0309", "0731", "0736", "0883", "0954", "0958", "0960", "1025", "1028", "1029", "1362", "1368", "1464", "1468", "1469", "1476", "1478", "1743", "1744", "1745", "1746", "1747", "1748", "1749", "1751", "1752", "1753", "1754", "1755", "1756", "1757", "1758", "1759", "1760", "1873"]
+      "domains": [
+        "tandfonline.com",
+        "taylorandfrancis.com"
+      ],
+      "issn_prefixes": [
+        "0014",
+        "0048",
+        "0141",
+        "0143",
+        "0144",
+        "0162",
+        "0163",
+        "0165",
+        "0169",
+        "0267",
+        "0276",
+        "0306",
+        "0308",
+        "0309",
+        "0731",
+        "0736",
+        "0883",
+        "0954",
+        "0958",
+        "0960",
+        "1025",
+        "1028",
+        "1029",
+        "1362",
+        "1368",
+        "1464",
+        "1468",
+        "1469",
+        "1476",
+        "1478",
+        "1743",
+        "1744",
+        "1745",
+        "1746",
+        "1747",
+        "1748",
+        "1749",
+        "1751",
+        "1752",
+        "1753",
+        "1754",
+        "1755",
+        "1756",
+        "1757",
+        "1758",
+        "1759",
+        "1760",
+        "1873"
+      ]
     },
     "Oxford UP": {
-      "domains": ["oup.com", "academic.oup.com", "oxfordjournals.org"],
-      "issn_prefixes": ["0019", "0022", "0029", "0033", "0048", "0140", "0143", "0169", "0305", "0306", "0924", "0950", "0951", "0954", "0956", "1355", "1360", "1362", "1364", "1365", "1460", "1464", "1468", "1469", "1471", "1476", "1477", "1528", "1537", "1546", "1558", "1740", "1741", "1742", "1743", "1744", "1745", "1746", "1747", "1748", "1749", "1750", "1751", "1752", "1753", "1754", "1755", "1756", "1757", "1758", "1759", "1760", "2041", "2397"]
+      "domains": [
+        "oup.com",
+        "academic.oup.com",
+        "oxfordjournals.org"
+      ],
+      "issn_prefixes": [
+        "0019",
+        "0022",
+        "0029",
+        "0033",
+        "0048",
+        "0140",
+        "0143",
+        "0169",
+        "0305",
+        "0306",
+        "0924",
+        "0950",
+        "0951",
+        "0954",
+        "0956",
+        "1355",
+        "1360",
+        "1362",
+        "1364",
+        "1365",
+        "1460",
+        "1464",
+        "1468",
+        "1469",
+        "1471",
+        "1476",
+        "1477",
+        "1528",
+        "1537",
+        "1546",
+        "1558",
+        "1740",
+        "1741",
+        "1742",
+        "1743",
+        "1744",
+        "1745",
+        "1746",
+        "1747",
+        "1748",
+        "1749",
+        "1750",
+        "1751",
+        "1752",
+        "1753",
+        "1754",
+        "1755",
+        "1756",
+        "1757",
+        "1758",
+        "1759",
+        "1760",
+        "2041",
+        "2397"
+      ]
     },
     "Cambridge UP": {
-      "domains": ["cambridge.org", "cambridgecore.org"],
-      "issn_prefixes": ["0012", "0022", "0033", "0048", "0954", "0956", "1355", "1361", "1362", "1364", "1365", "1469", "1471", "1474", "1475", "1476", "1477", "1478", "1479", "1479", "1521", "1530", "1537", "1546", "1547", "1741", "1742", "1743", "1744", "1745", "1746", "1747", "1748", "1749", "1750", "1751", "1752", "1753", "1754", "1755", "1756", "1757", "1758", "1759", "1760", "2044", "2045", "2046", "2047", "2048"]
+      "domains": [
+        "cambridge.org",
+        "cambridgecore.org"
+      ],
+      "issn_prefixes": [
+        "0012",
+        "0022",
+        "0033",
+        "0048",
+        "0954",
+        "0956",
+        "1355",
+        "1361",
+        "1362",
+        "1364",
+        "1365",
+        "1469",
+        "1471",
+        "1474",
+        "1475",
+        "1476",
+        "1477",
+        "1478",
+        "1479",
+        "1479",
+        "1521",
+        "1530",
+        "1537",
+        "1546",
+        "1547",
+        "1741",
+        "1742",
+        "1743",
+        "1744",
+        "1745",
+        "1746",
+        "1747",
+        "1748",
+        "1749",
+        "1750",
+        "1751",
+        "1752",
+        "1753",
+        "1754",
+        "1755",
+        "1756",
+        "1757",
+        "1758",
+        "1759",
+        "1760",
+        "2044",
+        "2045",
+        "2046",
+        "2047",
+        "2048"
+      ]
     },
     "Frontiers": {
-      "domains": ["frontiersin.org"],
-      "issn_prefixes": ["1664"]
+      "domains": [
+        "frontiersin.org"
+      ],
+      "issn_prefixes": [
+        "1664"
+      ]
     },
     "MDPI": {
-      "domains": ["mdpi.com"],
-      "issn_prefixes": ["1422", "2071", "2073", "2076", "2079"]
+      "domains": [
+        "mdpi.com"
+      ],
+      "issn_prefixes": [
+        "1422",
+        "2071",
+        "2073",
+        "2076",
+        "2079"
+      ]
     },
     "PLOS": {
-      "domains": ["plos.org", "plosone.org", "plosbiology.org", "plosmedicine.org", "plosgenetics.org", "ploscompbiol.org", "plosntds.org", "plos neglected tropical diseases"],
-      "issn_prefixes": ["1932", "1544", "1545", "1546", "1553"]
+      "domains": [
+        "plos.org",
+        "plosone.org",
+        "plosbiology.org",
+        "plosmedicine.org",
+        "plosgenetics.org",
+        "ploscompbiol.org",
+        "plosntds.org",
+        "plos neglected tropical diseases"
+      ],
+      "issn_prefixes": [
+        "1932",
+        "1544",
+        "1545",
+        "1546",
+        "1553"
+      ]
     },
     "AAAS / Science": {
-      "domains": ["science.org", "aaas.org"],
-      "issn_prefixes": ["0036", "1095", "2375"]
+      "domains": [
+        "science.org",
+        "aaas.org"
+      ],
+      "issn_prefixes": [
+        "0036",
+        "1095",
+        "2375"
+      ]
     },
     "BMJ": {
-      "domains": ["bmj.com", "bmj.com.bmj"],
-      "issn_prefixes": ["0959", "1468", "1756", "1757"]
+      "domains": [
+        "bmj.com",
+        "bmj.com.bmj"
+      ],
+      "issn_prefixes": [
+        "0959",
+        "1468",
+        "1756",
+        "1757"
+      ]
     },
     "AMA / JAMA": {
-      "domains": ["jamanetwork.com", "ama-assn.org"],
-      "issn_prefixes": ["0002", "0098"]
+      "domains": [
+        "jamanetwork.com",
+        "ama-assn.org"
+      ],
+      "issn_prefixes": [
+        "0002",
+        "0098"
+      ]
     },
     "NEJM": {
-      "domains": ["nejm.org"],
-      "issn_prefixes": ["0028"]
+      "domains": [
+        "nejm.org"
+      ],
+      "issn_prefixes": [
+        "0028"
+      ]
     },
     "Cell Press": {
-      "domains": ["cell.com"],
-      "issn_prefixes": ["0092", "0096", "0168", "1535", "1550", "2211", "2213", "2214"]
+      "domains": [
+        "cell.com"
+      ],
+      "issn_prefixes": [
+        "0092",
+        "0096",
+        "0168",
+        "1535",
+        "1550",
+        "2211",
+        "2213",
+        "2214"
+      ]
     },
     "Wolters Kluwer / LWW": {
-      "domains": ["lww.com", "journals.lww.com"],
-      "issn_prefixes": ["0003", "0007", "0014", "0020", "0022", "0025", "0032", "0036", "0049", "0146", "0147", "0148", "0193", "0196", "0197", "0271", "0363", "0364", "0885", "0897", "0972", "1043", "1044", "1054", "1064", "1065", "1068", "1079", "1079", "1097", "1098", "1525", "1526", "1527", "1528", "1530", "1532", "1533", "1534", "1535", "1536", "1537", "1538", "1539", "1540", "1541", "1542", "1543", "1544", "1545", "1546", "1547", "1548", "1549", "1550", "1551", "1552", "1553", "1554", "1555", "1556", "1557", "1558", "1559", "1560", "1561", "1562", "1563", "1564", "1565", "1566", "1567", "1568", "1569", "1570", "1571", "1572", "1573", "1574", "1575", "1576", "1577", "1578", "1579", "1580", "1581", "1582", "1583", "1584", "1585", "1586", "1587", "1588", "1589", "1590"]
+      "domains": [
+        "lww.com",
+        "journals.lww.com"
+      ],
+      "issn_prefixes": [
+        "0003",
+        "0007",
+        "0014",
+        "0020",
+        "0022",
+        "0025",
+        "0032",
+        "0036",
+        "0049",
+        "0146",
+        "0147",
+        "0148",
+        "0193",
+        "0196",
+        "0197",
+        "0271",
+        "0363",
+        "0364",
+        "0885",
+        "0897",
+        "0972",
+        "1043",
+        "1044",
+        "1054",
+        "1064",
+        "1065",
+        "1068",
+        "1079",
+        "1079",
+        "1097",
+        "1098",
+        "1525",
+        "1526",
+        "1527",
+        "1528",
+        "1530",
+        "1532",
+        "1533",
+        "1534",
+        "1535",
+        "1536",
+        "1537",
+        "1538",
+        "1539",
+        "1540",
+        "1541",
+        "1542",
+        "1543",
+        "1544",
+        "1545",
+        "1546",
+        "1547",
+        "1548",
+        "1549",
+        "1550",
+        "1551",
+        "1552",
+        "1553",
+        "1554",
+        "1555",
+        "1556",
+        "1557",
+        "1558",
+        "1559",
+        "1560",
+        "1561",
+        "1562",
+        "1563",
+        "1564",
+        "1565",
+        "1566",
+        "1567",
+        "1568",
+        "1569",
+        "1570",
+        "1571",
+        "1572",
+        "1573",
+        "1574",
+        "1575",
+        "1576",
+        "1577",
+        "1578",
+        "1579",
+        "1580",
+        "1581",
+        "1582",
+        "1583",
+        "1584",
+        "1585",
+        "1586",
+        "1587",
+        "1588",
+        "1589",
+        "1590"
+      ]
     },
     "Hindawi": {
-      "domains": ["hindawi.com"],
-      "issn_prefixes": ["1110", "1687"]
+      "domains": [
+        "hindawi.com"
+      ],
+      "issn_prefixes": [
+        "1110",
+        "1687"
+      ]
     }
   },
   "predatory_indicators": [
