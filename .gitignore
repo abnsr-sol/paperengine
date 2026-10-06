@@ -46,3 +46,6 @@ htmlcov/
 # thread test artifacts
 pe_sample.txt
 test_report.html
+
+# Agent session memory
+.workbuddy-ai/

@@ -1,0 +1,9 @@
+{
+  "datasets": {
+    "hijacked_journals": {
+      "count": 412,
+      "last_updated": "2026-09-20",
+      "source": "Retraction Watch Hijacked Journal Checker"
+    }
+  }
+}

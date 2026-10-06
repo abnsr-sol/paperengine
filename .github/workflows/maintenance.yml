@@ -6,7 +6,7 @@ on:
   workflow_dispatch: {}    # manual trigger button
 
 permissions:
-  contents: read
+  contents: write   # needed to commit refreshed bundled data back to the repo
 
 jobs:
   maintenance:
@@ -25,6 +25,23 @@ jobs:
         run: python scripts/maintenance.py
         env:
           MAILTO: "actions@github.invalid"
+
+      # Keep the *bundled* snapshots fresh. Without this the refresh above lands
+      # in /tmp and is discarded, so shipped data never actually updates.
+      - name: Refresh bundled datasets from free public sources
+        run: python scripts/refresh_data.py
+
+      - name: Commit refreshed data back to the repo
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add papercheck/data/venue_intel.json papercheck/data/manifest.json
+          if git diff --staged --quiet; then
+            echo "No bundled-data changes this week."
+          else
+            git commit -m "chore(data): weekly refresh of bundled venue intelligence"
+            git push
+          fi
 
       - name: Upload retraction cache artifact (on failure or always)
         if: always()
