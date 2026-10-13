@@ -1,4 +1,23 @@
-"""Venue scope-matching engine: manuscript topic keywords vs the venue's aims-and-scope domain terms."""
+"""Venue scope-matching engine: manuscript topic vs the venue's aims-and-scope.
+
+Why the default-venue branch matters
+------------------------------------
+Scope/fit is the single most common desk-rejection reason: 35% of desk rejects
+in the Elsevier transport portfolio (Wu et al. 2024, n=5,036) and the top desk
+reason in Menon et al. 2020 (n=898). Before 2026-10-12 this engine returned
+``[]`` whenever the venue string matched no preset key — which includes
+``describe('generic')``, i.e. **the documented default invocation**
+(`papercheck paper.docx`) and the GUI with no preset selected. The most common
+reason for rejection was silently uncovered in the run most people actually do.
+
+Now the unknown-venue case emits an INFO naming the gap and the fix (pass
+``--venue``), which costs nothing on the score (INFO weight = 0) but stops the
+report from looking clean where it is merely unmeasured.
+
+Scope is judged on **title + abstract + body**, because that is the material an
+editor reads before deciding — not the reference list, which is excluded by
+``body_text``.
+"""
 from __future__ import annotations
 import re
 from typing import List
@@ -41,9 +60,19 @@ def run(doc: Document, ctx: object) -> List[Finding]:
         return out
     key = _preset_key(str(getattr(ctx, "venue", "")))
     if not key:
+        out.append(Finding("Submission", Severity.INFO,
+                           "Scope check skipped — no venue selected",
+                           "Aims-and-scope fit is the most common reason editors reject a paper before peer review (35% of desk rejects in one 5,000-paper study), but it can only be judged against a named venue. None was given, so this run makes no scope claim either way.",
+                           "venue = '" + str(getattr(ctx, "venue", ""))[:60] + "' matched no scope preset",
+                           "Re-run with --venue <preset> (see --list-venues) to get the scope check; if the journal is not preset, use --venue-json with its aims-and-scope terms",
+                           1.0))
         return out
+    # Title + abstract are what an editor reads first, so scope is measured on
+    # the front matter *and* the body, not the body alone.
+    front = "\n".join((doc.paragraphs or [])[:4])
+    hay = front + "\n" + body
     pat = re.compile(_SCOPE[key], re.IGNORECASE)
-    hits = set(pat.findall(body))
+    hits = set(pat.findall(hay))
     if not hits:
         out.append(Finding("Submission", Severity.MEDIUM,
                            "Possible scope mismatch with target venue",

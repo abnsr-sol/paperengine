@@ -75,6 +75,10 @@ _MIN_BODY_WORDS = 120
 # whole passage is still what gets reported, and the full-text comparison below
 # measures the true shared run.
 _QUERY_WORDS = 20
+# Two lookups in a row that never completed mean the service is throttling or
+# blocking us; continuing would spend the rest of the budget on retries and
+# delays for nothing, so the check discloses reduced coverage and stops.
+_MAX_CONSECUTIVE_FAILURES = 2
 # Europe PMC is a free public service; space the lookups out so a batch run of
 # manuscripts does not turn into the request burst that gets an IP throttled.
 _PAUSE = 0.3
@@ -347,8 +351,16 @@ def run(doc: Document, ctx: object) -> List[Finding]:
 
     sources: Dict[str, Dict] = {}
     common = 0
+    strikes = 0
     for passage in phrases:
+        failed_before = enq.unreachable
         _, data = enq.json(_phrase_url(_query_window(passage)))
+        if enq.unreachable > failed_before:
+            strikes += 1
+            if strikes >= _MAX_CONSECUTIVE_FAILURES:
+                break
+            continue
+        strikes = 0
         if not isinstance(data, dict):
             continue
         hits = int(data.get("hitCount") or 0)

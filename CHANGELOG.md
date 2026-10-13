@@ -6,6 +6,54 @@ versioning follows [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added — reality-gap wave (engine count 98 → 101)
+Grounded in `RESEARCH_REJECTION_REALITY_2026.md`, which ranks real editorial
+outcomes and audits every engine against them.
+
+- **`ref_forensics` — offline fabricated-reference screening (GAP 1).** The
+  single fastest-growing integrity failure was unchecked on the default path:
+  a Lancet audit of 97.1M references (May 2026) found papers carrying a
+  fabricated reference rising from 1 in 2,828 (2023) to **1 in 277 (2026)**,
+  and referencing issues account for 7.54% of retractions. Until now that
+  detection lived only in `crossref_verify`/`openalex_verify`, both hard-gated
+  behind `--online`. Now the offline path flags future-dated years, backwards
+  page ranges, volume/issue of 0, malformed DOIs, one DOI on two entries, and
+  author-less entries. Arithmetic contradictions run HIGH; a DOI suffix like
+  `10.1111/j.1467-8691.2019` is masked first so it can never read as a page
+  range.
+- **`rationale` — research gap, question, and significance (GAP 4).** Menon
+  2020 (n=898 rejection reports) ranks **weak study rationale** among the top
+  three post-review rejection reasons; Edmans 2025 lists "importance of the
+  findings" across 1,000 rejections. No engine asked *why this work was
+  needed* — a background-only introduction fired nothing at all. The engine
+  owns that angle end to end, capped at MEDIUM.
+- **`topic_coherence` — title/abstract/keywords vs body (GAP 3).** Scope and
+  novelty are the top desk-rejection reasons and an editor's first read *is*
+  the front matter, but no engine compared the manuscript's own front matter
+  to its own body. Front matter is now excluded from the body first:
+  `Document.body_text` drops only references, so comparing the title against
+  it would always "match" and the check could never fire.
+- **Tests:** `tests/test_reality_gap_wave.py`, 20 tests covering all four
+  changes including the clean-reference and coherent-paper negative controls.
+
+### Fixed — scope_match was silent on the default venue (GAP 2)
+- **`papercheck paper.docx` performed no scope check at all.** Scope/fit is
+  the #1 desk-rejection reason (35% of desk rejects in the Elsevier transport
+  portfolio, n=5,036; top desk reason in Menon 2020), but `scope_match`
+  returned `[]` whenever the venue string matched no preset — which includes
+  `describe("generic")`, i.e. the documented default CLI invocation and the
+  GUI with no preset selected. It now emits an INFO naming the skipped check
+  and the fix (`--venue`). INFO weight is 0, so the readiness score is
+  untouched: an unmeasured check must not move the number.
+- **Scope is now measured on title + abstract + body**, not the body alone —
+  that is the material an editor reads before deciding.
+
+### Changed — doc drift
+- Engine count 98 → **101** in README (5 spots), `pyproject.toml`
+  (was already stale at 97), COVERAGE_MATRIX. Tests 430 → **451**.
+  Counts are hand-maintained and keep drifting; the registry self-check
+  keeps the *code* honest but nothing derives the *docs* from it.
+
 ### Fixed — venue integrity (the flagship alert was unreachable)
 - **`venue_hijack` never fired its CRITICAL "known hijacked journal" alert.**
   Every entry point passes `CheckContext(venue=describe(venue))`, so the engine

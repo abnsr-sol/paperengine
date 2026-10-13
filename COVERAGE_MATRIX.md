@@ -1,5 +1,5 @@
 # PaperCheck — Definitive Coverage Matrix
-**Date: 2026-09-21 | 98 engines live | 430/430 tests green | engine count is dynamic (see `--list-venues` and the GUI header, rendered from the registry)**
+**Date: 2026-10-12 | 101 engines live | 451/451 tests green | engine count is dynamic (see `--list-venues` and the GUI header, rendered from the registry)**
 
 This document maps every check area from the project's master research lists
 (160-angle rejection map + 287/304-area standards list + 320 failure patterns)
@@ -36,7 +36,7 @@ memory. Read together with the honest-limitations section of README.md.
 | 13 | Bayesian misuse (priors, credible vs CI) | `stats_deep` |
 | 14 | Meta-analysis errors (I², fixed vs random) | `stats_deep`, `domain_checklists2` (MOOSE) |
 
-## 2. RESEARCH DESIGN & METHODOLOGY — 16/16 ✅
+## 2. RESEARCH DESIGN & METHODOLOGY — 19/19 ✅
 
 | # | Angle | Engine |
 |---|---|---|
@@ -56,8 +56,11 @@ memory. Read together with the honest-limitations section of README.md.
 | 28 | Dataset description (size, source, splits) | `reproducibility`, `repro_env` |
 | 29 | Hyperparameters / random seeds | `reproducibility` |
 | 30 | Computational resources | `reproducibility`, `repro_env` |
+| 30a | Research gap stated in the introduction | `rationale` — "little is known / remains unclear / has not been examined" |
+| 30b | Research question or hypothesis stated | `rationale` |
+| 30c | Significance / "so what" of the work | `rationale` — a top-3 post-review rejection reason (Menon 2020, n=898) |
 
-## 3. WRITING QUALITY & ACADEMIC STYLE — 17/17 ✅
+## 3. WRITING QUALITY & ACADEMIC STYLE — 19/19 ✅
 
 | # | Angle | Engine |
 |---|---|---|
@@ -78,6 +81,8 @@ memory. Read together with the honest-limitations section of README.md.
 | 45 | Terminology drift | `consistency` |
 | 46 | Paragraph structure | `paragraph_structure` |
 | 47 | Conclusion quality (future work, implications) | `submission`, `design_claims` |
+| 47a | Title terms unsupported by the body | `topic_coherence` |
+| 47b | Abstract promises content the body lacks | `topic_coherence` |
 
 ## 4. FIGURES & TABLES — 15/15 ✅
 
@@ -99,7 +104,7 @@ memory. Read together with the honest-limitations section of README.md.
 | 61 | Error bar definition | `stats_deep`, `figure_quality` |
 | 62 | Box plot issues | `figure_quality` |
 
-## 5. CITATIONS & REFERENCES — 16/16 ✅
+## 5. CITATIONS & REFERENCES — 19/19 ✅
 
 | # | Angle | Engine |
 |---|---|---|
@@ -117,8 +122,11 @@ memory. Read together with the honest-limitations section of README.md.
 | 74 | Secondary-source citations | `reference_completeness` |
 | 75 | Reference numbering gaps | `citation_integrity` |
 | 76 | Duplicate references | `citations`, `reference_verify` |
-| 77 | Wrong page numbers | 🌐 `crossref_verify` |
+| 77 | Wrong page numbers | `ref_forensics` (offline: reversed ranges), 🌐 `crossref_verify` |
 | 78 | Missing issue/volume | `reference_completeness` |
+| 78a | Fabricated / hallucinated references (offline) | `ref_forensics` — future-dated years, backwards page ranges, volume/issue of 0, malformed DOIs, one DOI on two entries, author-less entries. 1-in-277 papers in 2026 (Lancet audit); 7.54% of retractions |
+| 78b | Reference metadata physically impossible | `ref_forensics` |
+| 78c | Declared keywords unsupported by the text | `topic_coherence` |
 
 ## 6. PLAGIARISM & INTEGRITY — 14/14 ✅
 
@@ -154,7 +162,7 @@ memory. Read together with the honest-limitations section of README.md.
 |---|---|---|
 | 99 | Cover letter | `submission_package` |
 | 100 | Suggested reviewers | `venue_extras`, `peer_review` |
-| 101 | Scope mismatch | `scope_match` |
+| 101 | Scope mismatch | `scope_match` — and now reports INFO when **no venue preset** was given, so the default run no longer looks clean where it is merely unmeasured (scope is the top desk-reject reason: 35% of desk rejects) |
 | 102 | Wrong section/article type | `editorial_format` |
 | 103 | Formatting template | `editorial_format` |
 | 104 | Line numbers | `editorial_format` |
@@ -276,7 +284,7 @@ Paper mills (email-hospital rule, clustering) · citation cartels/stacking/rings
 |---|---|---|---|
 | 160-angle rejection map | 160 | 158 automated + 2 human-only | **99%** |
 | 287/304 standards list | 304 | ~270 manuscript-checkable | **89%** (rest = journal-side/publisher-side, not manuscript content) |
-| 320 failure patterns | 320 | ~280+ templates across 98 engines | **84%+** (remainder = API/ML/human) |
+| 320 failure patterns | 320 | ~280+ templates across 101 engines | **84%+** (remainder = API/ML/human) |
 | EQUATOR guidelines | 15 | 15 | **100%** |
 | Venue presets | 19 | 19 | **100%** |
 | Indian standards | all | all | **100%** |

@@ -252,6 +252,22 @@ class TestUnreachableNeverAccuses(_Base):
             out = eo.run(_doc(_DISTINCT), CheckContext(online=True))
         self.assertNotIn("incomplete", out[0].title.lower())
 
+    def test_a_throttled_service_stops_being_hammered(self):
+        second = ("Platinum derivatives of the same series were evaluated for cytotoxicity "
+                  "against the promastigote stage of the parasite.")
+        third = ("Our reproducibility analysis across laboratories was performed independently "
+                 "by a second group of investigators.")
+        # A bare _FakeNet answers 404, which net.is_definitive treats
+        # as a *definitive* "absent" - only indeterminate failures
+        # (throttles, blocks, outages) count as strikes, so this test
+        # routes every search lookup to a 429 throttle explicitly.
+        fake = _FakeNet(search=[("", (429, None))])
+        with self._patch(fake):
+            out = eo.run(_doc(_DISTINCT, second, third), CheckContext(online=True))
+        self.assertLessEqual(len(fake.searches), eo._MAX_CONSECUTIVE_FAILURES,
+                             "a throttled API must not be retried across every passage")
+        self.assertIn("incomplete", out[-1].title.lower())
+
     def test_real_network_failure_path_is_integrated(self):
         """The real ``papercheck.net`` path, unmocked: a request that never
         completes must disclose reduced coverage, never accuse the manuscript."""
