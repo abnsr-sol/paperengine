@@ -4,7 +4,7 @@ All notable changes to PaperEngine are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [SemVer](https://semver.org/).
 
-## [Unreleased]
+## [1.14.0] - 2026-10-13
 
 ### Added — reality-gap wave (engine count 98 → 101)
 Grounded in `RESEARCH_REJECTION_REALITY_2026.md`, which ranks real editorial
